@@ -13,14 +13,16 @@ class HttpObject:
 
 
 class HttpRequest(HttpObject):
-    def __init__(self, method: str, path: str, headers: dict = {}, get: str = '', post: str = '', put = ''):
+    def __init__(self, method: str, path: str, headers: dict = {}, _get: str = '', _post: str = '', _put = ''):
         super().__init__(headers)
         self.method = method
         self.path = path
+        self._get = _get
+        self._post = _post
+        self._put = _put
 
-        self.GET = get
-        self.POST = post
-        self.PUT = put
+        self.GET = {}
+        self.POST = {}
         
         self._gen_method_arrays()
 
@@ -35,18 +37,25 @@ class HttpRequest(HttpObject):
             return None
         else:
             return self.GET[key]
+        
+    def _gen_method_arrays(self):
+        # GET dict
+        self.GET = {param[0]:param[1] for param in [_param.split('=') for _param in self._get[1:].split('&')]}
+
+        # POST dict
+        if self.method == 'POST':
+            match(self.headers('Content-Type')):
+                case 'application':
+                    ...
+
+        if self.method == 'PUT':
+            self.PUT = self._put
 
     @classmethod
     def from_str(cls, request: str):
         """
             Generates a valid HttpRequest object from a string representation of the request.
         """
-        header_lines = request[:request.index('\r\n\r\n')].split('\r\n')
-        method, resource, protocol = header_lines[0].split(' ')
-        path, _get = resource.split('?')+['']
-        get = {param[0]:param[1] for param in [_param.split('=', 1) for _param in _get[1:].split('&')]}
-        headers = {header[0].strip():header[1].strip() for header in [_header.split(':', 1) for _header in header_lines[1:]]}
-        ...
 
 
 
