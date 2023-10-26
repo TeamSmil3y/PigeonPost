@@ -1,4 +1,5 @@
-import protofire.http.mime as mime
+import json
+import protofire.http.mime
 
 class HttpObject:
     def __init(self, headers):
@@ -36,27 +37,16 @@ class HttpRequest(HttpObject):
             return self.GET[key]
 
     @classmethod
-    def _from_str(cls, request: str):
+    def from_str(cls, request: str):
         """
             Generates a valid HttpRequest object from a string representation of the request.
         """
-        headers_str, body_str = request.split('\r\n\r\n', 1)
         header_lines = request[:request.index('\r\n\r\n')].split('\r\n')
-
-        # split into method, resource and protocol
         method, resource, protocol = header_lines[0].split(' ')
-        # split resource locator into path and get params
         path, _get = resource.split('?')+['']
-        # parse get params and create dict from it
         get = {param[0]:param[1] for param in [_param.split('=', 1) for _param in _get[1:].split('&')]}
-
-        # parse headers and header params and create 2 dicts from it
-        _headers = [_header.split(':', 1) for _header in header_lines[1:]]
-        headers = {_header[0].strip():_header[1].split(';')[0].strip() for _header in _headers}
-        header_params = {_header[0]:(_header[1].split(';'))[1:] for _header in _headers}
-
-        # retrieve parsed body
-        body = mime.parse_body(headers['Content-Type'], header_params, body_str)
+        headers = {header[0].strip():header[1].strip() for header in [_header.split(':', 1) for _header in header_lines[1:]]}
+        ...
 
 
 

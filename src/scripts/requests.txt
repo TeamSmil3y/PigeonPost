@@ -35,3 +35,29 @@ Sec-Fetch-User: ?1
 ////////
 GET / HTTP/1.1\r\nHost: localhost:81\r\nUser-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate, br\r\nConnection: close\r\nUpgrade-Insecure-Requests: 1\r\nSec-Fetch-Dest: document\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Site: none\r\nSec-Fetch-User: ?1\r\n\r\n
 ////////
+
+POST / HTTP/1.1
+Host: localhost:8000
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:50.0) Gecko/20100101 Firefox/50.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Content-Type: multipart/form-data; boundary=---------------------------8721656041911415653955004498
+Content-Length: 465
+
+-----------------------------8721656041911415653955004498
+Content-Disposition: form-data; name="myTextField"
+
+Test
+-----------------------------8721656041911415653955004498
+Content-Disposition: form-data; name="myCheckBox"
+
+on
+-----------------------------8721656041911415653955004498
+Content-Disposition: form-data; name="myFile"; filename="test.txt"
+Content-Type: text/plain
+
+Simple file.
+-----------------------------8721656041911415653955004498--
