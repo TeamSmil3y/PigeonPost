@@ -10,6 +10,6 @@ def handle_request(client_socket: socket.socket, client_address: tuple):
 
     request = client_socket.recv(4096)
 
-    print(str(request, 'utf-8').replace('\\', '\\\\').replace('\r', '\\r').replace('\n', '\\n'))
-    # http_request = HttpRequest._from_str(request)
-    #log(4, f'RECEIVED REQUEST:\n{http_request}')
+    #print(str(request, 'ascii').replace('\\', '\\\\').replace('\r', '\\r').replace('\n', '\\n'))
+    http_request = HttpRequest._from_str(str(request, 'ascii'))
+    log(4, f'RECEIVED REQUEST:\n{http_request}')
