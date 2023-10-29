@@ -1,90 +1,131 @@
-import protofire.http.mime as mime
+import protofire.http.parser as parser
+import json
+
 
 class HttpObject:
-    def __init(self, headers):
-        self.HEADERS = headers
+    def __init__(self, headers):
+        """
+        Parent class for HttpRequest and HttpResponse.
+        Implements basic functionality for both HTTP requests and responses. (e.g. headers)
+        """
+        self.HEADERS: dict[str:str] = headers or {}
 
     def headers(self, key):
+        """
+        Returns self.HEADERS[key] if exists else None
+        """
         if key not in self.HEADERS:
             return None
         else:
             return self.HEADERS[key]
 
-    @classmethod
-    def _parse_headers(cls, headers_str):
-        header_lines = headers_str.split('\r\n')
-
-        # parse headers and header params and create 2 dicts from it
-        _headers = [_header.split(':', 1) for _header in header_lines[1:]]
-        headers = {_header[0].strip():_header[1].split(';')[0].strip() for _header in _headers}
-        header_params = {_header[0].strip():(_header[1].split(';'))[1:] for _header in _headers}
-        for header, params in header_params.items():
-            header_params[header] = {param[0].strip():param[1] for param in [_param.split('=', 1)+[True] for _param in params]}
-
-        return header_lines, headers, header_params
+    def set_headers(self, headers):
+        """
+        Overwrites headers passed to function
+        """
+        for header in headers.items():
+            self.HEADERS[header[0]] = header[1]
 
 
 class HttpRequest(HttpObject):
-    def __init__(self, method: str, path: str, headers: dict = {}, get: str = '', post: str = '', put = ''):
+    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None):
+        """
+        Class representing an HTTP request
+        """
         super().__init__(headers)
         self.method = method
         self.path = path
 
-        self.GET = get
-        self.POST = post
-        self.PUT = put
-        
-        self._gen_method_arrays()
+        self.GET = get or {}
+        self.DATA = data
+        self.FILES = files
 
-    def post(self, key):
-        if key not in self.POST:
-            return None
+    def data(self, key):
+        """
+        Returns self.DATA[key] if exists else None
+        """
+        # data is list
+        if isinstance(self.DATA, (list, tuple)):
+            return self.DATA[key] or None
+        # data is dict
+        elif isinstance(self.DATA, dict):
+            return self.DATA.get(key)
+        # data is neither dict or list -> access it through object.DATA
         else:
-            return self.POST[key]
+            return None
+
+    def files(self, key):
+        """
+        Returns self.FILES[key] if exists else None
+        """
+        # data is list
+        if isinstance(self.FILES, (list, tuple)):
+            return self.FILES[key] or None
+        # data is dict
+        elif isinstance(self.FILES, dict):
+            return self.FILES.get(key)
+        # data is neither dict or list -> access it through object.DATA
+        else:
+            return None
 
     def get(self, key):
-        if key not in self.GET:
-            return None
-        else:
-            return self.GET[key]
+        """
+        Returns self.GET[key] if exists else None
+        """
+        return self.GET.get(key)
 
     @classmethod
     def _from_str(cls, request: str):
         """
-            Generates a valid HttpRequest object from a string representation of the request.
+        Creates a valid HttpRequest object from a string representation of an http request.
         """
-        headers_str, body_str = request.split('\r\n\r\n', 1)
-        header_lines, headers, header_params = JSONResponse._parse_headers(headers_str)
+        method, path, get, protocol, headers, data, files = parser.parse(request)
 
-        # split into method, resource and protocol
-        method, resource, protocol = header_lines[0].split(' ')
-        # split resource locator into path and get params
-        path, _get = resource.split('?')+['']
-        # parse get params and create dict from it
-        if _get: get = {param[0]:param[1] for param in [_param.split('=', 1) for _param in _get[1:].split('&')]}
-        else: get = {}
-
-        if method != 'GET':
-            # retrieve parsed body
-            body = mime.parse_body(headers['Content-Type'], header_params, body_str)
-
+        return HttpRequest(method=method, path=path, headers=headers, get=get, data=data, files=files)
 
 
 class HttpResponse(HttpObject):
-    def __init__(self, headers: dict = {}, body: dict = {}):
+    def __init__(self, headers: dict = None, data: str = None, status: str = None, protocol: str = None):
+        """
+        Class representing an HTTP response
+        """
         super().__init__(headers)
-        self.body = body
+        self.protocol = protocol or "HTTP/1.1"
+        self.status = status or "200 OK"
+        self.data = data or ''
 
     def render(self):
         """
-            Renders the response into a string that can be sent to the requesting client.
+        Renders the response into a string that can be sent to the requesting client.
         """
-        ...
+        rendered_request_line = bytes(self.protocol + " " + self.status + '\r\n', 'ascii')
+        if isinstance(self.data, bytes):
+            rendered_data = self.data
+        else:
+            rendered_data = bytes(self.data.replace('\n', '\r\n'), 'ascii')
+        self.HEADERS['Content-Length'] = str(len(rendered_data))
+        rendered_headers = bytes('\r\n'.join([header[0] + ": " + header[1] for header in self.HEADERS.items()]) + '\r\n\r\n', 'ascii')
+
+        rendered_response = rendered_request_line + rendered_headers + rendered_data
+        return rendered_response
 
 
 class JSONRequest(HttpRequest):
-    ...
+    def __init__(self, **kwargs):
+        """
+        Not Implemented
+        """
+        super().__init__(**kwargs)
+        raise NotImplementedError
 
 
 class JSONResponse(HttpResponse):
-    ...
+    def __init__(self, headers: dict = None, data: str = None, status: str = None, protocol: str = None):
+        """
+        An HttpResponse but data can be any json convertable python object and the content-type header will be automatically set to application/json.
+        """
+        super().__init__(headers, data, status, protocol)
+
+        # data is supposed to be json
+        self.HEADERS['Content-Type'] = 'application/json'
+        self.data = json.dumps(data)
