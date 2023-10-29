@@ -1,5 +1,5 @@
 import socket
-import protofire.utils.settings as _settings
+import protofire.core.settings as _settings
 from protofire.utils.logger import create_log
 from protofire.http.http import HttpRequest, HttpResponse
 from protofire.files.static import handle_static_request

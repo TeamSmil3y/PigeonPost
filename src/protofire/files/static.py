@@ -1,4 +1,4 @@
-import protofire.utils.settings as _settings
+import protofire.core.settings as _settings
 from protofire.http.http import HttpRequest, HttpResponse
 from protofire.http.errors import error
 from pathlib import Path

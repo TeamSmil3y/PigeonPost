@@ -1,5 +1,5 @@
 import socket
-import protofire.utils.settings as _settings
+import protofire.core.settings as _settings
 import protofire.utils.secure as secure
 from protofire.utils.logger import create_log
 import protofire.core.handler as handler

@@ -1,4 +1,4 @@
-import protofire.utils.settings as _settings
+import protofire.core.settings as _settings
 from protofire.http.http import HttpRequest, HttpResponse
 
 def error(code: int, request: HttpRequest):
