@@ -12,7 +12,7 @@ class Settings:
 
         # views
         self.views = urls
-        self.error_views = errors
+        self.errors = errors
 
         # static
         self.static_url_base = static[0]
