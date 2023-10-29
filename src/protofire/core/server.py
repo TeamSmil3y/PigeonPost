@@ -4,6 +4,7 @@ import protofire.utils.secure as secure
 from protofire.utils.logger import create_log
 import protofire.core.handler as handler
 import protofire.std.error_views as error_views
+import protofire.files.static as static
 
 log = create_log('SERVER', 'white')
 global settings
@@ -18,6 +19,10 @@ def start(settings_used: _settings.Settings):
     # default settings
     if not settings.error_views.get(000):
         settings.error_views[000] = error_views.std
+
+    # load static files into memory
+    log(2, 'LOADING STATIC FILES')
+    static.load()
 
     run()
 
