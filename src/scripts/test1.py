@@ -11,10 +11,11 @@ settings = Settings(
     81,
     {},
     {},
+    static=('/static/', '/home/lstuma/programming/projects/protifre_example_static/')
 )
 
 
 print('IMPORTING PROTOFIRE SERVER')
 import protofire.core.server as server
 print('STARTING SERVER')
-server.run(settings)
+server.start(settings)
