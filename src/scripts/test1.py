@@ -4,7 +4,7 @@ print('PF DIR: ' + str(dir(protofire)))
 
 
 print('IMPORTING PROTOFIRE SETTINGS')
-from protofire.core.settings import Settings
+from protofire.conf.settings import Settings
 print('CREATING NEW SETTINGS')
 settings = Settings(
     '',
