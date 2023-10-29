@@ -27,9 +27,12 @@ def handle_request(client_sock: socket.socket, client_address: tuple):
         # request for media file
         http_response = handle_media_request(http_request)
 
-    else:
+    elif http_request.path in settings.views:
         # views
-        http_response = HttpResponse(headers={"Content-Type": "application/json"} , data="{\"whoami\": \"lstuma\"}", status="200 OK")
+        http_response = settings.views[http_request.path](http_request)
+    else:
+        # page does not exist
+        http_response = settings.errors
 
     client_sock.sendall(http_response.render())
 
