@@ -1,24 +1,29 @@
-import mime_parsers as parser
+import protofire.mime.mime as mime
+from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from email.message import Message
 
 
-def parse_raw(message_raw):
+def parse(request: str):
+    """
+    Parses an entire HTTP request
+    """
+    # split into request line and message
+    request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]
+
+    # split into method, resource and protocol
+    method, resource, protocol = request_line.split(' ')
+    # split resource locator into path and get params
+    path, get_raw = (resource.split('?') + [''])[:2]
+    path = unquote_plus(path)
+    # parse get params and create dict from it
+    get = parse_qs(get_raw)
+
     # generate email.message.Message object to allow parsing of headers and body
     message = message_from_string(message_raw)
     # parse headers
     headers = {name: value for name, value in message.items()}
-    # parse body
-    payload = _resolve_payload(message.get_payload(), mime_type=message.get_content_type())
+    # parse data
+    data, files = mime.parse(message)
 
-    return headers, payload
-
-
-def _resolve_payload(payload, mime_type):
-    if isinstance(payload, (list, tuple)):
-        return [_resolve_payload(_payload, mime_type) for _payload in payload]
-    elif isinstance(payload, Message):
-        # is multipart
-        return _resolve_payload(payload.get_payload(), payload.get_content_disposition())
-    else:
-        return parser.parse(payload, mime_type)
+    return method, path, get, protocol, headers, data, files
