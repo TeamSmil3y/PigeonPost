@@ -1,4 +1,4 @@
-import protofire.mime.mime as mime
+import protofire.http.mime as mime
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from email.message import Message
@@ -23,7 +23,27 @@ def parse(request: str):
     message = message_from_string(message_raw)
     # parse headers
     headers = {name: value for name, value in message.items()}
+
     # parse data
-    data, files = mime.parse(message)
+    mime_type = msg.get_content_type()
+    data = msg.get_payload()
+    files = dict()
+    if mime_type in SUPPORTED_MIMETYPES:
+        # parser returns either DATA or (DATA, FILES)
+        parsed = SUPPORTED_MIMETYPES[mime_type].parse(data, msg)
+        if isinstance(parsed, (list, tuple)):
+            # parser returned data and files
+            data = parsed[0]
+            files = parsed[1]
+        else:
+            # parser returned only data
+            data = parsed
 
     return method, path, get, protocol, headers, data, files
+
+
+SUPPORTED_MIMETYPES = {
+    'application/json': mime.JSONParser,
+    'application/x-www-form-urlencoded': mime.UrlencodedFormParser,
+    'multipart/form-data': mime.MultiPartFormParser,
+}
