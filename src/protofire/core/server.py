@@ -23,9 +23,9 @@ def start(settings_used: _settings.Settings):
     log(2, 'LOADING STATIC FILES')
     static.load()
 
-    run()
+    serve<()
 
-def run():
+def serve():
     global settings
     log(3, f'ADDRESS: {settings.address[0] if settings.address[0] else "ANY"}')
     log(3, f'PORT: {settings.address[1]}')
