@@ -3,3 +3,4 @@ src/ProtoFire.egg-info/*
 src/build/*
 */src/build/
 /src/build/
+*/__pycache__/*
