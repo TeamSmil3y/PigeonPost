@@ -16,8 +16,8 @@ def start(settings_used: _settings.Settings):
     settings = settings_used
 
     # default settings
-    if not settings.error_views.get(600):
-        settings.error_views[600] = error_views.std
+    if not settings.error_views.get(000):
+        settings.error_views[000] = error_views.std
 
     run()
 
