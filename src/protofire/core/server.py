@@ -1,6 +1,6 @@
 import socket
-import protofire.core.settings as _settings
-import protofire.utils.secure as secure
+import protofire.conf.settings as _settings
+import protofire.core.secure as secure
 from protofire.utils.logger import create_log
 import protofire.core.handler as handler
 import protofire.default.errors as default_errors
