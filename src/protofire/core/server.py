@@ -3,7 +3,7 @@ import protofire.utils.settings as _settings
 import protofire.utils.secure as secure
 from protofire.utils.logger import create_log
 import protofire.core.handler as handler
-import protofire.std.error_views as error_views
+import protofire.standard.error_views as error_views
 import protofire.files.static as static
 
 log = create_log('SERVER', 'white')
