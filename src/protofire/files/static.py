@@ -2,7 +2,7 @@ import protofire.core.settings as _settings
 from protofire.http.http import HttpRequest, HttpResponse
 from protofire.http.errors import error
 from pathlib import Path
-import magic
+import mimetypes
 import gzip
 import os
 
@@ -71,8 +71,7 @@ def handle_static_request(request: HttpRequest):
         data, encoding = fetch_file(local_path, [encoding.strip() for encoding in request.headers('Accept-Encoding').split(',')])
         
         # get mimetype for file
-        mime = magic.Magic(mime=True)
-        mimetype = mime.from_file(local_path)
+        mimetype = mimetypes.guess_type(local_path)[0]
 
         # make response with file
         with open(local_path, 'r') as f:
