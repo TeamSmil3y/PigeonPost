@@ -23,7 +23,7 @@ def start(settings_used: _settings.Settings):
     log(2, 'LOADING STATIC FILES')
     static.load()
 
-    serve<()
+    serve()
 
 def serve():
     global settings
