@@ -1,10 +1,13 @@
 from email.message import Message
 from urllib.parse import parse_qs
+import json
+
 
 class JSONParser:
     @classmethod
     def parse(cls, data: str, msg: Message=None):
         return json.loads(data)
+
 
 class MultiPartFormParser:
     @classmethod
@@ -36,6 +39,7 @@ class MultiPartFormParser:
                 _dict[name] = _data
             
         return parsed_data, parsed_files
+
 
 class UrlencodedFormParser:
     @classmethod
