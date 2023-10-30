@@ -6,9 +6,12 @@
     <script src="/static/js/counter.js" defer></script>
 {% endblock %}
 {% block content %}
-    <h1 id="counter">{{request.get('counter') or 0}}</h1>
-    <button onclick="count()">
-        Click Me!
-    </button>
-    <img src="/media/counter.webp" id="img">
+<h1 id="counter">{{request.get('counter') or ''}}</h1>
+{% if request.get('counter') %}
+    <p id="counter-subtext">pigeons have been sacrificed</p>
+    <button onclick="count()">Sacrifice More!</button>
+{% else %}
+    <button onclick="count()">Click Here!</button>
+{% endif %}
+    <img src="/media/img/pigeonpost.png" id="img" alt="icon">
 {% endblock %}

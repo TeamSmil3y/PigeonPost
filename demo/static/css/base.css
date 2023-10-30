@@ -9,11 +9,11 @@ html {
 }
 a {
     text-decoration: none;
-    color: white;
+    color: black;
     transition: .2s;
 }
 a:hover {
-    color: red;
+    color: #47f;
     font-weight: bold;
 }
 #navbar {
@@ -24,11 +24,20 @@ a:hover {
     
     display: inline-flex;
     
-    background-color: black;
+    color: black;
+    background-color: white;
+    border-bottom: 1px black solid;
 }
 #navbar h1 {
-    margin: .5em 1em;
+    margin: .5em .5em .5em 2em;
 }
 #navbar h2 {
-    margin: auto 1em;
+    margin: auto .5em;
+}
+#navbar > .icon {
+    position: absolute;
+    left: 1em;
+    top: .6em;
+    width: auto;
+    height: 3em;
 }

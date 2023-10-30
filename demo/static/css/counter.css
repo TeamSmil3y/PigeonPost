@@ -1,9 +1,11 @@
 #img {
-    position:absolute;
+    position: absolute;
     z-index: -1;
-    left: 0;
-    top: 0;
-    width: 100%;
+    left: 50%;
+    top: 50%;
+    width: 5em;
+    height: auto;
+    transform: translate(-50%, calc(-50% - 8em));
 }
 #content button {
     position:absolute;
@@ -19,10 +21,10 @@
     transition: .3s;
 }
 #content button:hover {
-    background-color: red;
-    color:black;
+    background-color: #47f;
+    color: black;
     padding: 2em 4em;
-    border: 1px red solid;
+    border: 1px #47f solid;
 }
 
 #counter {
@@ -33,4 +35,12 @@
     top: 50vh;
     position: absolute;
     transform: translate(-50%, calc(-50% + .1em));
+}
+#counter-subtext {
+    color: black;
+    font-weight: bolder;
+    left: 50%;
+    top: 50vh;
+    position: absolute;
+    transform: translate(-50%, calc(-50% + 7em));
 }
