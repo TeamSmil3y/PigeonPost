@@ -1,9 +1,12 @@
 # ProtoFire
 Simple and easy to use Python web framework
 
-## Supported Top-Level-Mimetypes:
- - application
- - multipart
-## Supported Sub-Mimetypes:
- - x-www-form-urlencoded
- - json
+## Features
+ - serve static files
+ - easy request and response handling
+ - use jinja2 templating engine
+
+### Natively supported mimetypes:
+ - application/json
+ - multipart/form-data
+ - application/x-www-form-urlencoded
