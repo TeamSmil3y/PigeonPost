@@ -31,6 +31,7 @@ def start(settings_used: _settings.Settings):
 
     serve()
 
+
 def serve():
     global settings
     log(2, f'ADDRESS: {settings.address[0] if settings.address[0] else "ANY"}')
@@ -43,8 +44,13 @@ def serve():
     # configure https if specified in settings
     if settings.use_https:
         log(3, 'USING HTTPS')
-        secure_sock = secure.make_secure(sock, settings.https_cert_path, settings.https_privkey_path,
-                                         settings.https_privkey_passwd)
+        secure_sock = secure.make_secure(sock, settings.https_cert_path, settings.https_privkey_path, settings.https_privkey_passwd)
+        # securing socket failed
+        if not secure_sock:
+            log(0, 'HTTPS FAILED')
+            exit(-1)
+
+        sock = secure_sock
 
     # listen for incoming connections and then forward them to the handler
     sock.listen()
