@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: pigeonpost
-Version: 0.1.1
-Summary: Simple to use Web Framework
-License: MIT
-Requires-Python: >=3.11
-Description-Content-Type: text/markdown
