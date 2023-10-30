@@ -1,4 +1,5 @@
 import protofire.http.mime as mime
+import protofire.conf.settings as _settings
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from email.message import Message
@@ -8,6 +9,8 @@ def parse(request: str):
     """
     Parses an entire HTTP request
     """
+    settings = _settings.get()
+
     # split into request line and message
     request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]
 
@@ -18,6 +21,8 @@ def parse(request: str):
     path = unquote_plus(path)
     # parse get params and create dict from it
     get = parse_qs(get_raw)
+    for key, value in get.items():
+        if len(value) <=1: get[key] = get[key][0]
 
     # generate email.message.Message object to allow parsing of headers and body
     message = message_from_string(message_raw)
@@ -25,12 +30,12 @@ def parse(request: str):
     headers = {name: value for name, value in message.items()}
 
     # parse data
-    mime_type = msg.get_content_type()
-    data = msg.get_payload()
+    mime_type = message.get_content_type()
+    data = message.get_payload()
     files = dict()
-    if mime_type in SUPPORTED_MIMETYPES:
+    if mime_type in settings.supported_mimetypes:
         # parser returns either DATA or (DATA, FILES)
-        parsed = SUPPORTED_MIMETYPES[mime_type].parse(data, msg)
+        parsed = settings.supported_mimetypes[mime_type].parse(data, message)
         if isinstance(parsed, (list, tuple)):
             # parser returned data and files
             data = parsed[0]
