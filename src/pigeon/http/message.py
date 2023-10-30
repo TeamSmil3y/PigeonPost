@@ -3,7 +3,8 @@ import collections
 
 class HTTPHeaders(collections.UserDict):
     def __init__(self, headers=None):
-        data = headers or dict()
+        headers = headers or dict()
+        data = {header[0].lower(): header[1] for header in headers.items()}
         super().__init__(data)
 
     def __add__(self, other):
@@ -12,7 +13,16 @@ class HTTPHeaders(collections.UserDict):
         return HTTPHeaders(
             headers=dict(**self.data, **other.data)
         )
-        
+
+    def __getitem__(self, key):
+        return super().__getitem__(key.lower())
+
+    def __setitem__(self, key, value):
+        return super().__setitem__(key.lower(), value)
+
+    def get(self, key):
+        return super().get(key.lower())
+
     def render(self):
         """
         Render headers to a bytes-like object.
@@ -48,7 +58,4 @@ class HTTPMessage:
         return self.HEADERS.get(key)
     
     def render(self):
-        raise NotImplementedError
-
-    def from_str(self):
         raise NotImplementedError
