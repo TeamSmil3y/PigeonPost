@@ -1,2 +1,0 @@
-[console_scripts]
-protofire = protofire.scripts:execute
