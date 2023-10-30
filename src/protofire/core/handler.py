@@ -4,6 +4,7 @@ from protofire.utils.logger import create_log
 from protofire.http.http import HttpRequest, HttpResponse
 from protofire.files.static import handle_static_request
 from protofire.files.media import handle_media_request
+from protofire.http.common import error
 
 log = create_log('HANDLER', 'cyan')
 
@@ -16,7 +17,7 @@ def handle_request(client_sock: socket.socket, client_address: tuple):
 
     http_request = HttpRequest._from_str(str(request, 'ascii'))
     log(4, f'RECEIVED REQUEST:\n{http_request}')
-    print('DATA:', http_request.DATA, 'FILES:', http_request.FILES, '\nHEADERS:', http_request.HEADERS, '\nMETHOD:', http_request.method, '\nPATH:', http_request.path, '\nGET:', http_request.GET)
+    log(2, f'REQUEST: {http_request.path}')
 
     # gather response for request
     if settings.static_url_base and http_request.path.startswith(settings.static_url_base):
@@ -32,7 +33,7 @@ def handle_request(client_sock: socket.socket, client_address: tuple):
         http_response = settings.views[http_request.path](http_request)
     else:
         # page does not exist
-        http_response = settings.errors
+        http_response = error(404, request)
 
     client_sock.sendall(http_response.render())
 
