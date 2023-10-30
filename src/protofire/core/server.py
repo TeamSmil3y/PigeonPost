@@ -5,6 +5,7 @@ from protofire.utils.logger import create_log
 import protofire.core.handler as handler
 import protofire.default.errors as default_errors
 import protofire.files.static as static
+import protofire.templating.templater as templater
 
 log = create_log('SERVER', 'white')
 global settings
@@ -13,15 +14,17 @@ global settings
 def start(settings_used: _settings.Settings):
     log(2, 'STARTING SERVER...')
     _settings.use(settings_used)
+
     global settings
     settings = settings_used
-
-    # apply default settings if not overwritten
-    settings.errors = default_errors.errors.update(settings.errors)
 
     # load static files into memory
     log(2, 'LOADING STATIC FILES')
     static.load()
+
+    # create jinja2 template environment
+    log(2, 'LOADING TEMPLATES')
+    templater.load()
 
     serve()
 
