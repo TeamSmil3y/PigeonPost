@@ -1,11 +1,11 @@
 from pathlib import Path
-import default
+import protofire.default.settings as default
 
 
 class Settings:
-    def __init__(self, address: str, port: int, urls: dict, errors: dict, cors: tuple = ([''], False),
-                 static: tuple = (None, None), media: tuple = (None, None), https: tuple = (False, '', '', ''),
-                 mime: tuple = (None,)):
+    def __init__(self, address: str, port: int, urls: dict, errors: dict, cors: tuple,
+                 static: tuple, media: tuple, templates_dir, https: tuple,
+                 mime: dict):
         # address and port
         self.address = (address, port)
         
@@ -25,6 +25,9 @@ class Settings:
         self.media_url_base = media[0]
         self.media_files_dir = Path(media[1]) if media[1] else None
         
+        # templates
+        self.templates_dir = Path(templates_dir)
+
         # https
         self.use_https = https[0]
         self.https_cert_path = https[1]
@@ -32,7 +35,7 @@ class Settings:
         self.https_privkey_passwd = https[3]
         
         # mime
-        self.supported_mimetypes = mime[0]
+        self.supported_mimetypes = mime
 
     @classmethod
     def from_settings(cls, local):
@@ -40,7 +43,7 @@ class Settings:
             address=local.ADDRESS,
             port=local.PORT,
             urls=local.urls,
-            errors=local.errors,
+            errors={**default.errors, **local.errors},
             cors=(local.CORS_ALLOWED_ORIGINS, local.CORS_ALLOW_CREDENTIALS),
             static=(
                 getattr(local, 'STATIC_URL_BASE', None),
@@ -50,6 +53,7 @@ class Settings:
                 getattr(local, 'MEDIA_URL_BASE', None),
                 getattr(local, 'MEDIA_FILES_DIR', None),
             ),
+            templates_dir=getattr(local, 'TEMPLATES_DIR', None),
             https=(
                 getattr(local, 'USE_HTTPS', False),
                 getattr(local, 'CERTIFICATE_PATH', ''),
