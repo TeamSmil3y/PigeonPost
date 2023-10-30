@@ -1,5 +1,5 @@
 import protofire.conf.settings as _settings
-from protofire.http.http import HttpResponse
+from protofire.http import HTTPResponse
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import mimetypes
@@ -23,4 +23,4 @@ def render(template, context, status=200):
     mimetype = mimetypes.guess_type(settings.templates_dir / template)[0]
     global env
     rendered = env.get_template(template).render(**context)
-    return HttpResponse(headers={'Content-Type':mimetype}, data=rendered, status=status)
+    return HTTPResponse(headers={'Content-Type':mimetype}, data=rendered, status=status)
