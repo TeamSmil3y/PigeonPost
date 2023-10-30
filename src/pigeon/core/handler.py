@@ -1,5 +1,6 @@
 import socket
 import pigeon.conf.settings as _settings
+import pigeon.core.access_control as access_control
 from pigeon.utils.logger import create_log
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.files.static import handle_static_request
@@ -11,25 +12,37 @@ log = create_log('HANDLER', 'cyan')
 
 
 async def get_response(request):
-    """
+    """_
     Gathers response for request
     """
     settings = _settings.get()
+
+
     # gather response for request
     if settings.static_url_base and request.path.startswith(settings.static_url_base):
         # request for static file
-        return  await sync_to_async(handle_static_request)(request)
+        response = await sync_to_async(handle_static_request)(request)
 
     elif settings.media_url_base and request.path.startswith(settings.media_url_base):
         # request for media file
-        return await sync_to_async(handle_media_request)(request)
+        response = await sync_to_async(handle_media_request)(request)
 
     elif request.path in settings.views:
         # views
-        return await sync_to_async(settings.views[request.path])(request)
+        response = await sync_to_async(settings.views[request.path])(request)
     else:
         # page does not exist
         return await sync_to_async(error)(404, request)
+
+    # invalid request
+    if not access_control.allowed(request):
+        response = await sync_to_async(error)(403, request)
+
+    # add access-control headers
+    if access_control.is_cors(request):
+        response.set_headers(access_control.get_headers(request))
+
+    return response
 
 
 async def handle_request(client_sock: socket.socket, client_address: tuple):
@@ -44,7 +57,6 @@ async def handle_request(client_sock: socket.socket, client_address: tuple):
 
     # parse request into HTTPRequest
     request = HTTPRequest.from_str(str(raw, 'ascii'))
-    log(4, f'RECEIVED REQUEST:\n{request}')
     log(2, f'REQUEST: {request.path}')
 
     response = await get_response(request)
