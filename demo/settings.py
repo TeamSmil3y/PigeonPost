@@ -10,7 +10,7 @@ PORT = 80
 # VIEWS
 urls = {
     '/welcome': views.welcome,
-    '/counter': views.counter,
+    '/': views.counter,
 }
 errors = {
     404: errors.not_found,
