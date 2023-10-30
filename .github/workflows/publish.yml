@@ -5,13 +5,16 @@ on:
 jobs:
   pypi:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - run: python3 -m pip install --upgrade build && python3 -m build
-      - name: Publish package
+      - name: Publish package dist to PiPy
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          password: ${{ publish.PYPI_API_TOKEN }}
+          username: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
