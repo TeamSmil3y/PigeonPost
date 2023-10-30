@@ -1,6 +1,6 @@
 import protofire.conf.settings as _settings
 from protofire.http.http import HttpRequest, HttpResponse
-from protofire.http.errors import error
+from protofire.http.common import error, status
 from pathlib import Path
 import mimetypes
 import gzip
@@ -29,7 +29,7 @@ def handle_media_request(request: HttpRequest):
         # attempting to access resource outside of static_files_dir (directory traversal)
         return error(404, request)
 
-    if os.path.exists(local_path):
+    if os.path.exists(local_path) and os.path.isfile(local_path):
         # return file
         data, encoding = fetch_file(local_path,
                                     [encoding.strip() for encoding in request.headers('Accept-Encoding').split(',')])
