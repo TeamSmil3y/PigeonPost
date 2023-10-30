@@ -1,10 +1,10 @@
-print('IMPORTING PROTOFIRE')
-import protofire
-print('PF DIR: ' + str(dir(protofire)))
+print('IMPORTING pigeon')
+import pigeon
+print('PF DIR: ' + str(dir(pigeon)))
 
 
-print('IMPORTING PROTOFIRE SETTINGS')
-from protofire.conf.settings import Settings
+print('IMPORTING pigeon SETTINGS')
+from pigeon.conf.settings import Settings
 print('CREATING NEW SETTINGS')
 settings = Settings(
     '',
@@ -15,7 +15,7 @@ settings = Settings(
 )
 
 
-print('IMPORTING PROTOFIRE SERVER')
-import protofire.core.server as server
+print('IMPORTING pigeon SERVER')
+import pigeon.core.server as server
 print('STARTING SERVER')
 server.start(settings)

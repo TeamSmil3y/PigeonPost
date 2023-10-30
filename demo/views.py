@@ -1,4 +1,4 @@
-from protofire.shortcuts import JSONResponse, render
+from pigeon.shortcuts import JSONResponse, render
 
 def welcome(request):
     return JSONResponse(data={'welcome':'Hello World!'})

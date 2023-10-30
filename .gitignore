@@ -1,5 +1,5 @@
 *.pyc
-src/ProtoFire.egg-info/*
+src/pigeon.egg-info/*
 src/build/*
 */src/build/
 /src/build/
