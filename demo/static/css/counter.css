@@ -1,0 +1,36 @@
+#img {
+    position:absolute;
+    z-index: -1;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+#content button {
+    position:absolute;
+    left: 50%;
+    top: 50vh;
+    transform: translate(-50%, calc(-50% - 1em));
+    padding: 1em 2em;
+    color: white;
+    background-color: black;
+    font-family: Inter;
+    font-weight: bolder;
+    border: 1px black solid;
+    transition: .3s;
+}
+#content button:hover {
+    background-color: red;
+    color:black;
+    padding: 2em 4em;
+    border: 1px red solid;
+}
+
+#counter {
+    color: black;
+    font-size: 5em;
+    font-weight: bolder;
+    left: 50%;
+    top: 50vh;
+    position: absolute;
+    transform: translate(-50%, calc(-50% + .1em));
+}

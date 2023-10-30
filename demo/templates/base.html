@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+        <!-- CSS -->
+        <link rel="stylesheet" href="/static/css/base.css">
+        {% block css %}{% endblock %}
+
+        <!-- JS -->
+        {% block js %}{% endblock %}
+</head>
+<body>
+        <div id="navbar">
+            <h1>ProtoFire</h1>
+            <h2><a href="https://github.com/lstuma/ProtoFire">GitHub</a></h2>
+        </div>
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+</body>
+</html>

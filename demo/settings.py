@@ -10,6 +10,7 @@ PORT = 80
 # VIEWS
 urls = {
     '/welcome': views.welcome,
+    '/counter': views.counter,
 }
 errors = {
     404: errors.not_found,
@@ -30,6 +31,9 @@ STATIC_FILES_DIR = BASE_DIR / 'static/'
 # MEDIA FILES
 MEDIA_URL_BASE = '/media/'
 MEDIA_FILES_DIR = BASE_DIR / 'media/'
+
+# TEMPLATES
+TEMPLATES_DIR = 'templates/'
 
 # HTTPS
 USE_HTTPS = False
