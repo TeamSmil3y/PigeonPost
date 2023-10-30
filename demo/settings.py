@@ -16,7 +16,8 @@ errors = {
     404: errors.not_found,
 }
 
-# CORS
+# ACCESS-CONTROL
+ALLOWED_HOSTS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'https://localhost',

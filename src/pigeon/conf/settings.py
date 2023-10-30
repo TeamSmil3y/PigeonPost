@@ -3,15 +3,20 @@ import pigeon.default.settings as default
 
 
 class Settings:
-    def __init__(self, address: str, port: int, urls: dict, errors: dict, cors: tuple,
+    def __init__(self, address: str, port: int, allowed_hosts: list, urls: dict, errors: dict, cors: tuple,
                  static: tuple, media: tuple, templates_dir, https: tuple,
                  mime: dict):
         # address and port
         self.address = (address, port)
         
+        self.allowed_hosts = allowed_hosts
+
         # cors
         self.cors_allowed_origins = cors[0]
         self.cors_allow_creds = cors[1]
+        self.cors_allow_headers = cors[2]
+        self.cors_allow_methods = cors[3]
+        self.cors_max_age = cors[4]
         
         # views
         self.views = urls
@@ -42,9 +47,16 @@ class Settings:
         return Settings(
             address=local.ADDRESS,
             port=local.PORT,
+            allowed_hosts=local.ALLOWED_HOSTS,
             urls=local.urls,
             errors={**default.errors, **local.errors},
-            cors=(local.CORS_ALLOWED_ORIGINS, local.CORS_ALLOW_CREDENTIALS),
+            cors=(
+                getattr(local, 'CORS_ALLOWED_ORIGINS', None),
+                getattr(local, 'CORS_ALLOW_CREDENTIALS', False),
+                getattr(local, 'CORS_ALLOW_HEADERS', ['Content-Type'], ),
+                getattr(local, 'CORS_ALLOW_METHODS', ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']),
+                getattr(local, 'CORS_MAX_AGE', 1200)
+            ),
             static=(
                 getattr(local, 'STATIC_URL_BASE', None),
                 getattr(local, 'STATIC_FILES_DIR', None),
@@ -64,14 +76,14 @@ class Settings:
             )
 
 
-settings_used = None
+settings_used: Settings
 
 
-def use(settings: Settings):
+def use(settings: Settings) -> None:
     global settings_used
     settings_used = settings
 
 
-def get():
+def get() -> Settings:
     global settings_used
     return settings_used
