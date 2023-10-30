@@ -49,3 +49,6 @@ class HTTPMessage:
     
     def render(self):
         raise NotImplementedError
+
+    def from_str(self):
+        raise NotImplementedError

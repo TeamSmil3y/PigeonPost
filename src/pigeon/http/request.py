@@ -26,7 +26,7 @@ class HTTPRequest(HTTPMessage):
         return self.GET.get(key)
     
     @classmethod
-    def _from_str(cls, request: str):
+    def from_str(cls, request: str):
         """
         Creates a valid HTTPRequest object from a string representation of an http request.
         """
