@@ -1,5 +1,6 @@
 import protofire.http.parser as parser
 import json
+import protofire.http.common as common
 
 
 class HttpObject:
@@ -85,20 +86,20 @@ class HttpRequest(HttpObject):
 
 
 class HttpResponse(HttpObject):
-    def __init__(self, headers: dict = None, data: str = None, status: str = None, protocol: str = None):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = None):
         """
         Class representing an HTTP response
         """
         super().__init__(headers)
         self.protocol = protocol or "HTTP/1.1"
-        self.status = status or "200 OK"
+        self.status = status
         self.data = data or ''
 
     def render(self):
         """
         Renders the response into a string that can be sent to the requesting client.
         """
-        rendered_request_line = bytes(self.protocol + " " + self.status + '\r\n', 'ascii')
+        rendered_request_line = bytes(self.protocol + " " + common.status(self.status) + '\r\n', 'ascii')
         if isinstance(self.data, bytes):
             rendered_data = self.data
         else:
@@ -120,7 +121,7 @@ class JSONRequest(HttpRequest):
 
 
 class JSONResponse(HttpResponse):
-    def __init__(self, headers: dict = None, data: str = None, status: str = None, protocol: str = None):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = None):
         """
         An HttpResponse but data can be any json convertable python object and the content-type header will be automatically set to application/json.
         """
