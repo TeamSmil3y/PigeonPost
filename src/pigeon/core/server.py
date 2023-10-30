@@ -6,6 +6,7 @@ import pigeon.core.handler as handler
 import pigeon.default.errors as default_errors
 import pigeon.files.static as static
 import pigeon.templating.templater as templater
+import asyncio
 
 log = create_log('SERVER', 'white')
 global settings
@@ -51,7 +52,7 @@ def serve():
         while True:
             client_sock, client_address = sock.accept()
             log(4, f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
-            handler.handle_request(client_sock, client_address)
+            asyncio.run(handler.handle_request(client_sock, client_address))
 
     # close socket on user exit
     except KeyboardInterrupt:
