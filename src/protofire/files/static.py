@@ -1,5 +1,5 @@
 import protofire.conf.settings as _settings
-from protofire.http.http import HttpRequest, HttpResponse
+from protofire.http import HTTPRequest, HTTPResponse
 from protofire.http.common import error
 from pathlib import Path
 import mimetypes
@@ -58,7 +58,7 @@ def fetch_file(local_path: Path, encodings):
             return data, None
 
 
-def handle_static_request(request: HttpRequest):
+def handle_static_request(request: HTTPRequest):
     settings = _settings.get()
     local_path: Path = settings.static_files_dir / Path(request.path[len(settings.static_url_base):])
     
@@ -75,7 +75,7 @@ def handle_static_request(request: HttpRequest):
 
         # make response with file
         with open(local_path, 'r') as f:
-            response = HttpResponse(data=data)
+            response = HTTPResponse(data=data)
             response.set_headers({'Content-Type': mimetype})
             if encoding:
                 response.set_headers({'Content-Encoding': encoding})

@@ -4,7 +4,7 @@ from http import HTTPStatus
 
 def error(code: int, request):
     """
-    Returns the HttpResponse for the error code provided
+    Returns the HTTPResponse for the error code provided
     """
     settings = _settings.get()
 

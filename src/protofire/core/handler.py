@@ -1,7 +1,7 @@
 import socket
 import protofire.conf.settings as _settings
 from protofire.utils.logger import create_log
-from protofire.http.http import HttpRequest, HttpResponse
+from protofire.http import HTTPRequest, HTTPResponse
 from protofire.files.static import handle_static_request
 from protofire.files.media import handle_media_request
 from protofire.http.common import error
@@ -15,7 +15,7 @@ def handle_request(client_sock: socket.socket, client_address: tuple):
 
     request = client_sock.recv(4096)
 
-    http_request = HttpRequest._from_str(str(request, 'ascii'))
+    http_request = HTTPRequest._from_str(str(request, 'ascii'))
     log(4, f'RECEIVED REQUEST:\n{http_request}')
     log(2, f'REQUEST: {http_request.path}')
 

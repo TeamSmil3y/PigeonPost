@@ -1,4 +1,4 @@
-from protofire.http.http import JSONResponse
+from protofire.http import JSONResponse
 from protofire.http.common import status
 
 def not_found(request):
