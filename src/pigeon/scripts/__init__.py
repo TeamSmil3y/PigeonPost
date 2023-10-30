@@ -5,7 +5,7 @@ import pigeon.scripts.commands as commands
 def execute(args=None):
     parser = argparse.ArgumentParser(prog='pigeon')
     parser.add_argument(
-        '-create',
+        'create',
                         dest='create',
                         action='store',
                         default='app',
