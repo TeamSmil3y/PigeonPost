@@ -79,6 +79,6 @@ def handle_static_request(request: HTTPRequest):
             response.set_headers({'Content-Type': mimetype})
             if encoding:
                 response.set_headers({'Content-Encoding': encoding})
-            return response
+        return response
     else:
         return error(404, request)
