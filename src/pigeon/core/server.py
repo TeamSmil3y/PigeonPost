@@ -2,22 +2,27 @@ import socket
 import pigeon.conf.settings as _settings
 import pigeon.core.secure as secure
 from pigeon.utils.logger import create_log
+import pigeon.utils.logger as logger
 import pigeon.core.handler as handler
 import pigeon.default.errors as default_errors
 import pigeon.files.static as static
 import pigeon.templating.templater as templater
-import asyncio
+import threading
 
 log = create_log('SERVER', 'white')
-global settings
 
 
 def start(settings_used: _settings.Settings):
-    log(2, 'STARTING SERVER...')
+    # configure settings
     _settings.use(settings_used)
 
-    global settings
     settings = settings_used
+
+
+    # set verbosity for logger
+    logger.VERBOSITY = settings.verbosity
+
+    log(2, 'STARTING SERVER...')
 
     # load static files into memory
     if settings.static_files_dir:
@@ -29,16 +34,16 @@ def start(settings_used: _settings.Settings):
         log(2, 'LOADING TEMPLATES')
         templater.load()
 
-    serve()
+    serve(settings)
 
 
-def serve():
-    global settings
+def serve(settings: _settings.Settings):
     log(2, f'ADDRESS: {settings.address[0] if settings.address[0] else "ANY"}')
     log(2, f'PORT: {settings.address[1]}')
 
     # open socket
     sock = socket.socket(socket.AF_INET)
+    sock.setblocking(False)
     sock.bind(settings.address)
 
     # configure https if specified in settings
@@ -54,13 +59,24 @@ def serve():
 
     # listen for incoming connections and then forward them to the handler
     sock.listen()
+
     try:
         while True:
-            client_sock, client_address = sock.accept()
-            log(3, f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
-            asyncio.run(handler.handle_request(client_sock, client_address))
+            log(4, f'WAITING FOR CONNECTIONS')
 
-    # close socket on user exit
+            # receive client connection
+            client_sock = None
+            while not client_sock:
+                try:
+                    client_sock, client_address = sock.accept()
+                except BlockingIOError:
+                    pass
+
+
+            log(3, f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
+            threading.Thread(target=handler.handle_connection, args=(client_sock, client_address)).start()
+
+    # user exit - close socket
     except KeyboardInterrupt:
         log(2, 'EXITING', prefix='\n')
         sock.shutdown(socket.SHUT_RDWR)

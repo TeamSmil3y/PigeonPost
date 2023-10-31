@@ -8,6 +8,10 @@ def hostname_allowed(request: HTTPRequest):
     """
     settings = _settings.get()
     
+    # from HTTP/1.1 onward the Host header is required
+    if request.protocol >= "1.1" and not request.headers('host'):
+        return False
+
     # any host allowed
     if '*' in settings.allowed_hosts:
         return True

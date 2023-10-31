@@ -6,37 +6,36 @@ from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.files.static import handle_static_request
 from pigeon.files.media import handle_media_request
 from pigeon.http.common import error
-from pigeon.core.common import sync_to_async
+import threading
 
 log = create_log('HANDLER', 'cyan')
 
 
-async def get_response(request):
-    """_
+def get_response(request) -> HTTPResponse:
+    """
     Gathers response for request
     """
     settings = _settings.get()
 
-
     # gather response for request
     if settings.static_url_base and request.path.startswith(settings.static_url_base):
         # request for static file
-        response = await sync_to_async(handle_static_request)(request)
+        response = handle_static_request(request)
 
     elif settings.media_url_base and request.path.startswith(settings.media_url_base):
         # request for media file
-        response = await sync_to_async(handle_media_request)(request)
+        response = handle_media_request(request)
 
     elif request.path in settings.views:
         # views
-        response = await sync_to_async(settings.views[request.path])(request)
+        response = settings.views[request.path](request)
     else:
         # page does not exist
-        return await sync_to_async(error)(404, request)
+        return error(404, request)
 
     # invalid request
     if not access_control.allowed(request):
-        response = await sync_to_async(error)(403, request)
+        response = error(403, request)
 
     # add access-control headers
     if access_control.is_cors(request):
@@ -45,28 +44,55 @@ async def get_response(request):
     return response
 
 
-async def handle_request(client_sock: socket.socket, client_address: tuple):
+def receive_data(client_sock: socket.socket, size:int = 4096):
+    while True:
+        try:
+            return client_sock.recv(size)
+        except BlockingIOError:
+            pass
+
+
+def handle_connection(client_sock: socket.socket, client_address: tuple):
     """
     Takes a connection, gathers correct response and returns it to client.
     """
     log(3, f'TREATING CONNECTION FROM {client_address[0]}:{client_address[1]} as HTTP request')
-    settings = _settings.get()
 
-    # receive raw request
-    raw = client_sock.recv(4096)
-    log(4, f'RAW PACKET:\n{raw}')
+    # set socket to be non-blocking
+    client_sock.setblocking(False)
 
-    # parse request into HTTPRequest
-    request = HTTPRequest.from_str(str(raw, 'ascii'))
-    log(2, f'REQUEST: {request.path}')
+    # receive raw requests until no data is received
+    while True:
+        log(4, f'RECEIVING REQUEST FROM {client_address[0]}:{client_address[1]}')
 
-    # gather appropriate response for request
-    response = await get_response(request)
+        # receive data from client
+        data = receive_data(client_sock=client_sock)
 
-    # send response to client
-    log(3, f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
-    client_sock.sendall(response.render())
+        # client terminated connection
+        if not data:
+            log(4, f'CONNECTION TO {client_address[0]}:{client_address[1]} LOST')
+            return
+
+        log(4, f'RAW PACKET:\n{data}')
+
+        # parse request into HTTPRequest
+        request = HTTPRequest.from_str(str(data, 'ascii'))
+        log(2, f'REQUEST: {request.path}')
+
+        # gather appropriate response for request
+        response = get_response(request)
+
+        # send response to client
+        log(3, f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
+        client_sock.sendall(response.render())
+        log(3, f'RESPONSE SENT')
+
+        # client asks to terminate connection
+        if request.headers('connection') == 'close':
+            log(4, f'CLOSING CONNECTION TO {client_address[0]}:{client_address[1]}')
+            break
 
     # close socket
+    log(3, f'CLOSING CONNECTION FROM {client_address[0]}:{client_address[1]}')
     client_sock.shutdown(socket.SHUT_RDWR)
     client_sock.close()
