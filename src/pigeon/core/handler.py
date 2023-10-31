@@ -9,13 +9,13 @@ from pigeon.http.common import error
 import threading
 
 log = create_log('HANDLER', 'cyan')
+settings = _settings.get()
 
 
 def get_response(request) -> HTTPResponse:
     """
     Gathers response for request
     """
-    settings = _settings.get()
 
     # gather response for request
     if settings.static_url_base and request.path.startswith(settings.static_url_base):

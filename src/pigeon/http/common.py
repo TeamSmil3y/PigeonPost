@@ -1,13 +1,13 @@
 import pigeon.conf.settings as _settings
 from http import HTTPStatus
 
+settings = _settings.get()
+
 
 def error(code: int, request):
     """
     Returns the HTTPResponse for the error code provided
     """
-    settings = _settings.get()
-
     # if a specific error view for the error code exists
     if code in settings.errors:
         return settings.errors[code](request)

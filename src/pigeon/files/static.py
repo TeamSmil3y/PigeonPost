@@ -7,13 +7,13 @@ import gzip
 import os
 
 loaded_files = dict()
+settings = _settings.get()
 
 
 def load():
     """
     loads smaller static files into memory
     """
-    settings = _settings.get()
     directory_base = settings.static_files_dir
 
     for directory, sub_directories, files in os.walk(directory_base):
@@ -59,7 +59,6 @@ def fetch_file(local_path: Path, encodings):
 
 
 def handle_static_request(request: HTTPRequest):
-    settings = _settings.get()
     local_path: Path = settings.static_files_dir / Path(request.path[len(settings.static_url_base):])
     
     if not local_path.resolve().is_relative_to(settings.static_files_dir):

@@ -1,5 +1,6 @@
 import threading
 
+
 TOTAL_PREFIX_LENGTH = 40
 VERBOSITY = 4
 COLORS = {

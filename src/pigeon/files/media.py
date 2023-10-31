@@ -6,6 +6,8 @@ import mimetypes
 import gzip
 import os
 
+settings = _settings.get()
+
 
 def fetch_file(local_path: Path, encodings):
     """
@@ -22,7 +24,6 @@ def fetch_file(local_path: Path, encodings):
 
 
 def handle_media_request(request: HTTPRequest):
-    settings = _settings.get()
     local_path = settings.media_files_dir / Path(request.path[len(settings.media_url_base):])
 
     if not local_path.resolve().is_relative_to(settings.media_files_dir):

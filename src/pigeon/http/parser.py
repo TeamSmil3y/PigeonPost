@@ -4,12 +4,13 @@ from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from email.message import Message
 
+settings = _settings.get()
+
 
 def parse(request: str):
     """
     Parses an entire HTTP request
     """
-    settings = _settings.get()
 
     # split into request line and message
     request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]
