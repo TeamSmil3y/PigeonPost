@@ -2,11 +2,11 @@ from pigeon.http.message import HTTPMessage
 from pigeon.http.parser import parse
 
 class HTTPRequest(HTTPMessage):
-    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None):
+    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str = '1.1'):
         """
         Class representing an HTTP request
         """
-        super().__init__(headers, data)
+        super().__init__(headers, data, protocol)
         self.method = method
         self.path = path
 
@@ -32,4 +32,4 @@ class HTTPRequest(HTTPMessage):
         """
         method, path, get, protocol, headers, data, files = parse(request)
 
-        return HTTPRequest(method=method, path=path, headers=headers, get=get, data=data, files=files)
+        return HTTPRequest(method=method, path=path, headers=headers, get=get, data=data, files=files, protocol=protocol)

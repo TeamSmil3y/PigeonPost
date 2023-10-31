@@ -31,9 +31,10 @@ class HTTPHeaders(collections.UserDict):
     
 
 class HTTPMessage:
-    def __init__(self, headers, data):
+    def __init__(self, headers, data, protocol):
         self.HEADERS: HTTPHeaders = headers if isinstance(headers, HTTPHeaders) else HTTPHeaders(headers=headers)
         self.DATA = data
+        self.protocol = protocol
 
     def data(self, key):
         """

@@ -16,6 +16,7 @@ def parse(request: str):
 
     # split into method, resource and protocol
     method, resource, protocol = request_line.split(' ')
+    protocol = protocol.split('/')[1]
     # split resource locator into path and get params
     path, get_raw = (resource.split('?') + [''])[:2]
     path = unquote_plus(path)

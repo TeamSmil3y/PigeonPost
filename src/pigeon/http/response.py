@@ -5,12 +5,12 @@ import json
 
 
 class HTTPResponse(HTTPMessage):
-    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = None):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = '1.1'):
         """
         Class representing an HTTP response
         """
         headers = headers or dict()
-        super().__init__({**default.HEADERS, **headers}, data)
+        super().__init__({**default.HEADERS, **headers}, data, protocol)
         self.status = status
 
     def render(self):
@@ -32,11 +32,11 @@ class HTTPResponse(HTTPMessage):
 
 
 class JSONResponse(HTTPResponse):
-    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = None):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = '1.1'):
         """
         An HTTPResponse but data can be any json convertable python object and the content-type header will be automatically set to application/json.
         """
-        super().__init__(headers, json.dumps(data), status, protocol)
+        super().__init__(headers=headers, data=json.dumps(data), status=status, protocol=protocol)
 
         # data is supposed to be json
         self.HEADERS['Content-Type'] = 'application/json'
