@@ -1,5 +1,5 @@
 *.pyc
-src/pigeon.egg-info/*
+src/pigeonpost.egg-info/*
 src/build/*
 */src/build/
 /src/build/
