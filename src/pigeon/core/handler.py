@@ -47,7 +47,7 @@ async def get_response(request):
 
 async def handle_request(client_sock: socket.socket, client_address: tuple):
     """
-    Takes an connection, gathers correct response and returns it to client.
+    Takes a connection, gathers correct response and returns it to client.
     """
     log(3, f'TREATING CONNECTION FROM {client_address[0]}:{client_address[1]} as HTTP request')
     settings = _settings.get()
