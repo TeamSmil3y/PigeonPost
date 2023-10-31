@@ -49,11 +49,12 @@ async def handle_request(client_sock: socket.socket, client_address: tuple):
     """
     Takes an connection, gathers correct response and returns it to client.
     """
-    log(4, f'TREATING CONNECTION FROM {client_address[0]}:{client_address[1]} as HTTP request')
+    log(3, f'TREATING CONNECTION FROM {client_address[0]}:{client_address[1]} as HTTP request')
     settings = _settings.get()
 
     # receive raw request
     raw = client_sock.recv(4096)
+    log(4, f'RAW PACKET:\n{raw}')
 
     # parse request into HTTPRequest
     request = HTTPRequest.from_str(str(raw, 'ascii'))
