@@ -60,8 +60,11 @@ async def handle_request(client_sock: socket.socket, client_address: tuple):
     request = HTTPRequest.from_str(str(raw, 'ascii'))
     log(2, f'REQUEST: {request.path}')
 
+    # gather appropriate response for request
     response = await get_response(request)
 
+    # send response to client
+    log(3, f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
     client_sock.sendall(response.render())
 
     # close socket
