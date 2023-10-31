@@ -3,9 +3,12 @@ import pigeon.default.settings as default
 
 
 class Settings:
-    def __init__(self, address: str, port: int, allowed_hosts: list, urls: dict, errors: dict, cors: tuple,
+    def __init__(self, verbosity: int, address: str, port: int, allowed_hosts: list, urls: dict, errors: dict, cors: tuple,
                  static: tuple, media: tuple, templates_dir, https: tuple,
                  mime: dict):
+        # logging
+        self.verbosity = verbosity
+
         # address and port
         self.address = (address, port)
         
@@ -45,6 +48,7 @@ class Settings:
     @classmethod
     def from_settings(cls, local):
         return Settings(
+            verbosity=getattr(local, 'VERBOSITY', 0),
             address=local.ADDRESS,
             port=local.PORT,
             allowed_hosts=local.ALLOWED_HOSTS,

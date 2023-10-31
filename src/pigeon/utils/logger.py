@@ -1,6 +1,7 @@
 import threading
 
 TOTAL_PREFIX_LENGTH = 40
+VERBOSITY = 4
 COLORS = {
     'white': '\033[39m',
     'red': '\033[91m',
@@ -25,10 +26,11 @@ lock = threading.Lock()
 
 
 def _log(logtype, *args, prefix='', end='\n', name='', subname=''):
-    _prefix = f'{prefix}{LOGTYPES[logtype]}{name}' + ((COLORS['grey'] + '-' + subname) if subname else '')
-    _prefix = _prefix[:TOTAL_PREFIX_LENGTH] + ' ' * (TOTAL_PREFIX_LENGTH-len(_prefix)) + COLORS['white'] + ' '
-    with lock:
-        print(_prefix, *args, end=end)
+    if logtype <= VERBOSITY:
+        _prefix = f'{prefix}{LOGTYPES[logtype]}{name}' + ((COLORS['grey'] + '-' + subname) if subname else '')
+        _prefix = _prefix[:TOTAL_PREFIX_LENGTH] + ' ' * (TOTAL_PREFIX_LENGTH-len(_prefix)) + COLORS['white'] + ' '
+        with lock:
+            print(_prefix, *args, end=end)
 
 
 def anonlog(logtype, msg, prefix='', end='\n'):

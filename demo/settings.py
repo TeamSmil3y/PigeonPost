@@ -3,6 +3,9 @@ import views, errors
 
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
+# LOGGIN VERBOSITY
+VERBOSITY = 2
+
 # ADDRESS AND PORT
 ADDRESS = ''
 PORT = 80
