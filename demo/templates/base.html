@@ -5,6 +5,8 @@
         <link rel="stylesheet" href="/static/css/base.css">
         {% block css %}{% endblock %}
 
+        {% block title %}{% endblock %}
+
         <!-- JS -->
         {% block js %}{% endblock %}
 </head>
@@ -12,7 +14,7 @@
         <div id="navbar">
             <img src='/media/img/pigeonpost.png' class="icon" alt="icon" />
             <h1>PigeonPost</h1>
-            <h2><a href="https://github.com/lstuma/pigeon">GitHub</a></h2>
+            <h2><a href="https://github.com/lstuma/pigeonpost">GitHub</a></h2>
         </div>
         <div id="content">
             {% block content %}{% endblock %}
