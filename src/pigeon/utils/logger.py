@@ -1,3 +1,6 @@
+import threading
+
+TOTAL_PREFIX_LENGTH = 40
 COLORS = {
     'white': '\033[39m',
     'red': '\033[91m',
@@ -10,17 +13,22 @@ COLORS = {
 }
 
 LOGTYPES = {
-    0: COLORS['red'] + 'ERROR\t',
-    1: COLORS['yellow'] + 'WARNING\t',
-    2: COLORS['blue'] + 'INFO\t',
-    3: COLORS['pink'] + 'VERBOSE\t',
-    4: COLORS['pink'] + 'DEBUG\t',
+    0: COLORS['red'] + 'ERROR   ',
+    1: COLORS['yellow'] + 'WARNING ',
+    2: COLORS['blue'] + 'INFO    ',
+    3: COLORS['pink'] + 'VERBOSE ',
+    4: COLORS['pink'] + 'DEBUG   ',
 
 }
 
+lock = threading.Lock()
 
-def _log(logtype, msg, prefix='', end='\n', name=''):
-    print(f'{prefix}{LOGTYPES[logtype]}{name} {msg}', end=end)
+
+def _log(logtype, *args, prefix='', end='\n', name='', subname=''):
+    _prefix = f'{prefix}{LOGTYPES[logtype]}{name}' + ((COLORS['grey'] + '-' + subname) if subname else '')
+    _prefix = _prefix[:TOTAL_PREFIX_LENGTH] + ' ' * (TOTAL_PREFIX_LENGTH-len(_prefix)) + COLORS['white'] + ' '
+    with lock:
+        print(_prefix, *args, end=end)
 
 
 def anonlog(logtype, msg, prefix='', end='\n'):
@@ -28,5 +36,5 @@ def anonlog(logtype, msg, prefix='', end='\n'):
 
 
 def create_log(name, color):
-    name = COLORS['grey'] + '[' + COLORS[color] + name + COLORS['grey'] + ']' + COLORS['white']
-    return lambda logtype, msg, prefix='', end='\n': _log(logtype, msg, prefix, end, name)
+    name = COLORS['grey'] + '[' + COLORS[color] + name + COLORS['grey'] + ']'
+    return lambda logtype, *args, prefix='', end='\n', subname='': _log(logtype, *args, prefix=prefix, end=end, name=name, subname=subname)
