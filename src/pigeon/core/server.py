@@ -57,7 +57,7 @@ def serve():
     try:
         while True:
             client_sock, client_address = sock.accept()
-            log(4, f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
+            log(3, f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
             asyncio.run(handler.handle_request(client_sock, client_address))
 
     # close socket on user exit
