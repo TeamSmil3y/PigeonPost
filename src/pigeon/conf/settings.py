@@ -48,16 +48,16 @@ class Settings:
     @classmethod
     def from_settings(cls, local):
         return Settings(
-            verbosity=getattr(local, 'VERBOSITY', 0),
+            verbosity=getattr(local, 'VERBOSITY', 2),
             address=local.ADDRESS,
             port=local.PORT,
             allowed_hosts=local.ALLOWED_HOSTS,
             urls=local.urls,
-            errors={**default.errors, **local.errors},
+            errors={**default.errors, **getattr(local, 'errors', dict())},
             cors=(
-                getattr(local, 'CORS_ALLOWED_ORIGINS', None),
+                getattr(local, 'CORS_ALLOWED_ORIGINS', []),
                 getattr(local, 'CORS_ALLOW_CREDENTIALS', False),
-                getattr(local, 'CORS_ALLOW_HEADERS', ['Content-Type'], ),
+                getattr(local, 'CORS_ALLOW_HEADERS', ['Content-Type']),
                 getattr(local, 'CORS_ALLOW_METHODS', ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']),
                 getattr(local, 'CORS_MAX_AGE', 1200)
             ),

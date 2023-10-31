@@ -7,13 +7,5 @@ PORT = 80
 
 # VIEWS
 urls = {
-}
-errors = {
-}
 
-# CORS
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-    'https://localhost',
-]
-CORS_ALLOW_CREDENTIALS = False
+}
