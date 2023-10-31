@@ -1,4 +1,5 @@
 from pigeon.http.message import HTTPMessage
+import pigeon.default.response as default
 import pigeon.http.common as common
 import json
 
@@ -8,7 +9,8 @@ class HTTPResponse(HTTPMessage):
         """
         Class representing an HTTP response
         """
-        super().__init__(headers, data)
+        headers = headers or dict()
+        super().__init__({**default.HEADERS, **headers}, data)
         self.status = status
 
     def render(self):
