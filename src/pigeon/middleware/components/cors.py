@@ -47,7 +47,7 @@ class CORSComponent(comp.MiddlewareComponent):
         """
         Checks if Origin header and Host header are valid.
         """
-        return not request.is_cors or all((
+        return not request.tags.is_cors or all((
                cls.cors_origin_allowed(request),
                cls.cors_method_allowed(request),
                cls.cors_headers_allowed(request),
@@ -56,7 +56,7 @@ class CORSComponent(comp.MiddlewareComponent):
     
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
-        request.is_cors = cls.is_cors(request)
+        request.tags.cors = cls.is_cors(request)
         
         if not cls.allowed(request):
             return error(400)
@@ -71,8 +71,8 @@ class CORSComponent(comp.MiddlewareComponent):
         headers = {
             'Access-Control-Allow-Credentials': str(settings.cors_allow_creds),
             'Access-Control-Allow-Origin': request.headers('origin'),
-            'Access-Control-Allow-Headers': ', '.join(settings.cors_allow_headers),
-            'Access-Control-Allow-Methods': ', '.join(settings.cors_allow_methods),
+            'Access-Control-Allow-Headers': ', '.join(settings.cors_allowed_headers),
+            'Access-Control-Allow-Methods': ', '.join(settings.cors_allowed_methods),
             'Access-Control-Max-Age': str(settings.cors_max_age)
         }
 
@@ -81,11 +81,10 @@ class CORSComponent(comp.MiddlewareComponent):
     @classmethod
     def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse:
 
-        if not request.is_cors:
+        if not request.tags.cors:
             return response
 
         # get default CORS headers
         cors_headers = cls.get_headers(request)
         # add CORS headers to response
         response.set_headers(headers=cors_headers)
-        

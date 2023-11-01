@@ -3,6 +3,8 @@ from pigeon.http.message import HTTPMessage
 from pigeon.http import HTTPRequest, HTTPResponse, error
 import pigeon.conf.middleware as middleware
 import pigeon.http.parsing.parser as parser
+from pigeon.middleware.tags import MiddlewareTags
+import traceback
 
 log = create_log('MIDDLEWARE', 'green')
 
@@ -26,9 +28,11 @@ def preprocess(raw: bytes) -> HTTPResponse | HTTPRequest:
     
     # try processing the request
     try:
+        request.tags = MiddlewareTags()
         return middleware.PROCESSORS[request.protocol].preprocess(request=request)
-    except Exception:
+    except Exception as e:
         log(1, f'MIDDLEWARE FAILED WHEN PREPROCESSING REQUEST - SKIPPING')
+        log(4, f'TRACEBACK:\n{"".join(traceback.format_tb(e.__traceback__))}')
         return error(500)
 
 
@@ -66,6 +70,7 @@ def postprocess(message: HTTPMessage, response: HTTPResponse) -> HTTPResponse:
         # request failed postprocessing - return error to client
 
         return response
-    except Exception:
+    except Exception as e:
         log(1, f'MIDDLEWARE FAILED WHEN POSTPROCESSING REQUEST - SKIPPING')
+        log(4, f'TRACEBACK:\n{"".join(traceback.format_tb(e.__traceback__))}')
         return error(code=500, request=request)

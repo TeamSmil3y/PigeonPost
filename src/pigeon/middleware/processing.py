@@ -33,12 +33,15 @@ class Owl(Processor):
         # gather response for request
         if settings.static_url_base and request.path.startswith(settings.static_url_base):
             # request for static file
+            request.tags.is_static_request = True
             response = handle_static_request(request)
         elif settings.media_url_base and request.path.startswith(settings.media_url_base):
             # request for media file
+            request.tags.is_media_request = True
             response = handle_media_request(request)
         elif request.path in settings.views:
             # views
+            request.tags.is_view_request = True
             response = settings.views[request.path](request)
         else:
             # page does not exist
