@@ -1,6 +1,7 @@
-# pigeon
+<img src="https://github.com/TeamSmil3y/PigeonPost/blob/main/demo/media/img/pigeonpost.png?raw=true" alt="icon could not be loaded" style="width: 2em; " align="left" />
 Simple and easy to use Python web framework
 
+# pigeon
 ## Getting Started
 First install the current version of **[pigeonpost](https://pypi.org/project/pigeonpost/)** from PiPy:
 ```bash
