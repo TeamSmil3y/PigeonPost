@@ -4,7 +4,6 @@ from pigeon.http import HTTPRequest, HTTPResponse
 
 
 
-
 class MethodComponent(comp.MiddlewareComponent):
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:

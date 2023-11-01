@@ -1,12 +1,10 @@
-import pigeon.conf.settings as _settings
+from pigeon.conf import settings
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.http.common import error, status
 from pathlib import Path
 import mimetypes
 import gzip
 import os
-
-settings = _settings.get()
 
 
 def fetch_file(local_path: Path, encodings):

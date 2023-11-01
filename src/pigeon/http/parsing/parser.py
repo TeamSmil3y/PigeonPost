@@ -6,10 +6,13 @@ from pigeon.http import HTTPRequest
 
 
 
-def parse(request: str) -> HTTPRequest:
+def parse(request: bytes) -> HTTPRequest:
     """
     Parses a string representation of an http request and creates a valid HTTPRequest object from it.
     """
+
+    # decode request
+    request = str(request, 'ascii')
 
     # split into request line and message
     request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]

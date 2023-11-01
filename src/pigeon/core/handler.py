@@ -1,11 +1,14 @@
 import socket
-import pigeon.conf.settings as _settings
+from pigeon.conf import settings
 import pigeon.middleware as middleware
 from pigeon.utils.logger import create_log
 from pigeon.http import HTTPRequest, HTTPResponse
+from pigeon.files.static import handle_static_request
+from pigeon.files.media import handle_media_request
+from pigeon.http.common import error
 
 log = create_log('HANDLER', 'cyan')
-settings = _settings.get()
+
 
 
 def receive_data(client_sock: socket.socket, size:int = 4096):
@@ -54,7 +57,7 @@ def handle_connection(client_sock: socket.socket, client_address: tuple):
         log(3, f'RESPONSE SENT')
 
         # do not keep connection open on error
-        if response.is_error():
+        if response.is_error:
             break
 
         # client asks to terminate connection

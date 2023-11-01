@@ -1,14 +1,15 @@
 import pathlib
-import views, errors
+import views
+import errors
 
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
 # LOGGIN VERBOSITY
-VERBOSITY = 2
+VERBOSITY = 4
 
 # ADDRESS AND PORT
 ADDRESS = ''
-PORT = 80
+PORT = 81
 
 # VIEWS
 urls = {
@@ -37,7 +38,7 @@ MEDIA_URL_BASE = '/media/'
 MEDIA_FILES_DIR = BASE_DIR / 'media/'
 
 # TEMPLATES
-TEMPLATES_DIR = 'templates/'
+TEMPLATES_DIR = BASE_DIR / 'templates/'
 
 # HTTPS
 USE_HTTPS = False

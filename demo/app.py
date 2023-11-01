@@ -1,10 +1,9 @@
 import pigeon.core.server as server
-from pigeon.conf.settings import Settings
-import settings as local
+import settings as settings
 
 def run():
     server.start(
-        Settings.from_settings(local)
+        settings_used=settings
     )
     
 

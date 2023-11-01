@@ -1,4 +1,4 @@
-import pigeon.conf.settings as _settings
+from pigeon.conf import settings
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.http.common import error
 from pathlib import Path
@@ -7,7 +7,7 @@ import gzip
 import os
 
 loaded_files = dict()
-settings = _settings.get()
+
 
 
 def load():

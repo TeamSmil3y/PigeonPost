@@ -18,8 +18,8 @@ class Owl(Processor):
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
         # run every middleware preprocess comnponent on request
-        for component in middleware.POSTPROCESSING_COMPONENTS:
-            request = component(request)
+        for component in middleware.PREPROCESSING_COMPONENTS:
+            request = component.preprocess(request=request)
             if isinstance(request, int):
                 return request
         return request
@@ -28,10 +28,10 @@ class Owl(Processor):
     def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse | int:
         # run every middleware postprocess component on response
         for component in middleware.POSTPROCESSING_COMPONENTS:
-            response = component(request, response)
+            response = component.postprocess(response=response, request=request)
             if isinstance(response, int):
-                return error(response)
-            return response
+                return response
+        return response
         
 
 class Raven(Processor):

@@ -1,11 +1,10 @@
-import pigeon.conf.settings as _settings
+from pigeon.conf import settings
 from pigeon.http import HTTPResponse
 from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import mimetypes
-import os
 
-settings = _settings.get()
+
 env = None
 
 

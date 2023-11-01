@@ -9,12 +9,15 @@ class ConnectionComponent(comp.MiddlewareComponent):
     @classmethod
     def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse | int:
         # do not close connection if client requests to keep it alive 
-        if cls.is_keep_alive(request=request):
-            response.set_headers(headers={'Connection': 'keep-alive'})
-        response.set_headers(headers={'Connection': 'close'})
+        response.set_headers(headers={'Connection': 'keep-alive' if request.keep_alive else 'close'})
         return response
     
 
+    @classmethod
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+        # set keep-alive property for HTTPRequest object
+        request.keep_alive = cls.is_keep_alive(request=request)
+        return request
 
     @classmethod
     def is_keep_alive(cls, request: HTTPRequest) -> bool:

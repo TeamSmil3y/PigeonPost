@@ -1,8 +1,9 @@
 import socket
-import pigeon.conf.settings as _settings
-import pigeon.core.secure as secure
-from pigeon.utils.logger import create_log
+from pigeon.conf import settings
+import pigeon.default.settings as default
 import pigeon.utils.logger as logger
+from pigeon.utils.logger import create_log
+import pigeon.core.secure as secure
 import pigeon.core.handler as handler
 import pigeon.default.errors as default_errors
 import pigeon.files.static as static
@@ -12,11 +13,10 @@ import threading
 log = create_log('SERVER', 'white')
 
 
-def start(settings_used: _settings.Settings):
+def start(settings_used):
     # configure settings
-    _settings.use(settings_used)
-
-    settings = settings_used
+    settings.override(default)
+    settings.override(settings_used)
 
 
     # set verbosity for logger
@@ -34,10 +34,10 @@ def start(settings_used: _settings.Settings):
         log(2, 'LOADING TEMPLATES')
         templater.load()
 
-    serve(settings)
+    serve()
 
 
-def serve(settings: _settings.Settings):
+def serve():
     log(2, f'ADDRESS: {settings.address[0] if settings.address[0] else "ANY"}')
     log(2, f'PORT: {settings.address[1]}')
 
