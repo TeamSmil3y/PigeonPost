@@ -17,6 +17,11 @@ class HTTPRequest(HTTPMessage):
         self.is_cors = None
         self.keep_alive = None
 
+    @property
+    def is_error(self):
+        # A request cannot have a status code and thus neither be a client or server error (response)
+        return False
+
     def files(self, key):
         """
         Returns self.FILES[key] if exists else None

@@ -1,17 +1,16 @@
 import pigeon.middleware.components as comp
 from pigeon.conf import settings
-from pigeon.http import HTTPRequest, HTTPResponse
+from pigeon.http import HTTPRequest, HTTPResponse, error
 
 
 class HostComponent(comp.MiddlewareComponent):
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         if cls.allowed_host(request=request):
             return request
         else:
-            return 403
+            return error(403)
 
-    
     @classmethod
     def allowed_host(cls, request: HTTPRequest) -> bool:
         """

@@ -36,6 +36,10 @@ class HTTPMessage:
         self.DATA = data
         self.protocol = protocol
 
+    @property
+    def is_error(self):
+        raise NotImplementedError
+
     def data(self, key):
         """
         Returns self.DATA[key] if exists else None

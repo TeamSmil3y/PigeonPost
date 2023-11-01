@@ -1,8 +1,6 @@
 import pigeon.middleware.components as comp
 from pigeon.conf import settings
-from pigeon.http import HTTPRequest, HTTPResponse
-
-
+from pigeon.http import HTTPRequest, HTTPResponse, error
 
 
 class CORSComponent(comp.MiddlewareComponent):
@@ -57,11 +55,11 @@ class CORSComponent(comp.MiddlewareComponent):
                 ))
     
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         request.is_cors = cls.is_cors(request)
         
         if not cls.allowed(request):
-            return 400
+            return error(400)
         else:
             return request
 
@@ -81,7 +79,7 @@ class CORSComponent(comp.MiddlewareComponent):
         return headers
 
     @classmethod
-    def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse | int:
+    def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse:
 
         if not request.is_cors:
             return response

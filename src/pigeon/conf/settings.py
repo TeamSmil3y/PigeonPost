@@ -52,7 +52,7 @@ class Settings:
         self.verbosity = check('VERBOSITY', self.verbosity)
         self.address = (local.ADDRESS, local.PORT)
         self.allowed_hosts = local.ALLOWED_HOSTS
-        self.allowed_methods = check('ALLOWED_METHODS', self.allowed_hosts)
+        self.allowed_methods = check('ALLOWED_METHODS', self.allowed_methods)
         self.views = local.urls
         self.errors = {**self.errors, **check( 'errors', dict())}
 

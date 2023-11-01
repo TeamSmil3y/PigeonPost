@@ -3,16 +3,13 @@ from pigeon.conf import settings
 from pigeon.http import HTTPRequest, HTTPResponse
 
 
-
-
 class ConnectionComponent(comp.MiddlewareComponent):
     @classmethod
-    def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse | int:
+    def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse:
         # do not close connection if client requests to keep it alive 
         response.set_headers(headers={'Connection': 'keep-alive' if request.keep_alive else 'close'})
         return response
     
-
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
         # set keep-alive property for HTTPRequest object
