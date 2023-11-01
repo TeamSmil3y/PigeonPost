@@ -1,5 +1,5 @@
 from pigeon.http.message import HTTPMessage
-from pigeon.http.parser import parse
+
 
 class HTTPRequest(HTTPMessage):
     def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str = '1.1'):
@@ -13,6 +13,10 @@ class HTTPRequest(HTTPMessage):
         self.GET = get or {}
         self.FILES = files or {}
         
+        # set by middleware
+        self.is_cors = None
+        self.keep_alive = None
+
     def files(self, key):
         """
         Returns self.FILES[key] if exists else None
@@ -24,12 +28,3 @@ class HTTPRequest(HTTPMessage):
         Returns self.GET[key] if exists else None
         """
         return self.GET.get(key)
-    
-    @classmethod
-    def from_str(cls, request: str):
-        """
-        Creates a valid HTTPRequest object from a string representation of an http request.
-        """
-        method, path, get, protocol, headers, data, files = parse(request)
-
-        return HTTPRequest(method=method, path=path, headers=headers, get=get, data=data, files=files, protocol=protocol)

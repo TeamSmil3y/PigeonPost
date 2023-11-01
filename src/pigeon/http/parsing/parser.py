@@ -1,15 +1,14 @@
-import pigeon.http.mime as mime
-import pigeon.conf.settings as _settings
+from pigeon.conf import settings
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
-from email.message import Message
-
-settings = _settings.get()
+from pigeon.http import HTTPRequest
 
 
-def parse(request: str):
+
+
+def parse(request: str) -> HTTPRequest:
     """
-    Parses an entire HTTP request
+    Parses a string representation of an http request and creates a valid HTTPRequest object from it.
     """
 
     # split into request line and message
@@ -46,4 +45,4 @@ def parse(request: str):
             # parser returned only data
             data = parsed
 
-    return method, path, get, protocol, headers, data, files
+    return HTTPRequest(method=method, path=path, headers=headers, get=get, data=data, files=files, protocol=protocol)

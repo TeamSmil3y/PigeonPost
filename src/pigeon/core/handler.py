@@ -1,47 +1,11 @@
 import socket
 import pigeon.conf.settings as _settings
-import pigeon.core.access_control as access_control
+import pigeon.middleware as middleware
 from pigeon.utils.logger import create_log
 from pigeon.http import HTTPRequest, HTTPResponse
-from pigeon.files.static import handle_static_request
-from pigeon.files.media import handle_media_request
-from pigeon.http.common import error
-import threading
 
 log = create_log('HANDLER', 'cyan')
 settings = _settings.get()
-
-
-def get_response(request) -> HTTPResponse:
-    """
-    Gathers response for request
-    """
-
-    # gather response for request
-    if settings.static_url_base and request.path.startswith(settings.static_url_base):
-        # request for static file
-        response = handle_static_request(request)
-
-    elif settings.media_url_base and request.path.startswith(settings.media_url_base):
-        # request for media file
-        response = handle_media_request(request)
-
-    elif request.path in settings.views:
-        # views
-        response = settings.views[request.path](request)
-    else:
-        # page does not exist
-        return error(404, request)
-
-    # invalid request
-    if not access_control.allowed(request):
-        response = error(403, request)
-
-    # add access-control headers
-    if access_control.is_cors(request):
-        response.set_headers(access_control.get_headers(request))
-
-    return response
 
 
 def receive_data(client_sock: socket.socket, size:int = 4096):
@@ -76,19 +40,25 @@ def handle_connection(client_sock: socket.socket, client_address: tuple):
         log(4, f'RAW PACKET:\n{data}')
 
         # parse request into HTTPRequest
-        request = HTTPRequest.from_str(str(data, 'ascii'))
-        log(2, f'REQUEST: {request.path}')
+        request = middleware.preprocess(data)
+        if isinstance(request, HTTPRequest):
+            log(2, f'REQUEST: {request.path}')
 
         # gather appropriate response for request
-        response = get_response(request)
+        response = middleware.process(request)
+        response = middleware.postprocess(request, response)
 
         # send response to client
         log(3, f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
         client_sock.sendall(response.render())
         log(3, f'RESPONSE SENT')
 
+        # do not keep connection open on error
+        if response.is_error():
+            break
+
         # client asks to terminate connection
-        if request.headers('connection') == 'close':
+        if not request.keep_alive:
             log(4, f'CLOSING CONNECTION TO {client_address[0]}:{client_address[1]}')
             break
 
