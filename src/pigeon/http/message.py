@@ -5,6 +5,7 @@ class HTTPHeaders(collections.UserDict):
     def __init__(self, headers=None):
         headers = headers or dict()
         data = {header[0].lower(): header[1] for header in headers.items()}
+
         super().__init__(data)
 
     def __add__(self, other):
