@@ -2,7 +2,7 @@ from pigeon.conf import settings
 from http import HTTPStatus
 
 
-def error(code: int, request):
+def error(code: int, request=None):
     """
     Returns the HTTPResponse for the error code provided
     """
