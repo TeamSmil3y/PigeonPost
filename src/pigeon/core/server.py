@@ -79,14 +79,6 @@ def serve():
     # user exit - close socket
     except KeyboardInterrupt:
         log(2, 'EXITING', prefix='\n')
+        log(1, 'APPLICATION WILL EXIT ONCE THREADS HAVE BEEN TERMINATED')
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()
-
-
-if __name__ == '__main__':
-    start(_settings.Settings(
-        '',
-        80,
-        {},
-        {},
-    ))
