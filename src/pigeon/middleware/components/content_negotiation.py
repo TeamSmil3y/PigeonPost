@@ -45,7 +45,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             for available_mimetype, available_subtype in available:
                 if mimetype == '*' or mimetype == available_mimetype and subtype == '*' or subtype == available_subtype:
                     return settings.TYPED_VIEWS[request.path][available_mimetype+'/'+available_subtype]
-                # if no content type is negotiable return None
+        # if no content type is negotiable return None
         return None
         
 
@@ -53,7 +53,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         # skip conment negotiation for now
         request.accept = cls.parse_accept_header(request)
-        request.accept_encodings = cls.parse_accept_encodings_header(request)
+        request.accept_encoding = cls.parse_accept_encoding_header(request)
         return request
 
     @classmethod
@@ -73,7 +73,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         return tuple('*/*')
     
     @classmethod
-    def parse_accept_encodings_header(cls, request: HTTPRequest) -> tuple:
+    def parse_accept_encoding_header(cls, request: HTTPRequest) -> tuple:
         if header := request.headers('Accept-Encoding'):
             return cls.parse_header(header)
         return tuple('*')

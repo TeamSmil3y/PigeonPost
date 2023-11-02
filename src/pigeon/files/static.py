@@ -67,7 +67,7 @@ def handle_static_request(request: HTTPRequest):
     
     if os.path.exists(local_path) and os.path.isfile(local_path):
         # return file
-        data, encoding = fetch_file(local_path, request.accept_encodings)
+        data, encoding = fetch_file(local_path, request.accept_encoding)
         
         # get mimetype for file
         mimetype = mimetypes.guess_type(local_path)[0]
