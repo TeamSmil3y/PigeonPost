@@ -13,7 +13,7 @@ COLORS = {
     'cyan': '\033[96m',
     'pink': '\033[95m',
     'grey': '\033[97m',
-    # light  colors
+    # light colors
     'lred': '\033[31m',
     'lyellow': '\033[33m',
     'lgreen': '\033[32m',
