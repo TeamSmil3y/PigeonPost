@@ -44,7 +44,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             mimetype, subtype = content_type.split('/')
             for available_mimetype, available_subtype in available:
                 if mimetype == '*' or mimetype == available_mimetype and subtype == '*' or subtype == available_subtype:
-                    return settings.TYPED_VIEWS[request.path][content_type]
+                    return settings.TYPED_VIEWS[request.path][available_mimetype+'/'+available_subtype]
                 # if no content type is negotiable return None
         return None
         
@@ -52,15 +52,28 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         # skip conment negotiation for now
-        if accept_header := request.headers('Accept'):
-            print(accept_header)
-            accept = cls.parse_accept_header(accept_header)
-            request.accept = accept
-        print(request.HEADERS)
+        request.accept = cls.parse_accept_header(request)
+        request.accept_encodings = cls.parse_accept_encodings_header(request)
         return request
 
     @classmethod
-    def parse_accept_header(cls, header: str) -> tuple:
+    def parse_header(cls, header: str):
+        """
+        Parses header value of style:
+        <value>[;q=<quality_factor>], <value>[;q=<quality_factor>], ...
+        """
         directives = [directive.strip().split(';') for directive in header.split(',')]
         directives.sort(key=lambda directive: float(directive[1].split('=')[1]) if len(directive) > 1 else 1, reverse=True)
         return tuple(directive[0] for directive in directives)
+    
+    @classmethod
+    def parse_accept_header(cls, request: HTTPRequest) -> tuple:
+        if header := request.headers('Accept'):
+            return cls.parse_header(header)
+        return tuple('*/*')
+    
+    @classmethod
+    def parse_accept_encodings_header(cls, request: HTTPRequest) -> tuple:
+        if header := request.headers('Accept-Encoding'):
+            return cls.parse_header(header)
+        return tuple('*')

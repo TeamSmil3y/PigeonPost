@@ -1,12 +1,9 @@
 import socket
 from pigeon.conf import settings
 import pigeon.conf as conf
-import pigeon.default.settings as default
-import pigeon.utils.logger as logger
 from pigeon.utils.logger import create_log
 import pigeon.core.secure as secure
 import pigeon.core.handler as handler
-import pigeon.default.errors as default_errors
 import pigeon.files.static as static
 import pigeon.templating.templater as templater
 import threading
@@ -18,10 +15,6 @@ def start(settings_used):
     # configure settings
     conf.manager.override(settings_used)
     conf.manager.setup()
-
-
-    # set verbosity for logger
-    logger.VERBOSITY = settings.VERBOSITY
 
     log(2, 'STARTING SERVER...')
 

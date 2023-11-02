@@ -1,12 +1,15 @@
 from pathlib import Path
 import pigeon.conf.settings as settings
 import pigeon.conf.registry as registry
-
+import pigeon.utils.logger as logger
 
 def setup():
     """
     Configures any settings that need to be computed at runtime (e.g. typed views).
     """
+    # set verbosity for logger
+    logger.VERBOSITY = settings.VERBOSITY
+    
     # configure typed views
     configure_typed_views()
 
@@ -51,8 +54,6 @@ def configure_typed_views():
             reversed_views[key] = [url]
             
     # add typed funcs to views
-    print(reversed_views)
-    print(registry.TYPED_VIEWS)
     for func, content_type in registry.TYPED_VIEWS:
         # determine in which view the current function is listed in and then add it to it
         key = (func.__name__, func.__module__)
@@ -64,7 +65,6 @@ def configure_typed_views():
                     settings.TYPED_VIEWS[url] = {content_type: func}
                 
 
-    print(settings.TYPED_VIEWS)
     # add untyped funcs to views as type */*
     for url, func in settings.VIEWS.items():
         if settings.TYPED_VIEWS.get(url):
@@ -72,5 +72,3 @@ def configure_typed_views():
                 settings.TYPED_VIEWS[url]['*/*'] = func
         else:
             settings.TYPED_VIEWS[url] = {'*/*': func}
-            
-    print(settings.TYPED_VIEWS)
