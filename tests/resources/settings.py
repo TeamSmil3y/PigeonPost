@@ -1,0 +1,40 @@
+import pathlib
+
+BASE_DIR = pathlib.Path(__file__).parent.resolve()
+
+# LOGGIN VERBOSITY
+VERBOSITY = 4
+
+# ADDRESS AND PORT
+ADDRESS = ''
+PORT = 8080
+
+# VIEWS
+VIEWS = {
+}
+ERRORS = {
+}
+
+# ACCESS-CONTROL
+ALLOWED_HOSTS = ['example.com']
+CORS_ALLOWED_ORIGINS = [
+    'example.com',
+]
+CORS_ALLOW_CREDENTIALS = False
+
+# STATIC FILES
+STATIC_URL_BASE = None
+STATIC_FILES_DIR = None
+
+# MEDIA FILES
+MEDIA_URL_BASE = None
+MEDIA_FILES_DIR = None
+
+# TEMPLATES
+TEMPLATES_DIR = None
+
+# HTTPS
+USE_HTTPS = False
+CERTIFICATE_PATH = ''
+PRIVATE_KEY_PATH = ''
+PRIVATE_KEY_PASSWD = ''
