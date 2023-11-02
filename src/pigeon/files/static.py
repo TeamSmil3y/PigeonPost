@@ -1,4 +1,4 @@
-from pigeon.conf import settings
+import pigeon.conf
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.http.common import error
 from pathlib import Path
@@ -14,7 +14,7 @@ def load():
     """
     loads smaller static files into memory
     """
-    directory_base = settings.static_files_dir
+    directory_base = pigeon.conf.settings.STATIC_FILES_DIR
 
     for directory, sub_directories, files in os.walk(directory_base):
         for file in files:
@@ -59,9 +59,9 @@ def fetch_file(local_path: Path, encodings):
 
 
 def handle_static_request(request: HTTPRequest):
-    local_path: Path = settings.static_files_dir / Path(request.path[len(settings.static_url_base):])
+    local_path: Path = pigeon.conf.settings.STATIC_FILES_DIR / Path(request.path[len(pigeon.conf.settings.STATIC_URL_BASE):])
     
-    if not local_path.resolve().is_relative_to(settings.static_files_dir):
+    if not local_path.resolve().is_relative_to(pigeon.conf.settings.STATIC_FILES_DIR):
         # attempting to access resource outside of static_files_dir (directory traversal)
         return error(404, request)
     

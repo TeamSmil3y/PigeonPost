@@ -23,10 +23,14 @@ class CacheControlComponent(comp.MiddlewareComponent):
         return response
 
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         return request
     
     @classmethod
-    def parse_header(cls, header: str) -> dict:
+    def parse_cache_control(cls, header: str) -> dict:
+        """
+        Parses the cache-control header and returns the diretives as ...?
+        """
+        raise NotImplementedError
         directives = tuple((directive.split('=')+['True'])[:2] for directive in header.split(','))
         return {name.strip(): value.strip() for name, value in directives}

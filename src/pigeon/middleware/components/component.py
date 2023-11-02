@@ -1,3 +1,4 @@
+from typing import Callable
 from pigeon.http import HTTPRequest, HTTPResponse
 
 
@@ -8,6 +9,10 @@ class MiddlewareComponent:
     @classmethod
     def preprocess(cls,  request: HTTPRequest) -> HTTPRequest | HTTPResponse:
         raise NotImplementedError
+
+    @classmethod
+    def process(cls, request: HTTPRequest, callback: Callable) -> (HTTPRequest, Callable):
+        pass
 
     @classmethod
     def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse:

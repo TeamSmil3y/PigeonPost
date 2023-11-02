@@ -1,5 +1,6 @@
 import socket
 from pigeon.conf import settings
+import pigeon.conf as conf
 import pigeon.default.settings as default
 import pigeon.utils.logger as logger
 from pigeon.utils.logger import create_log
@@ -15,21 +16,21 @@ log = create_log('SERVER', 'white')
 
 def start(settings_used):
     # configure settings
-    settings.override(default)
-    settings.override(settings_used)
+    conf.manager.override(settings_used)
+    conf.manager.setup()
 
 
     # set verbosity for logger
-    logger.VERBOSITY = settings.verbosity
+    logger.VERBOSITY = settings.VERBOSITY
 
     log(2, 'STARTING SERVER...')
 
     # load static files into memory
-    if settings.static_files_dir:
+    if settings.STATIC_FILES_DIR:
         log(2, 'LOADING STATIC FILES')
         static.load()
 
-    if settings.templates_dir:
+    if settings.TEMPLATES_DIR:
         # create jinja2 template environment
         log(2, 'LOADING TEMPLATES')
         templater.load()
@@ -38,18 +39,18 @@ def start(settings_used):
 
 
 def serve():
-    log(2, f'ADDRESS: {settings.address[0] if settings.address[0] else "ANY"}')
-    log(2, f'PORT: {settings.address[1]}')
+    log(2, f'ADDRESS: {settings.ADDRESS if settings.ADDRESS else "ANY"}')
+    log(2, f'PORT: {settings.PORT}')
 
     # open socket
     sock = socket.socket(socket.AF_INET)
     sock.setblocking(False)
-    sock.bind(settings.address)
+    sock.bind((settings.ADDRESS, settings.PORT))
 
     # configure https if specified in settings
-    if settings.use_https:
+    if settings.USE_HTTPS:
         log(3, 'USING HTTPS')
-        secure_sock = secure.make_secure(sock, settings.https_cert_path, settings.https_privkey_path, settings.https_privkey_passwd)
+        secure_sock = secure.make_secure(sock, settings.CERTIFICATE_PATH, settings.PRIVATE_KEY_PATH, settings.PRIVATE_KEY_PASSWD)
         # securing socket failed
         if not secure_sock:
             log(0, 'HTTPS FAILED')

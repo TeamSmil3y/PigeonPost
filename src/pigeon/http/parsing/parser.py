@@ -1,4 +1,4 @@
-from pigeon.conf import settings
+import pigeon.conf
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from pigeon.http import HTTPRequest
@@ -37,9 +37,9 @@ def parse(request: bytes) -> HTTPRequest:
     mime_type = message.get_content_type()
     data = message.get_payload()
     files = dict()
-    if mime_type in settings.supported_mimetypes:
+    if mime_type in pigeon.conf.settings.SUPPORTED_MIMETYPES:
         # parser returns either DATA or (DATA, FILES)
-        parsed = settings.supported_mimetypes[mime_type].parse(data, message)
+        parsed = pigeon.conf.settings.SUPPORTED_MIMETYPES[mime_type].parse(data, message)
         if isinstance(parsed, (list, tuple)):
             # parser returned data and files
             data = parsed[0]

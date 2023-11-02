@@ -11,17 +11,17 @@ class CORSComponent(comp.MiddlewareComponent):
         """
     
         # any origin allowed
-        if '*' in settings.cors_allowed_origins:
+        if '*' in settings.CORS_ALLOWED_ORIGINS:
             return True
     
-        return request.headers('origin') in settings.cors_allowed_origins
+        return request.headers('origin') in settings.CORS_ALLOWED_ORIGINS
     
     @classmethod
     def cors_method_allowed(cls, request: HTTPRequest) -> bool:
         """
         Returns true if the 
         """
-        return request.method in settings.cors_allow_methods
+        return request.method in settings.CORS_ALLOWED_METHODS
     
     @classmethod
     def cors_credentials_allowed(cls, request: HTTPRequest) -> bool:
@@ -36,7 +36,7 @@ class CORSComponent(comp.MiddlewareComponent):
         """
         Checks if the request headers are allowed as per CORS-policy
         """
-        return all(header in settings.cors_allow_headers for header in request.HEADERS.data)
+        return all(header in settings.CORS_ALLOWED_HEADERS for header in request.HEADERS.data)
     
     @classmethod
     def is_cors(cls, request: HTTPRequest) -> bool:
@@ -69,11 +69,11 @@ class CORSComponent(comp.MiddlewareComponent):
         Gets server access-control response headers for request
         """
         headers = {
-            'Access-Control-Allow-Credentials': str(settings.cors_allow_creds),
+            'Access-Control-Allow-Credentials': str(settings.CORS_ALLOW_CREDS),
             'Access-Control-Allow-Origin': request.headers('origin'),
-            'Access-Control-Allow-Headers': ', '.join(settings.cors_allowed_headers),
-            'Access-Control-Allow-Methods': ', '.join(settings.cors_allowed_methods),
-            'Access-Control-Max-Age': str(settings.cors_max_age)
+            'Access-Control-Allow-Headers': ', '.join(settings.CORS_ALLOWED_HEADERS),
+            'Access-Control-Allow-Methods': ', '.join(settings.CORS_ALLOWED_METHODS),
+            'Access-Control-Max-Age': str(settings.CORS_MAX_AGE)
         }
 
         return headers

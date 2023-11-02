@@ -9,14 +9,14 @@ VERBOSITY = 4
 
 # ADDRESS AND PORT
 ADDRESS = ''
-PORT = 81
+PORT = 8080
 
 # VIEWS
-urls = {
+VIEWS = {
     '/welcome': views.welcome,
     '/': views.counter,
 }
-errors = {
+ERRORS = {
     404: errors.not_found,
 }
 

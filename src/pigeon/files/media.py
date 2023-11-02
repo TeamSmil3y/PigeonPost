@@ -22,9 +22,9 @@ def fetch_file(local_path: Path, encodings):
 
 
 def handle_media_request(request: HTTPRequest):
-    local_path = settings.media_files_dir / Path(request.path[len(settings.media_url_base):])
+    local_path = settings.MEDIA_FILES_DIR / Path(request.path[len(settings.MEDIA_URL_BASE):])
 
-    if not local_path.resolve().is_relative_to(settings.media_files_dir):
+    if not local_path.resolve().is_relative_to(settings.MEDIA_FILES_DIR):
         # attempting to access resource outside of static_files_dir (directory traversal)
         return error(404, request)
 

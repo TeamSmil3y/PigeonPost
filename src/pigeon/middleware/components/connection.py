@@ -11,7 +11,7 @@ class ConnectionComponent(comp.MiddlewareComponent):
         return response
     
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
         # set keep-alive property for HTTPRequest object
         request.tags.keep_alive = cls.is_keep_alive(request=request)
         return request

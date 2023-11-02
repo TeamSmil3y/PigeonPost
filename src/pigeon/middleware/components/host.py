@@ -16,4 +16,4 @@ class HostComponent(comp.MiddlewareComponent):
         """
         Checks if the Host header in the request has a valid hostname. 
         """
-        return '*' in settings.allowed_hosts or request.headers('host') in settings.allowed_hosts
+        return '*' in settings.ALLOWED_HOSTS or request.headers('host') in settings.ALLOWED_HOSTS

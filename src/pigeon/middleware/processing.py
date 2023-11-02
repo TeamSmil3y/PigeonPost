@@ -1,65 +1,95 @@
 from pigeon.http import HTTPRequest, HTTPResponse, error
-import pigeon.conf.middleware as middleware
+from typing import Callable
+import pigeon.middleware.components as comp
 from pigeon.conf import settings
-from pigeon.files import handle_media_request, handle_static_request
-
+from pigeon.utils.logger import create_log
 
 
 class Processor:
     @classmethod
-    def preprocess(cls,  request: HTTPRequest) -> HTTPRequest | int:
+    def preprocess(cls,  request: HTTPRequest) -> HTTPRequest | HTTPResponse:
         raise NotImplementedError
+
     @classmethod
-    def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse | int:
+    def process(cls, request: HTTPRequest, callback: Callable) -> (HTTPRequest, Callable):
+        raise NotImplementedError
+
+    @classmethod
+    def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse:
         raise NotImplementedError
 
 
-class Owl(Processor):
-    """
-    Processes requests using the HTTP/1.1 protocol
-    """
+class ComponentProcessor(Processor):
+    preprocessing_components = []
+    processing_components = []
+    postprocessing_components = []
+
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | int:
+    def __init_subclass__(cls, **kwargs):
+        cls.log = create_log('MIDDLEWARE', 'green', subname=cls.__name__)
+        super().__init_subclass__(**kwargs)
+
+    @classmethod
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | HTTPResponse:
         # run every middleware preprocess comnponent on request
-        for component in middleware.PREPROCESSING_COMPONENTS:
+        for component in cls.preprocessing_components:
+            cls.log(4, f'PREPROCESSING WITH COMPONENT: {component.__name__}')
             request = component.preprocess(request=request)
             # request is an error response and should not be processed further
             if request.is_error:
                 return request
         return request
-    
+
     @classmethod
     def process(cls, request: HTTPRequest) -> HTTPResponse:
         # gather response for request
-        if settings.static_url_base and request.path.startswith(settings.static_url_base):
-            # request for static file
-            request.tags.is_static_request = True
-            response = handle_static_request(request)
-        elif settings.media_url_base and request.path.startswith(settings.media_url_base):
-            # request for media file
-            request.tags.is_media_request = True
-            response = handle_media_request(request)
-        elif request.path in settings.views:
-            # views
-            request.tags.is_view_request = True
-            response = settings.views[request.path](request)
-        else:
-            # page does not exist
-            return error(code=404, request=request)
+        callback = lambda request: error(404)
 
-        return response
+        # run every middleware process component on request and callback
+        for component in cls.processing_components:
+            cls.log(4, f'PROCESSING WITH COMPONENT: {component.__name__}')
+            request, callback = component.process(request=request, callback=callback)
+
+        return callback(request)
 
     @classmethod
-    def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse | int:
+    def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse:
         # run every middleware postprocess component on response
-        for component in middleware.POSTPROCESSING_COMPONENTS:
+        for component in cls.postprocessing_components:
+            cls.log(4, f'PREPROCESSING WITH COMPONENT: {component.__name__}')
             response = component.postprocess(response=response, request=request)
             if response.is_error:
                 return response
         return response
-        
 
-class Raven(Processor):
+
+class Owl(ComponentProcessor):
+    """
+    Processes requests using the HTTP/1.1 protocol
+    """
+    preprocessing_components = [
+        comp.host.HostComponent,
+        comp.cors.CORSComponent,
+        comp.method.MethodComponent,
+        comp.connection.ConnectionComponent,
+        comp.cache_control.CacheControlComponent,
+        comp.content_negotiation.ContentNegotiationComponent,
+    ]
+    processing_components = [
+        comp.content_negotiation.ContentNegotiationComponent,
+        comp.staticfiles.StaticFilesComponent,
+        comp.mediafiles.MediaFilesComponent,
+    ]
+    postprocessing_components = [
+        comp.server.ServerComponent,
+        comp.cors.CORSComponent,
+        comp.connection.ConnectionComponent,
+        comp.cache_control.CacheControlComponent,
+        comp.content_negotiation.ContentNegotiationComponent,
+    ]
+
+
+class Raven(ComponentProcessor):
     """
     Processes requests using the HTTP/2.0 protocol
     """
