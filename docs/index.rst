@@ -15,7 +15,7 @@ Getting Started
    :maxdepth: 2
    :caption: Contents:
 
-   quickstart/minimal
+   pages/quickstart
 
 
 

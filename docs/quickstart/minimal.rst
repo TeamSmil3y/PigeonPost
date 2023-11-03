@@ -1,5 +1,0 @@
-Minimal Application
-===================
-
-
-text text
