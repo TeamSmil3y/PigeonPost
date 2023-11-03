@@ -55,7 +55,7 @@ class CORSComponent(comp.MiddlewareComponent):
                 ))
     
     @classmethod
-    def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
+    def preprocess(cls, request: HTTPRequest) -> HTTPRequest | HTTPResponse:
         request.tags.cors = cls.is_cors(request)
         
         if not cls.allowed(request):

@@ -1,5 +1,5 @@
 import pigeon
-from pigeon.utils.logger import create_log
+import pigeon.utils.logger as logger
 import resources.settings as settings
 from pathlib import Path
 import os
@@ -8,8 +8,7 @@ import unittest
 
 TESTS_DIR = Path(__file__).parent.resolve()
 
-log = create_log('TESTRUNNER', 'green')
-
+log = logger.Log('TESTRUNNER', '#aaffaa')
 
 def restore_environment():
     # override default settings with settings for test environment
@@ -26,10 +25,10 @@ def run_tests():
 
 
 def main():
-    log(2, 'CONFIGURING ENVIRONMENT')
+    log.info('CONFIGURING ENVIRONMENT')
     restore_environment()
     
-    log(2, 'RUNNING TESTS..')
+    log.info('RUNNING TESTS..')
     run_tests()
 
 

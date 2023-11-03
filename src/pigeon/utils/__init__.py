@@ -1,1 +1,1 @@
-from pigeon.utils.logger import create_log
+import pigeon.utils.logger as logger

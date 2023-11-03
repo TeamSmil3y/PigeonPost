@@ -1,40 +1,59 @@
 import pathlib
+import pigeon.http.parsing.mime
+import pigeon.default.errors
 
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
-# LOGGIN VERBOSITY
+# VERBOSITY
 VERBOSITY = 4
 
-# ADDRESS AND PORT
+# ADDRESS
 ADDRESS = ''
 PORT = 8080
 
+# ALLOWED HOSTS
+ALLOWED_HOSTS = ['example.org']
+# ALLOWED METHODS
+ALLOWED_METHODS = ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'OPTIONS']
+
 # VIEWS
-VIEWS = {
-}
+VIEWS = {}
+# TYPED VIEWS (INCLUDE CONTENT TYPE)
+TYPED_VIEWS = {}
+# ERRORS (VIEWS BUT FOR ERRORS)
 ERRORS = {
+    000: pigeon.default.errors.fallback,
 }
 
 # ACCESS-CONTROL
-ALLOWED_HOSTS = ['example.com']
-CORS_ALLOWED_ORIGINS = [
-    'example.com',
-]
-CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOWED_ORIGINS = []
+CORS_ALLOW_CRED = False
+CORS_ALLOWED_HEADERS = ['Content-Type']
+CORS_ALLOWED_METHODS = ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'OPTIONS']
+CORS_MAX_AGE = 1200
 
-# STATIC FILES
+# STATICFILES
 STATIC_URL_BASE = None
 STATIC_FILES_DIR = None
 
-# MEDIA FILES
+# MEDIAFILES
 MEDIA_URL_BASE = None
 MEDIA_FILES_DIR = None
 
-# TEMPLATES
+# TEMPLATING
 TEMPLATES_DIR = None
 
 # HTTPS
 USE_HTTPS = False
-CERTIFICATE_PATH = ''
-PRIVATE_KEY_PATH = ''
-PRIVATE_KEY_PASSWD = ''
+CERTIFICATE_PATH = None
+PRIVATE_KEY_PATH = None
+PRIVATE_KEY_PASSWD = None
+
+# MIME
+SUPPORTED_MIMETYPES = {
+    'application/json': pigeon.http.parsing.mime.JSONParser,
+    'application/x-www-form-urlencoded': pigeon.http.parsing.mime.UrlencodedFormParser,
+    'multipart/form-data': pigeon.http.parsing.mime.MultiPartFormParser,
+}
+
+MIDDLEWARE = None

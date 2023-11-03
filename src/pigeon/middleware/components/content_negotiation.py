@@ -32,7 +32,6 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             return request, lambda request: error(406)
         # return typed view
         return request, typed_callback
-            
         
     @classmethod
     def find_callback(cls, request):
@@ -47,7 +46,6 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
                     return settings.TYPED_VIEWS[request.path][available_mimetype+'/'+available_subtype]
         # if no content type is negotiable return None
         return None
-        
 
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
@@ -57,7 +55,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         return request
 
     @classmethod
-    def parse_header(cls, header: str):
+    def parse_header(cls, header: str) -> tuple:
         """
         Parses header value of style:
         <value>[;q=<quality_factor>], <value>[;q=<quality_factor>], ...
