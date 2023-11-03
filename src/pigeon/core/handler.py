@@ -10,8 +10,7 @@ from pigeon.http.common import error
 log = logger.Log('HANDLER', 'cyan')
 
 
-
-def receive_data(client_sock: socket.socket, size:int = 4096):
+def receive_data(client_sock: socket.socket, size:int = 4096) -> bytes:
     while True:
         try:
             return client_sock.recv(size)
@@ -19,7 +18,7 @@ def receive_data(client_sock: socket.socket, size:int = 4096):
             pass
 
 
-def handle_connection(client_sock: socket.socket, client_address: tuple):
+def handle_connection(client_sock: socket.socket, client_address: tuple) -> None:
     """
     Takes a connection, gathers correct response and returns it to client.
     """
