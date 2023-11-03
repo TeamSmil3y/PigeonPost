@@ -1,12 +1,12 @@
-.. pigeonpost documentation master file, created by
-   sphinx-quickstart on Fri Nov  3 13:24:51 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. image:: _static/pigeonpost_horizontal_2.png
+    :align: left
+    :width: 100%
 
-Welcome to Pigeon
-=================
+Welcome to pigeon!
+==================
+Pigeon is a versatile Python web application framework focused prioritizing a seamless and straightforward initial setup process, while also providing the capability to develop sophisticated applications.
 
-.. image::_static/pigenpost_horizontal_1.png
+Pigeon is committed to empowering developers with complete control and an array of customization possibilities, all while ensuring user-friendly, convenient, and accessible usage.
 
 
 Getting Started
