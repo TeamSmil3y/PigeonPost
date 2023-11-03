@@ -1,63 +1,89 @@
+import io
 import threading
+import rich
 
-
-TOTAL_PREFIX_LENGTH = 50
+# verbosity level -> every message with lower verbosity level will not be logged
 VERBOSITY = 4
-COLORS = {
-    'white': '\033[39m',
-    # dark colors
-    'red': '\033[91m',
-    'yellow': '\033[93m',
-    'green': '\033[92m',
-    'blue': '\033[94m',
-    'cyan': '\033[96m',
-    'pink': '\033[95m',
-    'grey': '\033[97m',
-    # light colors
-    'lred': '\033[31m',
-    'lyellow': '\033[33m',
-    'lgreen': '\033[32m',
-    'lblue': '\033[34m',
-    'lcyan': '\033[36m',
-    'lpink': '\033[35m',
-    'lgrey': '\033[37m',
-}
-
-LOGTYPES = {
-    -1: COLORS['white'] + '        ',
-    0: COLORS['red'] + 'ERROR   ',
-    1: COLORS['yellow'] + 'WARNING ',
-    2: COLORS['blue'] + 'INFO    ',
-    3: COLORS['pink'] + 'VERBOSE ',
-    4: COLORS['pink'] + 'DEBUG   ',
-}
 
 lock = threading.Lock()
+print = rich.get_console().print
 
 
-def _log(logtype, *args, prefix='', end='\n', name='', subname='', noprefix=False, color='white'):
-    if logtype <= VERBOSITY:
-        _prefix = f'{prefix}{LOGTYPES[logtype]}{name}{("-" + subname) if subname else ""}'
-        _prefix = _prefix[:TOTAL_PREFIX_LENGTH] + ' ' * (TOTAL_PREFIX_LENGTH-len(_prefix)) + COLORS['white'] + ' '
-        if noprefix: _prefix = COLORS['grey']+' ├─ '+COLORS['white']
+class Log:
+    # max length of name
+    max_name_length = 15
+    # color subnames will be displayed in
+    off_color = '[#8888aa]'
+
+    def __init__(self, name, color='#ffffff', subname=''):
+        self.name = name
+        self.color = color
+        self.default_subname = subname
+        self.color_length = len(self.color)+10+len(self.off_color)*2
+        # whether the last message was blocked due to verbosity level
+        self.message_blocked = False
+
+    def _build_prefix(self, subname):
+        # determine prefix length
+        subname = subname or self.default_subname
+        if subname: subname = '-'+subname
+
+        prefix = f'{self.off_color}[[/][{self.color}]{self.name}[/]{self.off_color}]{subname}'
+        prefix = prefix[:self.max_name_length+self.color_length] + ' ' * (self.max_name_length-len(prefix)+self.color_length)
+        prefix += '[/]  '
+        return prefix
+
+    def _print_msg(self, *args, end, subname):
+        print(self._build_prefix(subname), *args, end=end)
+
+    def critical(self, *args, end='\n', subname=''):
+        self.message_blocked = False
         with lock:
-            print(_prefix + COLORS[color], end='')
-            print(*args, COLORS['white'], end=end)
+            print('[bold red blink]CRITICAL [/]', end='')
+            self._print_msg(*args, end=end, subname=subname)
 
+    def error(self, *args, end='\n', subname=''):
+        self.message_blocked = False
+        with lock:
+            print('[#ffaaaa]ERROR    [/]', end='')
+            self._print_msg(*args, end=end, subname=subname)
 
-def anonlog(logtype, *args, prefix='', end='\n', noprefix=False, color='white'):
-    _log(logtype, *args, prefix=prefix, end=end, noprefix=noprefix, color=color)
+    def warning(self, *args, end='\n', subname=''):
+        self.message_blocked = False
+        with lock:
+            print('[#ffff99]WARNING  [/]', end='')
+            self._print_msg(*args, end=end, subname=subname)
 
+    def info(self, *args, end='\n', subname=''):
+        self.message_blocked = VERBOSITY < 2
+        if not self.message_blocked:
+            with lock:
+                print('[#5555ff]INFO     [/]', end='')
+                self._print_msg(*args, end=end, subname=subname)
 
-def create_log(name, color, subname=''):
-    name = COLORS['grey'] + '[' + COLORS[color] + name + COLORS['grey'] + ']'
-    def log(logtype, *args, prefix='', end='\n', subname=subname, noprefix=False, color='white'):
-        _log(logtype,
-             *args,
-             prefix=prefix,
-             end=end,
-             name=name,
-             subname=subname,
-             noprefix=noprefix,
-             color=color)
-    return log
+    def verbose(self, *args, end='\n', subname=''):
+        self.message_blocked = VERBOSITY < 3
+        if not self.message_blocked:
+            with lock:
+                print('[#ffaaff]VERBOSE  [/]', end='')
+                self._print_msg(*args, end=end, subname=subname)
+
+    def debug(self, *args, prefix='', end='\n', subname=''):
+        self.message_blocked = VERBOSITY < 4
+        if not self.message_blocked:
+            with lock:
+                print('[#ffaaff]DEBUG    [/]', end='')
+                self._print_msg(*args, end=end, subname=subname)
+
+    def sublog(self, *args, color='white', end='\n'):
+        """
+        For log messages that give extra context and details on the previous logmessage.
+        They will only be logged if the previous log message was logged as well.
+        """
+        if not self.message_blocked:
+            with lock:
+                msg = ''
+                for arg in args: msg += arg
+                msg = msg.replace('\n', self.off_color+'\n│   [/]['+color+']')
+                print('├─  ', style=self.off_color[1:-1], end='')
+                print(msg, style=color)
