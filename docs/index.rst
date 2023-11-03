@@ -3,12 +3,19 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pigeonpost's documentation!
-======================================
+Welcome to Pigeon
+=================
 
+.. image::_static/pigenpost_horizontal_1.png
+
+
+Getting Started
+---------------
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   quickstart/minimal
 
 
 
