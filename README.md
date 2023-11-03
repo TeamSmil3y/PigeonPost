@@ -2,6 +2,10 @@
 Simple and easy to use Python web framework
 
 # pigeon
+Pigeon is a versatile standalone Python web application framework. It prioritizes a seamless and straightforward initial setup process, while also providing the capability to develop sophisticated applications.
+
+Pigeon is committed to empowering developers with complete control and an array of customization possibilities, all while ensuring user-friendly, convenient, and accessible usage.
+
 ## Getting Started
 First install the current version of **[pigeonpost](https://pypi.org/project/pigeonpost/)** from PiPy:
 ```bash
