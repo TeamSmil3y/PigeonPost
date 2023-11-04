@@ -15,7 +15,7 @@ class View:
         
     def match(self, path: str) -> bool:
         """
-        
+        Check for the requested path matching the views target.
         """
 
         target = re.sub(r"\{\{(.*?)\}\}", r"[^/]{1,}", self.target)
@@ -24,7 +24,7 @@ class View:
     
     def get_dynamic(self, path: str) -> ParameterDict:
         """
-        Returns dict of dynamic params
+        Returns dict of dynamic url params.
         """
 
         target = self.target
