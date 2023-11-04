@@ -1,7 +1,6 @@
 from typing import Callable
 from collections import UserDict
 import re
-from pigeon.http import error
 
 
 class ParameterDict(UserDict):
