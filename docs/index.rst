@@ -1,6 +1,9 @@
-.. image:: _static/pigeonpost_horizontal_2.png
+.. image:: _static/pigeon_banner.png
     :align: left
     :width: 100%
+
+
+|
 
 Welcome to pigeon!
 ==================

@@ -1,0 +1,12 @@
+pre {
+    padding-left: 1rem !important;
+}
+
+.headerlink {
+    opacity: 0;
+    transition: 0s;
+}
+.headerlink:hover {
+    opacity: 100%;
+    transition: .2s;
+}

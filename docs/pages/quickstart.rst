@@ -58,7 +58,7 @@ If we want to process data provided in the request, we can use the `get`, `data`
         elif request.method == 'POST':
 	       return f'<h1>Your name must be {request.post("username")}</h1>'
         else:
-            return ''
+            return HTTPResponse(data='method not allowed', status=405)
 
 Furthermore, pigeon supports *dynamic path arguments*, these allow for requests to include arguments inside the path.
 This is probably best shown in an example::
