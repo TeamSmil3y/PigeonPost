@@ -1,5 +1,6 @@
 from typing import Callable
 from collections import UserDict
+import re
 
 
 class ParameterDict(UserDict):
