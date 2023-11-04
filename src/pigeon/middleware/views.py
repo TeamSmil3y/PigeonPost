@@ -34,36 +34,36 @@ class View:
 
         target = self.target
 
-        names_list = re.findall(r"\{\{[^\}]{1,}\}\}", target)
+        names_list = re.findall(r"\{\{[^\}]{1,}\}\}", target)  # get list of parameter names
 
         target_ = target
 
         for name in names_list:
-            target_ = target_.replace(name, "\sep")
+            target_ = target_.replace(name, "\sep")  # add seperator to identify regions between the params
 
-        sep = {i for i in target_.split("\sep") if i != ""}
+        sep = {i for i in target_.split("\sep") if i}  # create set of regions between the params
 
         for s in sep:
-            target = target.replace(s, "/")
-            path = path.replace(s, "/")
+            target = target.replace(s, "/")  # replace the regions betweeen the params with /
+            path = path.replace(s, "/")      # replace the regions betweeen the params with /
 
         names = {}
         params = ParameterDict()
 
-        for n, i in enumerate(target.split("/")):
+        for n, i in enumerate(target.split("/")):  # iterate over the params where n is the param-name index and i is the param
             if i.startswith("{{") and i.endswith("}}"):
-                names[n] = i.replace("{{", "").replace("}}", "")
+                names[n] = i.replace("{{", "").replace("}}", "")  # build names dictionary where the index n is the key and the param-name the value
 
-        for n, i in enumerate(path.split("/")):
-            if n in names:
-                params[names[n]] = i
+        for n, i in enumerate(path.split("/")):  # iterate over the params where n is the params index and i is the param
+            if n in names:  # check if the param really is a param
+                params[names[n]] = i  # build ParameterDict where the key is the param-name and the value is the actual param 
 
         return params  
 
 
 class ViewHandler:
     def __init__(self):
-        self.views: list[View, ...] = []
+        self.views: list[View] = []
 
     def register(self, target, func, mimetype):
         """
