@@ -1,7 +1,6 @@
 pre {
     padding-left: 1rem !important;
 }
-
 .headerlink {
     opacity: 0;
     transition: 0s;
@@ -9,4 +8,7 @@ pre {
 .headerlink:hover {
     opacity: 100%;
     transition: .2s;
+}
+section {
+   margin-bottom: 2rem !important;
 }

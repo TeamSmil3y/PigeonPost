@@ -7,14 +7,18 @@ Installation
 PigeonPost is available on:
  * PiPy
 
-To install from PiPy, run::
+To install from PiPy, run:
+
+.. code-block:: shell
 
     $ python3 -m pip install pigeonpost
 
 
 Getting Started
 ---------------
-With pigeon installed, we can create a simple working web application like::
+With pigeon installed, we can create a simple working web application like:
+
+.. code-block:: python
 
     from pigeon import Pigeon
     app = Pigeon()
@@ -29,7 +33,9 @@ With pigeon installed, we can create a simple working web application like::
 
 Normal views should allways return either HTTPResponse objects or strings.
 We can also add *typed views* by passing the mimetype of our view as the second argument for app.view.
-Pigeon will automatically choose the most fitting typed view for the requested path depending on the `Accept` header::
+Pigeon will automatically choose the most fitting typed view for the requested path depending on the `Accept` header:
+
+.. code-block:: python
 
     from pigeon.shortcuts import HTTPResponse, JSONResponse
     import json
@@ -43,13 +49,17 @@ Pigeon will automatically choose the most fitting typed view for the requested p
         return HTTPResponse(data='Hello World!')
 
 In contrast to normal views, typed views supports automatic conversion of return data to HTTPResponse objects.
-This means that a view with the mimetype `application/json` can return any JSON convertible data such as dicts, list, ...::
+This means that a view with the mimetype `application/json` can return any JSON convertible data such as dicts, list, ...:
+
+.. code-block:: python
 
     @app.view('/api/test', 'application/json')
     def api_test(request):
         return {'this data is':'autoconverted to an HTTPResponse object'}
 
-If we want to process data provided in the request, we can use the `get`, `data`, and `files` functions::
+If we want to process data provided in the request, we can use the `get`, `data`, and `files` functions:
+
+.. code-block:: python
 
     @app.view('/api/test', 'text/html')
     def api_test(request):
@@ -61,7 +71,9 @@ If we want to process data provided in the request, we can use the `get`, `data`
             return HTTPResponse(data='method not allowed', status=405)
 
 Furthermore, pigeon supports *dynamic path arguments*, these allow for requests to include arguments inside the path.
-This is probably best shown in an example::
+This is probably best shown in an example:
+
+.. code-block:: python
 
     @app.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
