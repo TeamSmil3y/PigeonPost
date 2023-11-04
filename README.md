@@ -1,4 +1,5 @@
-<img src="https://github.com/TeamSmil3y/PigeonPost/blob/main/demo/media/img/pigeonpost.png?raw=true" alt="icon could not be loaded" style="width: 2em; " align="left" />
+[<img src="https://github.com/TeamSmil3y/PigeonPost/blob/main/demo/media/img/pigeonpost.png?raw=true" alt="icon could not be loaded" style="width: 2em; " align="left" />
+](http://docs.pigeon.teamsmiley.org/_images/pigeonpost_horizontal_2.png)
 Simple and easy to use Python web framework
 
 # pigeon
