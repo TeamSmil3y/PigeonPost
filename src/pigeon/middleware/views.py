@@ -1,6 +1,7 @@
 from typing import Callable
 from collections import UserDict
 import re
+from pigeon.http import error
 
 
 class ParameterDict(UserDict):
@@ -23,8 +24,8 @@ class View:
         pattern = re.compile(target)
         return bool(pattern.match(path))
     
-    def __call__(self, request):
-        return self.func(request, self.get_dynamic(request.path))
+    def __call__(self, request, dynamic_params=None):
+        return self.func(request, dynamic_params)
 
     def get_dynamic(self, path: str) -> ParameterDict:
         """
@@ -62,7 +63,7 @@ class View:
 
 class ViewHandler:
     def __init__(self):
-        self.views = []
+        self.views: list[View, ...] = []
 
     def register(self, target, func, mimetype):
         """
@@ -70,11 +71,16 @@ class ViewHandler:
         """
         self.views.append(View(target, func, mimetype))
 
-    def _get_view(self, path: str, mimetype: str) -> View:
+    def _get_view(self, path: str, mimetype: str) -> View | None:
         """
         returns view object matching path and mimetype.
         """
-        ...
+        for view in self.views:
+            if view.match(path):
+                if view.mimetype == mimetype:
+                    return view
+
+        return None
 
     def get_func(self, path: str, mimetype: str):
         """
