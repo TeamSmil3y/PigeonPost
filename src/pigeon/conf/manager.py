@@ -63,7 +63,6 @@ def configure_typed_views():
                     settings.TYPED_VIEWS[url][content_type] = func
                 else:
                     settings.TYPED_VIEWS[url] = {content_type: func}
-                
 
     # add untyped funcs to views as type */*
     for url, func in settings.VIEWS.items():

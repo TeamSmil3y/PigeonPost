@@ -1,4 +1,5 @@
 import pigeon.http.parsing.mime
+#import pigeon.middleware
 import pigeon.default.errors
 
 # VERBOSITY
@@ -53,4 +54,7 @@ SUPPORTED_MIMETYPES = {
     'multipart/form-data': pigeon.http.parsing.mime.MultiPartFormParser,
 }
 
-MIDDLEWARE = None
+# REQUEST PREPROCESSOR
+#MIDDLEWARE_PROCESSORS = {
+#    '1.1': pigeon.middleware.processing.Owl,
+#}

@@ -11,12 +11,8 @@ import threading
 log = logger.Log('SERVER', '#bb88ff')
 
 
-def start(settings_used):
-    # configure settings
-    conf.manager.override(settings_used)
-    conf.manager.setup()
-
-    log.info('STARTING SERVER...')
+def start():
+    log.info('STARTING...')
 
     # load static files into memory
     if settings.STATIC_FILES_DIR:
@@ -27,8 +23,6 @@ def start(settings_used):
         # create jinja2 template environment
         log.info('LOADING TEMPLATES')
         templater.load()
-
-    serve()
 
 
 def serve():
@@ -65,7 +59,6 @@ def serve():
                     client_sock, client_address = sock.accept()
                 except BlockingIOError:
                     pass
-
 
             log.verbose(f'CONNECTION FROM {client_address[0]}:{client_address[1]}')
             threading.Thread(target=handler.handle_connection, args=(client_sock, client_address)).start()

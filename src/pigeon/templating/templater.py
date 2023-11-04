@@ -21,4 +21,4 @@ def render(template, context, status=200):
     mimetype = mimetypes.guess_type(settings.TEMPLATES_DIR / template)[0]
     global env
     rendered = env.get_template(template).render(**context)
-    return HTTPResponse(headers={'Content-Type':mimetype}, data=rendered, status=status)
+    return HTTPResponse(headers={'Content-Type': mimetype}, data=rendered, status=status)

@@ -18,4 +18,3 @@ class MiddlewareTags:
 
     def set(self, key, value):
         self._tags[key] = value
-        

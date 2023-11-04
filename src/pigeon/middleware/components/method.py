@@ -17,3 +17,4 @@ class MethodComponent(comp.MiddlewareComponent):
     @classmethod
     def allowed_method(cls, request: HTTPRequest) -> bool:
         return '*' in settings.ALLOWED_METHODS or request.method in settings.ALLOWED_METHODS
+    
