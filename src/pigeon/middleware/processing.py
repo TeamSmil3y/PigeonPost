@@ -35,8 +35,9 @@ class ComponentProcessor(Processor):
         for component in cls.preprocessing_components:
             cls.log.debug(f'PREPROCESSING WITH COMPONENT: {component.__name__}')
             request = component.preprocess(request=request)
-            # request is an error response and should not be processed further
+            # do not process request further if error is returned
             if request.is_error:
+                cls.log.warning(f'ERROR WHILE PREPROCESSING')
                 return request
         return request
 
@@ -58,7 +59,9 @@ class ComponentProcessor(Processor):
         for component in cls.postprocessing_components:
             cls.log.debug(f'PREPROCESSING WITH COMPONENT: {component.__name__}')
             response = component.postprocess(response=response, request=request)
+            # do not process response further if error is returned
             if response.is_error:
+                cls.log.warning(f'ERROR WHILE POSTPROCESSING')
                 return response
         return response
 

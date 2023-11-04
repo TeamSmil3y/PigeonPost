@@ -1,6 +1,4 @@
 import pathlib
-import views
-import errors
 
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
@@ -10,15 +8,6 @@ VERBOSITY = 4
 # ADDRESS AND PORT
 ADDRESS = ''
 PORT = 8080
-
-# VIEWS
-VIEWS = {
-    '/welcome': views.welcome,
-    '/': views.counter,
-}
-ERRORS = {
-    404: errors.not_found,
-}
 
 # ACCESS-CONTROL
 ALLOWED_HOSTS = ['*']

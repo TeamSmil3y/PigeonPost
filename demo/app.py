@@ -1,11 +1,20 @@
-import pigeon.core.server as server
-import settings as settings
+from pigeon.shortcuts import HTTPResponse, JSONResponse, render
+from pigeon import Pigeon
+import settings
 
-def run():
-    server.start(
-        settings_used=settings
-    )
-    
+app = Pigeon(settings)
 
-if __name__ == '__main__':
-    run()
+
+@app.view('/welcome', 'application/json')
+def welcome(request):
+    return JSONResponse(data={'welcome': 'Hello World!'})
+
+
+@app.view('/welcome', 'text/plain')
+def welcome(request):
+    return HTTPResponse(data='Welcome! Hello World!', headers={'Content-Type': 'text/plain'})
+
+
+@app.view('/')
+def counter(request):
+    return render('counter.html', context={'request': request})

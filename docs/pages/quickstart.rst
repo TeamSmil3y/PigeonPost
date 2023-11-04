@@ -7,7 +7,7 @@ Installation
 PigeonPost is available on:
  * PiPy
 
-To install on PiPy, run::
+To install from PiPy, run::
 
     $ python3 -m pip install pigeonpost
 
