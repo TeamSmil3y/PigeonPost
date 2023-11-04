@@ -31,5 +31,3 @@ html_theme_options = {
     'logo_light': '_static/pigeon_round.png',
     'logo_dark': '_static/pigeon_round.png',
 }
-html_favicon = '_static/pigeon_round.png'
-html_title = 'Pigeon Documentation'
