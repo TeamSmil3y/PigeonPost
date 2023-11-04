@@ -97,7 +97,6 @@ class ViewHandler:
         """
         Returns a decorated version (includes dynamic_params) of the view for the requested path.
         """
-        print(self.views)
         view = self._get_view(path, mimetype)
         if not view:
             # no view found
