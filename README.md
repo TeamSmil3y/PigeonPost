@@ -1,6 +1,4 @@
-[<img src="https://github.com/TeamSmil3y/PigeonPost/blob/main/demo/media/img/pigeonpost.png?raw=true" alt="icon could not be loaded" style="width: 2em; " align="left" />
-](http://docs.pigeon.teamsmiley.org/_images/pigeonpost_horizontal_2.png)
-Simple and easy to use Python web framework
+![image](https://github.com/TeamSmil3y/PigeonPost/assets/52998857/117976f2-4761-4415-86c7-b326414dd82d)
 
 # pigeon
 Pigeon is a versatile Python web application framework. It prioritizes a seamless and straightforward initial setup process, while also providing the capability to develop sophisticated applications.
