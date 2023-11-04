@@ -10,7 +10,7 @@ from pigeon.http.common import error
 log = logger.Log('HANDLER', 'cyan')
 
 
-def receive_data(client_sock: socket.socket, size:int = 4096) -> bytes:
+def receive_data(client_sock: socket.socket, size: int = 4096) -> bytes:
     while True:
         try:
             return client_sock.recv(size)

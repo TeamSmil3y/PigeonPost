@@ -2,7 +2,7 @@ from pigeon.http.message import HTTPMessage
 
 
 class HTTPRequest(HTTPMessage):
-    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str = '1.1'):
+    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str='1.1'):
         """
         Class representing an HTTP request
         """

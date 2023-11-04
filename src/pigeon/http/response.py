@@ -1,3 +1,4 @@
+from typing import Any
 from pigeon.http.message import HTTPMessage
 import pigeon.http.common as common
 import json
@@ -38,7 +39,7 @@ class HTTPResponse(HTTPMessage):
 
 
 class JSONResponse(HTTPResponse):
-    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = '1.1'):
+    def __init__(self, headers: dict = None, data: Any = None, status: int = 200, protocol: str = '1.1'):
         """
         An HTTPResponse but data can be any json convertable python object and the content-type header will be automatically set to application/json.
         """

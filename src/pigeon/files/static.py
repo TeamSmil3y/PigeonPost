@@ -9,7 +9,6 @@ import os
 loaded_files = dict()
 
 
-
 def load():
     """
     loads smaller static files into memory
@@ -19,11 +18,12 @@ def load():
     for directory, sub_directories, files in os.walk(directory_base):
         for file in files:
             local_path = Path(directory) / Path(file)
-            compressed = load_file(local_path)
+            loaded_file = load_file(local_path)
             # if nothing is returned file is too large
-            if compressed:
-                loaded_files[local_path] = compressed
+            if loaded_file:
+                loaded_files[local_path] = loaded_file
     
+
 def load_file(local_path: Path):
     """
     Tries loading a file into memory and compress it.

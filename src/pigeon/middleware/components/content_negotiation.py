@@ -36,15 +36,26 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
     @classmethod
     def find_callback(cls, request):
         """
-        Returns exsiting acceptable content-type for the request.
+        Returns exsiting acceptable view for content-type in accept header of the request.
         """
         available = tuple(mimetype.split('/') for mimetype in settings.TYPED_VIEWS[request.path].keys())
         for content_type in request.accept:
+            print(content_type)
+            # get top-level-mimetype and subtype from content_type
             mimetype, subtype = content_type.split('/')
+
+            # get view from TYPED_VIEWS
             for available_mimetype, available_subtype in available:
-                if mimetype == '*' or mimetype == available_mimetype and subtype == '*' or subtype == available_subtype:
-                    return settings.TYPED_VIEWS[request.path][available_mimetype+'/'+available_subtype]
-        # if no content type is negotiable return None
+                # mimetype match
+                if mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
+                    return settings.TYPED_VIEWS[request.path].get(available_mimetype+'/'+available_subtype)
+
+            # any mimetype requeted
+            if content_type == '*/*':
+                # return any of the views for path
+                return settings.TYPED_VIEWS[request.path].values()[0]
+
+        # no macthing content type is found
         return None
 
     @classmethod

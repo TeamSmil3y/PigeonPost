@@ -1,6 +1,5 @@
 import unittest
 import runner
-from pigeon.utils.logger import sublog
 
 
 class BaseTestCase(unittest.TestCase):

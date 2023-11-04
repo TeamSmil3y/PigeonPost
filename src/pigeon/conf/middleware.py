@@ -3,7 +3,6 @@ Constants and configurations for the pigeon middleware used when processing requ
 """
 
 from pigeon.middleware.processing import Owl, Raven
-import pigeon.middleware.components as comp
 
 
 # SUPPORTED VERION OF HTTP

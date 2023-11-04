@@ -15,7 +15,7 @@ class TestContentNegotiationComponent(testcases.BaseTestCase):
                 'text/html': lambda request: 'text/html',
                 'text/plain': lambda request: 'text/plain',
                 'image/*': lambda request: 'image/*',
-                '*/xml': lambda request: '*/xml',
+                'application/*': lambda request: 'application/*',
                 '*/*': lambda request: '*/*',
                 }
         }
@@ -25,17 +25,18 @@ class TestContentNegotiationComponent(testcases.BaseTestCase):
         Tests the ContentNegotiationComponent.find_callback function used to find views for a list of possible Content-Types
         """
         # Define a sample list of Content-Types and Accept headers
-        test_content_types = [('text/html;q=0.3, applicationjson, text/xml;q=0.5', 'application/json'),
-                              ('text/html;q=0.3, applicationjson, text/xml;q=0.5', 'text/html'),
-                              ('text/*;q=0.5,text/xml' 'text/plain'),
+        test_content_types = [('text/html;q=0.3, application/json, text/xml;q=0.5', 'application/json'),
+                              ('text/html;q=0.9, application/json;q=0.3, text/xml;q=0.5', 'text/html'),
+                              ('text/*;q=0.5,text/xml', 'text/html'),
                               ('text/*;q=0.9, image/gzip', 'image/*'),
-                              ('text/html;q=0.3, text/xml;q=0.4, application/x-www-urlencoded', '*/xml'),
+                              ('text/html;q=0.3, text/xml;q=0.4, application/x-www-urlencoded', 'text/xml'),
                               ('text/xml, application/x-www-urlencoded', '*/*')]
 
         # Test finding callback for each content type
         for accept_header, content_type in test_content_types:
             request = HTTPRequest('GET', '/', headers={'Accept': accept_header})
             request = ContentNegotiationComponent.preprocess(request)
+            print(accept_header, content_type)
             
             self.assertIsInstance(request, HTTPRequest, f"ContentNegotiationComponent.preprocess returned an HTTPResponse - possible error")
             
@@ -48,7 +49,6 @@ class TestContentNegotiationComponent(testcases.BaseTestCase):
             # Ensure the response data matches the expected Content-Type
             self.assertEqual(content_type, response, f"Response data does not match expected Content-Type: {content_type}")
     
-
     def test_header_parser(self):
         """
         Tests the ContentNegotiationComponent.parse_accept_header function used to parse Content-Negotiation headers
