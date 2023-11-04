@@ -1,4 +1,4 @@
-![image](https://github.com/TeamSmil3y/PigeonPost/assets/52998857/117976f2-4761-4415-86c7-b326414dd82d)
+![Untitled](https://github.com/TeamSmil3y/PigeonPost/assets/52998857/283dc7d0-3aae-46b8-b255-1fa7b3b67699)
 
 # pigeon
 Pigeon is a versatile Python web application framework. It prioritizes a seamless and straightforward initial setup process, while also providing the capability to develop sophisticated applications.
