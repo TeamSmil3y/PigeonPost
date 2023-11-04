@@ -23,6 +23,9 @@ class View:
         pattern = re.compile(target)
         return bool(pattern.match(path))
     
+    def __call__(self, request):
+        return self.func(request, self.get_dynamic(request.path))
+
     def get_dynamic(self, path: str) -> ParameterDict:
         """
         Returns dict of dynamic url params.
@@ -33,6 +36,7 @@ class View:
         names_list = re.findall(r"\{\{[^\}]{1,}\}\}", target)
 
         target_ = target
+
         for name in names_list:
             target_ = target_.replace(name, "\sep")
 
@@ -58,8 +62,30 @@ class View:
 
 class ViewHandler:
     def __init__(self):
-        self.views = ...
+        self.views = []
+
+    def register(self, target, func, mimetype):
+        """
+        Add new view to ViewHandler instance.
+        """
+        self.views.append(View(target, func, mimetype))
+
+    def _get_view(self, path: str, mimetype: str) -> View:
+        """
+        returns view object matching path and mimetype.
+        """
         ...
+
+    def get_func(self, path: str, mimetype: str):
+        """
+        Returns a decorated version (includes dynamic_params) of the view for the requested path
+        """
+        view = self._get_view(path, mimetype)
+        dynamic_params = view.get_dynamic(path)
+
+        def wrapper(request):
+            return view(request, dynamic_params)
+        return wrapper
 
 
 class Error:

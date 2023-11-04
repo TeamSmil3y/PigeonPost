@@ -1,54 +1,62 @@
+from typing import Callable
 import re
 import pigeon.conf.manager as manager
 import pigeon.core.server as server
-from pigeon.utils.loggger import Log
+import pigeon.middleware.views as views
+import pigeon.utils.logger as logger
 
-log = Log('PIGEON', '#30b3ff')
+log = logger.Log('PIGEON', '#30b3ff')
 
 
 class Pigeon:
-    def __init__(self, settings=None):
-        log.info('')
+
+    view_handler = None
+    error_handler = None
+
+    @classmethod
+    def __init__(cls, settings=None):
+        log.info('STARTING..')
         # overwrite standard settings if new settings provided
         if settings:
             manager.override(settings=settings)
 
+        # set
+        manager.settings.pigeon = cls
+
         # view handlers
-        self.view_handler = module.module.ViewHandler()
-        self.error_handler = module.module.ErrorHandler()
+        cls.view_handler = views.ViewHandler()
+        cls.error_handler = views.ErrorHandler()
         
         # configure runtime settings
         manager.setup()
-        manager.settings.VIEWHANDLER = self.view_handler
+        manager.settings.VIEWHANDLER = cls.view_handler
         
         # run application
-        self.run()
+        cls.run()
         
-    def run(self):
+    @classmethod
+    def run(cls) -> None:
         log.info('STARTING SERVER')
         # start server
         server.start()
         server.serve()
 
-    # DECORATORS:
-    # ===========
-
-    # register view
-    def view(self, target: str, mimetype: str='*/*'):
-        
-        if re.search('.*{{.*}}.*', target):
-            # has dynamic params
-            ...
-        
-        def wrapper(func):
-            print(f'[REMOVE THIS] VIEW {target}/{mimetype} -> {func}')
+    # @decorator register view
+    @classmethod
+    def view(cls, target: str, mimetype: str='*/*') -> Callable:
+        def wrapper(func) -> Callable:
+            log.debug(f'FOUND VIEW: ')
+            log.sublog(f'TARGET: {target}:\nMIMETYPE: {mimetype}\nFUNC: {func}')
             # add to views
-            self.view_handler.register(target, func, mimetype)
+            cls.view_handler.register(target, func, mimetype)
+            return func
         return wrapper
     
-    # register error view
-    def error(self, code):
-        def wrapper(func):
+    # @decorator register error view
+    @classmethod
+    def error(cls, code) -> Callable:
+        def wrapper(func) -> Callable:
             # add to error views
-            self.error_handler.register(code, func)
+            cls.error_handler.register(code, func)
+            return func
         return wrapper

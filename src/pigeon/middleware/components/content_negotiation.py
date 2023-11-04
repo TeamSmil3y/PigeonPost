@@ -32,7 +32,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             return request, lambda request: error(406)
         # return typed view
         return request, typed_callback
-        
+
     @classmethod
     def find_callback(cls, request):
         """
@@ -48,7 +48,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             for available_mimetype, available_subtype in available:
                 # mimetype match
                 if mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
-                    return settings.TYPED_VIEWS[request.path].get(available_mimetype+'/'+available_subtype)
+                    return settings.pigeon.view_handler.get(available_mimetype+'/'+available_subtype)
 
             # any mimetype requeted
             if content_type == '*/*':
