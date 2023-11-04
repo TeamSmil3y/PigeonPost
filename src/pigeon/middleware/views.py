@@ -34,29 +34,38 @@ class View:
 
         target = self.target
 
-        names_list = re.findall(r"\{\{[^\}]{1,}\}\}", target)  # get list of parameter names
+        names_list = re.findall(r"\{\{[^\}]{1,}\}\}", target)
 
         target_ = target
 
         for name in names_list:
-            target_ = target_.replace(name, "\sep")  # add seperator to identify regions between the params
+            # add seperator to identify regions between the params
+            target_ = target_.replace(name, "\sep")
 
-        sep = {i for i in target_.split("\sep") if i}  # create set of regions between the params
+        # generate a set of all of the ..?s
+        sep = {i for i in target_.split("\sep") if i}
 
         for s in sep:
-            target = target.replace(s, "/")  # replace the regions betweeen the params with /
-            path = path.replace(s, "/")      # replace the regions betweeen the params with /
+            # replace the regions betweeen the params with /
+            target = target.replace(s, "/")
+            # replace the regions betweeen the params with /
+            path = path.replace(s, "/")
 
         names = {}
         params = ParameterDict()
 
-        for n, i in enumerate(target.split("/")):  # iterate over the params where n is the param-name index and i is the param
+        # iterate over the params where n is the param-name index and i is the param
+        for n, i in enumerate(target.split("/")):
             if i.startswith("{{") and i.endswith("}}"):
-                names[n] = i.replace("{{", "").replace("}}", "")  # build names dictionary where the index n is the key and the param-name the value
+                # build names dictionary where the index n is the key and the param-name the value
+                names[n] = i.replace("{{", "").replace("}}", "")
 
-        for n, i in enumerate(path.split("/")):  # iterate over the params where n is the params index and i is the param
-            if n in names:  # check if the param really is a param
-                params[names[n]] = i  # build ParameterDict where the key is the param-name and the value is the actual param 
+        # iterate over the params where n is the params index and i is the param
+        for n, i in enumerate(path.split("/")):
+            # check if the param really is a param
+            if n in names:
+                # build ParameterDict where the key is the param-name and the value is the actual param
+                params[names[n]] = i
 
         return params  
 
