@@ -18,44 +18,47 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         """
         Will change callback to be to a typed view if one esists for the requested path
         """
-        
-        # views does not exist
-        if request.path not in settings.TYPED_VIEWS:
+        # if no mimetype is available for a view, it does not exist:
+        if not settings.VIEWHANDLER.get_available_mimetypes(request.path):
             return request, callback
         
         # view exists
         request.tags.is_view_request = True
-        typed_callback = cls.find_callback(request)
+        typed_callback = cls.negotiate_func(request)
         # could not find typed view fitting view
         if not typed_callback:
             # return request and lambda for error
             return request, lambda request: error(406)
-        # return typed view
+        # return view
         return request, typed_callback
 
     @classmethod
-    def find_callback(cls, request):
+    def negotiate_func(cls, request):
         """
-        Returns exsiting acceptable view for content-type in accept header of the request.
+        Returns exsiting acceptable view for request.
+        Since untyped views are assigned the mimetype */* at runtime and are often used as a fallback,
+        if no content type is found, they will only be returned if no other matching mimetype is found.
         """
-        available = tuple(mimetype.split('/') for mimetype in settings.TYPED_VIEWS[request.path].keys())
-        for content_type in request.accept:
-            print(content_type)
-            # get top-level-mimetype and subtype from content_type
-            mimetype, subtype = content_type.split('/')
+        # get available mimetypes for view
+        view_handler = settings.VIEWHANDLER
+        available_mimetypes = tuple(mimetype.split('/') for mimetype in view_handler.get_available_mimetypes(request.path))
+        print(available_mimetypes, request.accept)
 
-            # get view from TYPED_VIEWS
-            for available_mimetype, available_subtype in available:
+        # get mimetype from request and then cross-check with available mimetypes
+        for mimetype in request.accept:
+            # get top-level-mimetype and subtype from content_type
+            mimetype, subtype = mimetype.split('/')
+
+            for available_mimetype, available_subtype in available_mimetypes:
                 # mimetype match
                 if mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
-                    return settings.pigeon.view_handler.get(available_mimetype+'/'+available_subtype)
+                    return view_handler.get_func(request.path, available_mimetype+'/'+available_subtype)
 
-            # any mimetype requeted
-            if content_type == '*/*':
-                # return any of the views for path
-                return settings.TYPED_VIEWS[request.path].values()[0]
+        # return view for any mimetype if it exists
+        if '*/*' in available_mimetypes:
+            return view_handler.get_func(request.path, '*/*')
 
-        # no macthing content type is found
+        # no macthing mimetype is found
         return None
 
     @classmethod

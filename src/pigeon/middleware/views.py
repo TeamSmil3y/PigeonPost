@@ -24,7 +24,10 @@ class View:
         return bool(pattern.match(path))
     
     def __call__(self, request, dynamic_params=None):
-        return self.func(request, dynamic_params)
+        if dynamic_params:
+            return self.func(request, dynamic_params)
+        else:
+            return self.func(request)
 
     def get_dynamic(self, path: str) -> ParameterDict:
         """
@@ -87,19 +90,34 @@ class ViewHandler:
             if view.match(path):
                 if view.mimetype == mimetype:
                     return view
-
+        # no view found
         return None
 
-    def get_func(self, path: str, mimetype: str):
+    def get_func(self, path: str, mimetype: str) -> Callable | None:
         """
-        Returns a decorated version (includes dynamic_params) of the view for the requested path
+        Returns a decorated version (includes dynamic_params) of the view for the requested path.
         """
+        print(self.views)
         view = self._get_view(path, mimetype)
+        if not view:
+            # no view found
+            return None
         dynamic_params = view.get_dynamic(path)
 
         def wrapper(request):
             return view(request, dynamic_params)
         return wrapper
+
+    def get_available_mimetypes(self, path: str) -> list[str]:
+        """
+        Returns a list of available mimetypes for the requested path.
+        """
+        available_mimetypes = []
+        for view in self.views:
+            if view.match(path):
+                available_mimetypes.append(view.mimetype)
+        available_mimetypes.sort(key=lambda value: value.count('*'))
+        return available_mimetypes
 
 
 class Error:

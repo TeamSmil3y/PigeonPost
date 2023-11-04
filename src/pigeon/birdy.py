@@ -1,5 +1,5 @@
+import atexit
 from typing import Callable
-import re
 import pigeon.conf.manager as manager
 import pigeon.core.server as server
 import pigeon.middleware.views as views
@@ -18,7 +18,7 @@ class Pigeon:
         log.info('STARTING..')
         # overwrite standard settings if new settings provided
         if settings:
-            manager.override(settings=settings)
+            manager.override(settings)
 
         # set
         manager.settings.pigeon = cls
@@ -30,10 +30,12 @@ class Pigeon:
         # configure runtime settings
         manager.setup()
         manager.settings.VIEWHANDLER = cls.view_handler
-        
-        # run application
-        cls.run()
-        
+        manager.settings.ERRORHANDLER = cls.error_handler
+
+        # run pigeon after everything has been configured (all decorators executed)
+        atexit.register(Pigeon.run)
+
+
     @classmethod
     def run(cls) -> None:
         log.info('STARTING SERVER')
