@@ -14,17 +14,11 @@ To install on PiPy, run::
 
 Getting Started
 ---------------
-With pigeon installed, we can create a new project like::
+With pigeon installed, we can create a simple working web application like::
 
-    $ python3 -m pigeonpost create myProject
+    from pigeon import Pigeon
+    app = Pigeon()
 
-This creates the following folder structure::
-
-    .
-    ├── myApp.py
-    ├── settings.py
-
-Inside `settings.py` we can now configure any settings related to the web application such as the address, port, views, static files, media files, templating, parsers, ...
-Once you are ready to start your application simply run::
-
-    $ python3 myApp.py
+    @app.view('/')
+    def home(request):
+	return '<h1>Hello World!</h1>'
