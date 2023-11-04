@@ -42,8 +42,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         # get available mimetypes for view
         view_handler = settings.VIEWHANDLER
         available_mimetypes = tuple(mimetype.split('/') for mimetype in view_handler.get_available_mimetypes(request.path))
-        print(available_mimetypes, request.accept)
-
+        
         # get mimetype from request and then cross-check with available mimetypes
         for mimetype in request.accept:
             # get top-level-mimetype and subtype from content_type
