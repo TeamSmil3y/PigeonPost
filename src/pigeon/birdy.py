@@ -10,8 +10,6 @@ log = logger.Log('PIGEON', '#30b3ff')
 
 class Pigeon:
 
-    view_handler = None
-    error_handler = None
     settings = None
 
     @classmethod
@@ -22,10 +20,8 @@ class Pigeon:
             Manager.override(settings)
 
         # view handlers
-        cls.view_handler = views.ViewHandler()
-        Manager.view_handler = cls.view_handler
-        cls.error_handler = views.ErrorHandler()
-        Manager.error_handler = cls.error_handler
+        Manager.view_handler = views.ViewHandler()
+        Manager.error_handler = views.ErrorHandler()
         
         # shortcut
         cls.settings = Manager
