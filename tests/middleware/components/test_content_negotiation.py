@@ -4,35 +4,14 @@ from pigeon.conf import Manager
 from pigeon.middleware.components.content_negotiation import ContentNegotiationComponent
 from tests import restore
 
-@pytest.mark.skip(reason='broken test - skipping')
-def test_find_func():
+
+def test_parse_accept_versioned():
     """
-    Tests the ContentNegotiationComponent.find_func function used to find views for a list of possible Content-Types
+    Tests the parse_accept_header function with version params in the 'Accept' header
     """
-    # Define a sample list of Content-Types and Accept headers
-    test_content_types = [('text/html;q=0.3, application/json, text/xml;q=0.5', 'application/json'),
-                          ('text/html;q=0.9, application/json;q=0.3, text/xml;q=0.5', 'text/html'),
-                          ('text/*;q=0.5,text/xml', 'text/html'),
-                          ('text/*;q=0.9, image/gzip', 'image/*'),
-                          ('text/html;q=0.3, text/xml;q=0.4, application/x-www-urlencoded', 'text/xml'),
-                          ('text/xml, application/x-www-urlencoded', '*/*')]
-
-    # Test finding func for each content type
-    for accept_header, content_type in test_content_types:
-        request = HTTPRequest('GET', '/', headers={'Accept': accept_header})
-        request = ContentNegotiationComponent.preprocess(request)
-
-        assert isinstance(request, HTTPRequest)
-
-        func = ContentNegotiationComponent.find_func(request)
-        assert not isinstance(func, None)
-
-        # Ensure the returned response
-        response = func(request)
-
-        # Ensure the response data matches the expected Content-Type
-        assert content_type == response
-
+    dummy_request: HTTPRequest = HTTPRequest('GET', '/', {'Accept': 'text/html,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'})
+    parsed = ContentNegotiationComponent.parse_accept_header(dummy_request)
+    assert parsed == ('text/html', '*/*', 'application/signed-exchange')
 
 def test_header_parser():
     """

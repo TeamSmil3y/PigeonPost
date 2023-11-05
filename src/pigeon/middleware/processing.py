@@ -2,6 +2,7 @@ from pigeon.http import HTTPRequest, HTTPResponse, error
 from typing import Callable
 import pigeon.middleware.components as comp
 import pigeon.utils.logger as logger
+import traceback
 
 
 class Processor:
@@ -36,7 +37,7 @@ class ComponentProcessor(Processor):
             request = component.preprocess(request=request)
             # do not process request further if error is returned
             if request.is_error:
-                cls.log.warning(f'ERROR WHILE PREPROCESSING')
+                cls.log.warning(f'ERROR WHILE PREPROCESSING WITH COMPONENT {component.__name__}')
                 return request
         return request
 
@@ -56,11 +57,11 @@ class ComponentProcessor(Processor):
     def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse:
         # run every middleware postprocess component on response
         for component in cls.postprocessing_components:
-            cls.log.debug(f'PREPROCESSING WITH COMPONENT: {component.__name__}')
+            cls.log.debug(f'POSTPROCESSING WITH COMPONENT: {component.__name__}')
             response = component.postprocess(response=response, request=request)
             # do not process response further if error is returned
             if response.is_error:
-                cls.log.warning(f'ERROR WHILE POSTPROCESSING')
+                cls.log.warning(f'ERROR WHILE POSTPROCESSING WITH COMPONENT {component.__name__}')
                 return response
         return response
 

@@ -55,6 +55,10 @@ def process(message: HTTPMessage) -> HTTPResponse:
     # process request
     response = middleware.PROCESSORS[message.protocol].process(request=message)
 
+    # if processor returned an error log it
+    if response.is_error:
+        log.warn(f'PROCESSOR RETURNED ERROR {response.status}')
+
     return response
 
 
@@ -64,7 +68,7 @@ def postprocess(message: HTTPMessage, response: HTTPResponse) -> HTTPResponse:
     """
     log.debug(f'POSTPROCESSING REQUEST..')
     
-    # if preprocessor returned an error return the result from the processor
+    # if preprocessor returned an error return the error from the processor to client
     if message.is_error:
         return response
     # if preprocessor hasn't returned an error it is required to return a valid HTTPRequest object

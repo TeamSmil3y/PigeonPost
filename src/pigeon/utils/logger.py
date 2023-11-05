@@ -1,9 +1,7 @@
 import io
 import threading
 import rich
-
-# verbosity level -> every message with lower verbosity level will not be logged
-VERBOSITY = 4
+from pigeon.conf import Manager
 
 lock = threading.Lock()
 print = rich.get_console().print
@@ -55,21 +53,21 @@ class Log:
             self._print_msg(*args, end=end, subname=subname)
 
     def info(self, *args, end='\n', subname=''):
-        self.message_blocked = VERBOSITY < 2
+        self.message_blocked = Manager.verbosity < 2
         if not self.message_blocked:
             with lock:
                 print('[#5555ff]INFO     [/]', end='')
                 self._print_msg(*args, end=end, subname=subname)
 
     def verbose(self, *args, end='\n', subname=''):
-        self.message_blocked = VERBOSITY < 3
+        self.message_blocked = Manager.verbosity < 3
         if not self.message_blocked:
             with lock:
                 print('[#ffaaff]VERBOSE  [/]', end='')
                 self._print_msg(*args, end=end, subname=subname)
 
     def debug(self, *args, prefix='', end='\n', subname=''):
-        self.message_blocked = VERBOSITY < 4
+        self.message_blocked = Manager.verbosity < 4
         if not self.message_blocked:
             with lock:
                 print('[#ffaaff]DEBUG    [/]', end='')
