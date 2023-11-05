@@ -1,17 +1,14 @@
 import pigeon.conf
+from pigeon.middleware.registry import error_handler
 from http import HTTPStatus
+from pigeon.http import HTTPResponse, HTTPRequest
 
 
-def error(code: int, request=None):
+def error(code: int, request: HTTPRequest | None = None) -> HTTPResponse | str:
     """
-    Returns the HTTPResponse for the error code provided
+    Returns the HTTPResponse for the error code provided, request parameter optional
     """
-    # if a specific error view for the error code exists
-    if code in pigeon.conf.settings.ERRORS:
-        return pigeon.conf.settings.ERRORS[code](request=request)
-    # otherwise just return a standard error page but with the code provided
-    else:
-        return pigeon.conf.settings.ERRORS[000](request=request, code=code)
+    return error_handler(code, request)
 
 
 def status(code):
