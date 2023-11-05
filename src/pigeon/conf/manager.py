@@ -1,6 +1,5 @@
 from pathlib import Path
 import pigeon.conf.settings as settings
-import pigeon.conf.registry as registry
 import pigeon.utils.logger as logger
 
 def setup():
