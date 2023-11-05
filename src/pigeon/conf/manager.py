@@ -18,8 +18,6 @@ class Manager(metaclass=ManagerMeta):
         """
         Configures any settings that need to be computed at runtime (e.g. typed views).
         """
-        # set verbosity for logger
-        logger.VERBOSITY = settings.VERBOSITY
 
         # import mime parsers
         for mimetype, parser in cls.mime_parsers.items():
