@@ -5,6 +5,7 @@ import runner
 class BaseTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        print()
         runner.log.sublog(f'RESTORING ENVIRONMENT', color='yellow')
         runner.restore_environment()
         runner.log.sublog(f'RUNNING TEST:\n\t{cls.__module__}.{cls.__name__}', color='yellow')

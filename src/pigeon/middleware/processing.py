@@ -11,7 +11,7 @@ class Processor:
         raise NotImplementedError
 
     @classmethod
-    def process(cls, request: HTTPRequest, callback: Callable) -> (HTTPRequest, Callable):
+    def process(cls, request: HTTPRequest, func: Callable) -> (HTTPRequest, Callable):
         raise NotImplementedError
 
     @classmethod
@@ -44,14 +44,14 @@ class ComponentProcessor(Processor):
     @classmethod
     def process(cls, request: HTTPRequest) -> HTTPResponse:
         # gather response for request
-        callback = lambda request: error(404)
+        func = lambda request: error(404)
 
-        # run every middleware process component on request and callback
+        # run every middleware process component on request and func
         for component in cls.processing_components:
             cls.log.debug(f'PROCESSING WITH COMPONENT: {component.__name__}')
-            request, callback = component.process(request=request, callback=callback)
+            request, func = component.process(request=request, func=func)
 
-        return callback(request)
+        return func(request)
 
     @classmethod
     def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse:

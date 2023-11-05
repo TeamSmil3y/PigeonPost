@@ -2,7 +2,7 @@ import pigeon.utils.logger as logger
 from pigeon.http.message import HTTPMessage
 from pigeon.http import HTTPRequest, HTTPResponse, error
 import pigeon.conf.middleware as middleware
-import pigeon.http.parsing.parser as parser
+import pigeon.middleware.conversion.converter as converter
 from pigeon.middleware.tags import MiddlewareTags
 import traceback
 
@@ -18,7 +18,7 @@ def preprocess(raw: bytes) -> HTTPResponse | HTTPRequest:
     
     # try parsing the request
     try:
-        request: HTTPRequest = parser.parse(raw)
+        request: HTTPRequest = converter.parse(raw)
     except Exception as e:
         log.warning(f'COULD NOT PARSE REQUEST - SKIPPING')
         log.debug(f'TRACEBACK: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
@@ -54,6 +54,7 @@ def process(message: HTTPMessage) -> HTTPResponse:
 
     # process request
     response = middleware.PROCESSORS[message.protocol].process(request=message)
+
     return response
 
 

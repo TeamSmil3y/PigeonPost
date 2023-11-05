@@ -18,12 +18,28 @@ class TestViews(testcases.BaseTestCase):
         view_handler.register('/test/', lambda request: 'text/*', 'text/*')
         view_handler.register('/test/', lambda request: 'image/gzip', 'image/gzip')
         
+        view_handler.register('/nottest/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
+        view_handler.register('/test/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
+
+    def test_dynamic_params_isolated(self):
+        """
+        Tests the get_func function of views.ViewHandler using dynamic params when the preceeding path before the param is not found in any other view.
+        """
+        view_handler: views.ViewHandler = settings.VIEWHANDLER
+
+        func = view_handler.get_func('/nottest/thisisatest/dynamic/', '*/*')
+
+        self.assertEqual(func(None), 'thisisatest', 'Gathering dynamic param from request failed!')
+
     def test_dynamic_params(self):
         """
-        Tests  ...
+        Tests the get_func function of views.ViewHandler using dynamic params when the preceeding path before is existent in an another view.
         """
-        pass
-        
+        view_handler: views.ViewHandler = settings.VIEWHANDLER
+        func = view_handler.get_func('/test/thisisatest/dynamic/', '*/*')
+
+        self.assertEqual(func(None), 'thisisatest', 'Gathering dynamic param from request failed!')
+
     def test_get_available_mimetypes(self):
         """
         Tests the get_available_mimetypes function of views.ViewHandler used to retrieve a list of available mimetypes

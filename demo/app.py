@@ -7,12 +7,12 @@ app = Pigeon(settings)
 
 @app.view('/welcome', 'application/json')
 def welcome(request):
-    return JSONResponse(data={'welcome': 'Hello World!'})
+    return {'welcome': 'Hello World!'}
 
 
 @app.view('/welcome', 'text/plain')
 def welcome(request):
-    return HTTPResponse(data='Welcome! Hello World!', headers={'Content-Type': 'text/plain'})
+    return HTTPResponse(data='Welcome! Hello World!', content_type='text/plain')
 
 
 @app.view('/')

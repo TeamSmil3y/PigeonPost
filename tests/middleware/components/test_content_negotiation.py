@@ -20,9 +20,9 @@ class TestContentNegotiationComponent(testcases.BaseTestCase):
                 }
         }
 
-    def unused_test_find_callback(self):
+    def unused_test_find_func(self):
         """
-        Tests the ContentNegotiationComponent.find_callback function used to find views for a list of possible Content-Types
+        Tests the ContentNegotiationComponent.find_func function used to find views for a list of possible Content-Types
         """
         # Define a sample list of Content-Types and Accept headers
         test_content_types = [('text/html;q=0.3, application/json, text/xml;q=0.5', 'application/json'),
@@ -32,18 +32,18 @@ class TestContentNegotiationComponent(testcases.BaseTestCase):
                               ('text/html;q=0.3, text/xml;q=0.4, application/x-www-urlencoded', 'text/xml'),
                               ('text/xml, application/x-www-urlencoded', '*/*')]
 
-        # Test finding callback for each content type
+        # Test finding func for each content type
         for accept_header, content_type in test_content_types:
             request = HTTPRequest('GET', '/', headers={'Accept': accept_header})
             request = ContentNegotiationComponent.preprocess(request)
             
             self.assertIsInstance(request, HTTPRequest, f"ContentNegotiationComponent.preprocess returned an HTTPResponse - possible error")
             
-            callback = ContentNegotiationComponent.find_callback(request)
-            self.assertIsNotNone(callback, f"Callback not found for Content-Type: {content_type}")
+            func = ContentNegotiationComponent.find_func(request)
+            self.assertIsNotNone(func, f"func not found for Content-Type: {content_type}")
 
             # Ensure the returned response
-            response = callback(request)
+            response = func(request)
 
             # Ensure the response data matches the expected Content-Type
             self.assertEqual(content_type, response, f"Response data does not match expected Content-Type: {content_type}")

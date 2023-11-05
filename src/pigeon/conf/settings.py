@@ -1,5 +1,5 @@
-import pigeon.http.parsing.mime
-#import pigeon.middleware
+import pigeon.middleware.conversion.mime.parsers
+import pigeon.middleware.conversion.mime.generators
 import pigeon.default.errors
 
 # VERBOSITY
@@ -48,10 +48,15 @@ PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
 
 # MIME
-SUPPORTED_MIMETYPES = {
-    'application/json': pigeon.http.parsing.mime.JSONParser,
-    'application/x-www-form-urlencoded': pigeon.http.parsing.mime.UrlencodedFormParser,
-    'multipart/form-data': pigeon.http.parsing.mime.MultiPartFormParser,
+MIME_PARSERS = {
+    'application/json': pigeon.middleware.conversion.mime.parsers.JSONParser,
+    'application/x-www-form-urlencoded': pigeon.middleware.conversion.mime.parsers.UrlencodedFormParser,
+    'multipart/form-data': pigeon.middleware.conversion.mime.parsers.MultiPartFormParser,
+}
+
+# GENERATORS
+MIME_GENERATORS = {
+    'application/json': pigeon.middleware.conversion.mime.generators.JSONGenerator,
 }
 
 # REQUEST PREPROCESSOR

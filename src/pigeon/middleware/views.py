@@ -19,7 +19,8 @@ class View:
         Check for the requested path matching the views target.
         """
 
-        target = re.sub(r"\{\{(.*?)\}\}", r"[^/]{1,}", self.target)
+        target = re.sub(r"{{(.*?)}}", r"[^/]{1,}", self.target)+'(\\?.*)?$'
+
         pattern = re.compile(target)
         return bool(pattern.match(path))
     
@@ -97,7 +98,6 @@ class ViewHandler:
         """
         Returns a decorated version (includes dynamic_params) of the view for the requested path.
         """
-        print(self.views)
         view = self._get_view(path, mimetype)
         if not view:
             # no view found

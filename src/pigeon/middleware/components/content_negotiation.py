@@ -2,6 +2,7 @@ import pigeon.middleware.components as comp
 from typing import Callable
 from pigeon.conf import settings
 from pigeon.http import HTTPRequest, HTTPResponse, error
+import pigeon.middleware.conversion.converter as converter
 
 
 class ContentNegotiationComponent(comp.MiddlewareComponent):
@@ -14,26 +15,30 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         return response
     
     @classmethod
-    def process(cls, request: HTTPRequest, callback: Callable) -> (HTTPRequest, Callable):
+    def process(cls, request: HTTPRequest, func: Callable) -> (HTTPRequest, Callable):
         """
-        Will change callback to be to a typed view if one esists for the requested path
+        Will change func to be to a typed view if one esists for the requested path and add automatic type conversion to func.
         """
         # if no mimetype is available for a view, it does not exist:
         if not settings.VIEWHANDLER.get_available_mimetypes(request.path):
-            return request, callback
+            return request, func
         
         # view exists
         request.tags.is_view_request = True
-        typed_callback = cls.negotiate_func(request)
+        typed_func, func_mimetype = cls.negotiate_func(request)
         # could not find typed view fitting view
-        if not typed_callback:
+        if not typed_func:
             # return request and lambda for error
             return request, lambda request: error(406)
-        # return view
-        return request, typed_callback
+
+        # automatic type conversion for response (e.g. if user view only returns string)
+        def autoconverted_typed_func(request: HTTPRequest) -> HTTPResponse:
+            return converter.generate(typed_func(request), func_mimetype)
+
+        return request, autoconverted_typed_func
 
     @classmethod
-    def negotiate_func(cls, request):
+    def negotiate_func(cls, request) -> tuple[Callable | None,  str | None]:
         """
         Returns exsiting acceptable view for request.
         Since untyped views are assigned the mimetype */* at runtime and are often used as a fallback,
@@ -46,19 +51,19 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         # get mimetype from request and then cross-check with available mimetypes
         for mimetype in request.accept:
             # get top-level-mimetype and subtype from content_type
-            mimetype, subtype = mimetype.split('/')
+            top_level_mimetype, subtype = mimetype.split('/')
 
             for available_mimetype, available_subtype in available_mimetypes:
                 # mimetype match
-                if mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
-                    return view_handler.get_func(request.path, available_mimetype+'/'+available_subtype)
+                if top_level_mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
+                    return view_handler.get_func(request.path, available_mimetype+'/'+available_subtype), mimetype
 
         # return view for any mimetype if it exists
         if '*/*' in available_mimetypes:
-            return view_handler.get_func(request.path, '*/*')
+            return view_handler.get_func(request.path, '*/*'), '*/*'
 
         # no macthing mimetype is found
-        return None
+        return None, None
 
     @classmethod
     def preprocess(cls, request: HTTPRequest) -> HTTPRequest:
