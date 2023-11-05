@@ -9,9 +9,6 @@ def setup():
     """
     # set verbosity for logger
     logger.VERBOSITY = settings.VERBOSITY
-    
-    # configure typed views
-    configure_typed_views()
 
 
 def override(new_settings):
@@ -37,37 +34,3 @@ def override(new_settings):
     for attribute in path_attributes:
         if value := getattr(settings, attribute):
             setattr(settings, attribute, Path(value))
-
-
-def configure_typed_views():
-    """
-    Builds typed views used by middleware in content-negotiation.
-    """
-    # reverse and restructure views dictionary like {(<func.__name__>,<func.__module__>):url, ...} for easier processing
-    # of views in next step.
-    reversed_views = dict()
-    for url, func in settings.VIEWS.items():
-        key = (func.__name__, func.__module__)
-        if reversed_views.get(key):
-            reversed_views[key].append(url)
-        else:
-            reversed_views[key] = [url]
-            
-    # add typed funcs to views
-    for func, content_type in registry.TYPED_VIEWS:
-        # determine in which view the current function is listed in and then add it to it
-        key = (func.__name__, func.__module__)
-        if reversed_views.get(key):
-            for url in reversed_views[key]:
-                if settings.TYPED_VIEWS.get(url):
-                    settings.TYPED_VIEWS[url][content_type] = func
-                else:
-                    settings.TYPED_VIEWS[url] = {content_type: func}
-
-    # add untyped funcs to views as type */*
-    for url, func in settings.VIEWS.items():
-        if settings.TYPED_VIEWS.get(url):
-            if func not in settings.TYPED_VIEWS[url].values():
-                settings.TYPED_VIEWS[url]['*/*'] = func
-        else:
-            settings.TYPED_VIEWS[url] = {'*/*': func}

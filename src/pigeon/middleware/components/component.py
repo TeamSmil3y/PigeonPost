@@ -11,7 +11,7 @@ class MiddlewareComponent:
         raise NotImplementedError
 
     @classmethod
-    def process(cls, request: HTTPRequest, callback: Callable) -> (HTTPRequest, Callable):
+    def process(cls, request: HTTPRequest, func: Callable) -> (HTTPRequest, Callable):
         pass
 
     @classmethod

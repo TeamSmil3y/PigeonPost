@@ -5,13 +5,16 @@ import json
 
 
 class HTTPResponse(HTTPMessage):
-    def __init__(self, headers: dict = None, data: str = None, status: int = 200, protocol: str = '1.1'):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, content_type=None, protocol: str = '1.1'):
         """
         Class representing an HTTP response
         """
         headers = headers or dict()
         super().__init__(headers, data, protocol)
         self.status = status
+
+        if content_type:
+            self.HEADERS['Content-Type'] = content_type
 
         # set by middleware
         self.is_cors = None
