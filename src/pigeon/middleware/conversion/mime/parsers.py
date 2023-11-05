@@ -46,7 +46,7 @@ class MultiPartFormParser(Parser):
             # add file to parsed_files
             if name in _dict:
                 # entry already exists for name (add to it)
-                if isinsance(_dict[name], (list, tuple)):
+                if isinstance(_dict[name], (list, tuple)):
                     _dict[name].append(_data)
                 else:
                     _dict[name] = [_dict[name], _data]

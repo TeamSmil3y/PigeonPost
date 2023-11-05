@@ -1,5 +1,8 @@
 from typing import Callable
 from collections import UserDict
+import pigeon.default.error.fallback as error_fallback
+from pigeon.http import HTTPResponse, HTTPRequest
+
 import re
 
 
@@ -120,11 +123,35 @@ class ViewHandler:
         return available_mimetypes
 
 
-class Error:
-    def __init__(self, status):
-        self.status = status
-    
-    
 class ErrorHandler:
     def __init__(self):
-        self.errors = ...
+        """
+        On initilization autoregister default fallback error func
+        """
+        self.errors = {
+            0: error_fallback,
+        }
+
+    def register(self, code: int, func: Callable):
+        """
+        Add new error to ErrorHandler instance.
+        """
+        self.errors[code] = func
+
+    def get_func(self, code: int) -> Callable:
+        """
+        Get error func for code or fallback if no func known for specified code
+        """
+
+        return self.errors.get(code) or (lambda request=None: self.errors[0](request, code))
+
+    def __call__(self, code: int, request: HTTPRequest = None) -> HTTPResponse | str:
+        """
+        call error code matching func (fallback if no func for the specified code exists)
+        request parameter optional
+        """
+
+        if HTTPRequest:
+            return self.get_func(code)(request=request)
+
+        return self.get_func(code)()
