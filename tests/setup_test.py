@@ -14,4 +14,4 @@ def restore():
     # override default settings with settings for test environment
     Manager.override(settings)
     # call manager.setup to configure runtime computed settings
-    Manager.setup()
+    Manager._setup()
