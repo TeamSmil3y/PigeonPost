@@ -19,7 +19,8 @@ class View:
         Check for the requested path matching the views target.
         """
 
-        target = re.sub(r"\{\{(.*?)\}\}", r"[^/]{1,}", self.target)
+        target = re.sub(r"{{(.*?)}}", r"[^/]{1,}", self.target)+'(\\?.*)?$'
+
         pattern = re.compile(target)
         return bool(pattern.match(path))
     
