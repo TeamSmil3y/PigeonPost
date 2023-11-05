@@ -28,7 +28,7 @@ With pigeon installed, we can create a simple working web application like::
         return HTTPResponse(data='Welcome!')
 
 Normal views should allways return either HTTPResponse objects or strings.
-We can also add *typed views* by passing the mimetype of our view as the second argument for app.view.
+We can also add *typed views* by passing the mimetype of our view as the second argument for `app.view`.
 Pigeon will automatically choose the most fitting typed view for the requested path depending on the `Accept` header::
 
     from pigeon.shortcuts import HTTPResponse, JSONResponse
@@ -65,7 +65,39 @@ This is probably best shown in an example::
 
     @app.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
-        print(f'The user is {dynamic_params.param1}')
-        return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
+        if request.method == 'GET':
+            print(f'The user is {dynamic_params.param1}')
+            return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
+        else:
+            return HTTPResponse(data='method not allowed', status=405)
 
 Dynamic path arguments are indicated in the path by being enclosed in double curly brackets and can be accessed via an extra dynamic_params argument.
+
+Manually crafting error responses can be tideous, as such, there is a builtin function that can be used to generate error responses with the provided status code::
+
+    from pigeon.shortcuts import error
+
+    @app.view('/api/user/{{param1}}/view')
+    def api_view_user(request, dynamic_params):
+        if request.method == 'GET':
+            print(f'The user is {dynamic_params.param1}')
+            return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
+        else:
+            # method not allowed
+            return error(405)
+
+The error responses will be generated using an error view which is very similar to a regular view.
+Depending on the status code we pass to the function a different error view will be called.
+We can define our own error view using `app.error`::
+
+    @app.error(500)
+    def internal_server_error(request):
+	   return '<h1>Internal Server Error 500</h1>'
+
+ If no specific error view exists for a status code, the fallback error view with the code 0 will be used.
+ Like any other, the default fallback error view can also be overwritten::
+
+    @app.error(0)
+    def fallback_error(request, code):
+        return f'<h1>No error view exists error {code}</h1>'
+
