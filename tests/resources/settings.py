@@ -1,5 +1,4 @@
 import pathlib
-import pigeon.http.parsing.mime
 import pigeon.default.errors
 
 BASE_DIR = pathlib.Path(__file__).parent.resolve()
@@ -44,12 +43,3 @@ USE_HTTPS = False
 CERTIFICATE_PATH = None
 PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
-
-# MIME
-SUPPORTED_MIMETYPES = {
-    'application/json': pigeon.http.parsing.mime.JSONParser,
-    'application/x-www-form-urlencoded': pigeon.http.parsing.mime.UrlencodedFormParser,
-    'multipart/form-data': pigeon.http.parsing.mime.MultiPartFormParser,
-}
-
-MIDDLEWARE = None

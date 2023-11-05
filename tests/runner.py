@@ -1,12 +1,13 @@
 import pigeon
 import pigeon.utils.logger as logger
-import resources.settings as settings
+import imp
 from pathlib import Path
-import os
-import importlib.util
+import sys
 import unittest
 
 TESTS_DIR = Path(__file__).parent.resolve()
+sys.path.append(TESTS_DIR)
+settings = imp.load_source('settings', str(TESTS_DIR) + '/resources/settings.py')
 
 log = logger.Log('TESTRUNNER', '#aaffaa')
 
@@ -15,7 +16,6 @@ def restore_environment():
     pigeon.conf.manager.override(settings)
     # call manager.setup to configure runtime computed settings
     pigeon.conf.manager.setup()
-
 
 def run_tests():
     loader = unittest.TestLoader()
