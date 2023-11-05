@@ -43,3 +43,15 @@ USE_HTTPS = False
 CERTIFICATE_PATH = None
 PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
+
+# MIME PARSERS
+MIME_PARSERS = {
+    'application/json': 'pigeon.middleware.conversion.mime.parsers.JSONParser',
+    'application/x-www-form-urlencoded': 'pigeon.middleware.conversion.mime.parsers.UrlencodedFormParser',
+    'multipart/form-data': 'pigeon.middleware.conversion.mime.parsers.MultiPartFormParser',
+}
+
+# MIME GENERATORS
+MIME_GENERATORS = {
+    'application/json': 'pigeon.middleware.conversion.mime.generators.JSONGenerator',
+}

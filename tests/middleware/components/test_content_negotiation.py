@@ -4,20 +4,6 @@ from pigeon.conf import Manager
 from pigeon.middleware.components.content_negotiation import ContentNegotiationComponent
 from tests import restore
 
-@pytest.fixture(autouse=True, scope='module')
-def set_up(restore):
-    # add dummy typed views
-    Manager.settings.TYPED_VIEWS = {
-        '/': {
-            'application/json': lambda request: 'application/json',
-            'text/html': lambda request: 'text/html',
-            'text/plain': lambda request: 'text/plain',
-            'image/*': lambda request: 'image/*',
-            'application/*': lambda request: 'application/*',
-            '*/*': lambda request: '*/*',
-            }
-    }
-
 @pytest.mark.skip(reason='broken test - skipping')
 def test_find_func():
     """
