@@ -1,7 +1,6 @@
-#
-# Used to strore decentralized data in a central space (e.g. functions for typed views)
-#
+"""
+Used to store data generated at runtime
+"""
 
-
-# list of views with content-type specified - will be filled through content_type decorator
-TYPED_VIEWS = []
+view_handler = None
+error_handler = None
