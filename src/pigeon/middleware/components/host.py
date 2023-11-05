@@ -1,5 +1,5 @@
 import pigeon.middleware.components as comp
-from pigeon import Pigeon
+from pigeon.conf import Manager
 from pigeon.http import HTTPRequest, HTTPResponse, error
 
 
@@ -16,4 +16,4 @@ class HostComponent(comp.MiddlewareComponent):
         """
         Checks if the Host header in the request has a valid hostname. 
         """
-        return '*' in Pigeon.ALLOWED_HOSTS or request.headers('host') in Pigeon.settings.ALLOWED_HOSTS
+        return '*' in Manager.allowed_hosts or request.headers('host') in Manager.allowed_hosts

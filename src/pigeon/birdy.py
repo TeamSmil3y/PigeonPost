@@ -1,6 +1,6 @@
 import atexit
 from typing import Callable
-import pigeon.conf.manager as manager
+from pigeon.conf import Manager
 import pigeon.core.server as server
 import pigeon.middleware.views as views
 import pigeon.utils.logger as logger
@@ -12,23 +12,26 @@ class Pigeon:
 
     view_handler = None
     error_handler = None
+    settings = None
 
     @classmethod
     def __init__(cls, settings=None):
         log.info('STARTING..')
         # overwrite standard settings if new settings provided
         if settings:
-            manager.override(settings)
-
-        # set
-        manager.settings.pigeon = cls
+            Manager.override(settings)
 
         # view handlers
         cls.view_handler = views.ViewHandler()
+        Manager.view_handler = cls.view_handler
         cls.error_handler = views.ErrorHandler()
+        Manager.error_handler = cls.error_handler
         
+        # shortcut
+        cls.settings = Manager
+
         # configure runtime settings
-        manager.setup()
+        Manager._setup()
 
         # run pigeon after everything has been configured (all decorators executed)
         atexit.register(Pigeon.run)

@@ -1,8 +1,7 @@
+import pigeon.default.errors as default_error
+from pigeon.http import HTTPResponse, HTTPRequest
 from typing import Callable
 from collections import UserDict
-import pigeon.default.error.fallback as error_fallback
-from pigeon.http import HTTPResponse, HTTPRequest
-
 import re
 
 
@@ -129,7 +128,7 @@ class ErrorHandler:
         On initilization autoregister default fallback error func
         """
         self.errors = {
-            0: error_fallback,
+            0: default_error.fallback,
         }
 
     def register(self, code: int, func: Callable):

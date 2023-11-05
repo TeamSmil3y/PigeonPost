@@ -1,4 +1,3 @@
-
 # VERBOSITY
 VERBOSITY = 2
 
@@ -10,10 +9,6 @@ PORT = 8080
 ALLOWED_HOSTS = [None]
 # ALLOWED METHODS
 ALLOWED_METHODS = ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'OPTIONS']
-
-# ERRORS (VIEWS BUT FOR ERRORS)
-ERRORS = {
-}
 
 # ACCESS-CONTROL
 CORS_ALLOWED_ORIGINS = []
@@ -39,20 +34,14 @@ CERTIFICATE_PATH = None
 PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
 
-# MIME
+# MIME PARSERS
 MIME_PARSERS = {
-    'application/json': pigeon.middleware.conversion.mime.parsers.JSONParser,
-    'application/x-www-form-urlencoded': pigeon.middleware.conversion.mime.parsers.UrlencodedFormParser,
-    'multipart/form-data': pigeon.middleware.conversion.mime.parsers.MultiPartFormParser,
+    'application/json': 'pigeon.middleware.conversion.mime.parsers.JSONParser',
+    'application/x-www-form-urlencoded': 'pigeon.middleware.conversion.mime.parsers.UrlencodedFormParser',
+    'multipart/form-data': 'pigeon.middleware.conversion.mime.parsers.MultiPartFormParser',
 }
 
-# GENERATORS
+# MIME GENERATORS
 MIME_GENERATORS = {
-    'application/json': pigeon.middleware.conversion.mime.generators.JSONGenerator,
+    'application/json': 'pigeon.middleware.conversion.mime.generators.JSONGenerator',
 }
-
-# REQUEST PREPROCESSOR
-#MIDDLEWARE_PROCESSORS = {
-#    '1.1': pigeon.middleware.processing.Owl,
-#}
-

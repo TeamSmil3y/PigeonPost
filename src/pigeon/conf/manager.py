@@ -1,3 +1,4 @@
+import importlib
 from pathlib import Path
 from typing import Any
 import pigeon.conf.settings as settings
@@ -19,6 +20,16 @@ class Manager(metaclass=ManagerMeta):
         """
         # set verbosity for logger
         logger.VERBOSITY = settings.VERBOSITY
+
+        # import mime parsers
+        for mimetype, parser in cls.mime_parsers.items():
+            _module, _class = parser.rsplit('.', 1)
+            cls.mime_parsers[mimetype] = getattr(importlib.import_module(_module), _class)
+
+        # import mime generators
+        for mimetype, generators in cls.mime_generators.items():
+            _module, _class = generators.rsplit('.', 1)
+            cls.mime_generators[mimetype] = getattr(importlib.import_module(_module), _class)
 
 
     @classmethod

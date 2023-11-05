@@ -1,4 +1,4 @@
-from pigeon import Pigeon
+from pigeon.conf import Manager
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.http.common import error, status
 from pathlib import Path
@@ -22,9 +22,9 @@ def fetch_file(local_path: Path, encodings):
 
 
 def handle_media_request(request: HTTPRequest):
-    local_path = Pigeon.settings.MEDIA_FILES_DIR / Path(request.path[len(Pigeon.settings.MEDIA_URL_BASE):])
+    local_path = Manager.media_files_dir / Path(request.path[len(Manager.media_url_base):])
 
-    if not local_path.resolve().is_relative_to(Pigeon.settings.MEDIA_FILES_DIR):
+    if not local_path.resolve().is_relative_to(Manager.media_files_dir):
         # attempting to access resource outside of static_files_dir (directory traversal)
         return error(404, request)
 

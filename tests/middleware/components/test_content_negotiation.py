@@ -1,13 +1,13 @@
 import pytest
 from pigeon.http import HTTPRequest
-from pigeon import Pigeon
+from pigeon.conf import Manager
 from pigeon.middleware.components.content_negotiation import ContentNegotiationComponent
 from tests import restore
 
 @pytest.fixture(autouse=True, scope='module')
 def set_up(restore):
     # add dummy typed views
-    Pigeon.settings.TYPED_VIEWS = {
+    Manager.settings.TYPED_VIEWS = {
         '/': {
             'application/json': lambda request: 'application/json',
             'text/html': lambda request: 'text/html',
