@@ -94,8 +94,8 @@ We can define our own error view using `app.error`::
     def internal_server_error(request):
 	   return '<h1>Internal Server Error 500</h1>'
 
- If no specific error view exists for a status code, the fallback error view with the code 0 will be used.
- Like any other, the default fallback error view can also be overwritten::
+If no specific error view exists for a status code, the fallback error view with the code 0 will be used.
+Like any other, the default fallback error view can also be overwritten::
 
     @app.error(0)
     def fallback_error(request, code):

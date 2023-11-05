@@ -27,6 +27,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'sphinxawesome_theme'
 html_static_path = ['_static']
 html_css_files = ['css/style.css']
+html_favicon = '_static/pigeon_round.png'
 html_theme_options = {
     'logo_light': '_static/pigeon_round.png',
     'logo_dark': '_static/pigeon_round.png',
