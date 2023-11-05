@@ -2,10 +2,10 @@ import pytest
 from pigeon.http import HTTPRequest
 import pigeon.conf.settings as settings
 from pigeon.middleware.components.content_negotiation import ContentNegotiationComponent
+from tests import restore
 
-
-@pytest.fixture
-def set_up():
+@pytest.fixture(autouse=True, scope='module')
+def set_up(restore):
     # add dummy typed views
     settings.TYPED_VIEWS = {
         '/': {
@@ -47,7 +47,8 @@ def test_find_func():
         # Ensure the response data matches the expected Content-Type
         assert content_type == response
 
-def test_header_parser(self):
+
+def test_header_parser():
     """
     Tests the ContentNegotiationComponent.parse_accept_header function used to parse Content-Negotiation headers
     """
@@ -64,7 +65,8 @@ def test_header_parser(self):
     assert parsed[1] == ('gzip', 'br', 'deflate')
     assert parsed[2] == ('de', 'ca', 'en')
 
-def test_parse_accept_header(self):
+
+def test_parse_accept_header():
     """
     Tests the ContentNegotiationComponent.parse_accept_header function used to parse the 'Accept' header
     """
@@ -73,21 +75,23 @@ def test_parse_accept_header(self):
     parsed = ContentNegotiationComponent.parse_accept_header(dummy_request)
     assert parsed == ('text/plain', 'text/*', 'application/json')
 
-def test_parse_accept_encoding_header(self):
+
+def test_parse_accept_encoding_header():
     """
     Tests the ContentNegotiationComponent.parse_accept_encoding_header function used to parse the 'Accept-Encoding' header
     """
     # create dummy request and parse Accept header
     dummy_request: HTTPRequest = HTTPRequest('GET', '/', {'Accept-Encoding': 'gzip, deflate;q=0.8,br;q=0.9'})
     parsed = ContentNegotiationComponent.parse_accept_encoding_header(dummy_request)
-    self.assertEqual(parsed, ('gzip', 'br', 'deflate'), 'ContentNegotiationComponent failed parsing Accept-Encoding Header')
+    assert parsed == ('gzip', 'br', 'deflate')
+
 
 @pytest.mark.skip(reason='parse language not implemented - skipping test')
-def test_parse_accept_language_header(self):
+def test_parse_accept_language_header():
     """
     Tests the ContentNegotiationComponent.parse_accept_language_header function used to parse the 'Accept-Language' header
     """
     # create dummy request and parse Accept header
     dummy_request: HTTPRequest = HTTPRequest('GET', '/', {'Accept-Language': 'en;q=0.3,de, ca;q=0.6'})
     parsed = ContentNegotiationComponent.parse_accept_language_header(dummy_request)
-    self.assertEqual(parsed, ('de', 'ca', 'en'), 'ContentNegotiationComponent failed parsing Accept-Language Header')
+    assert parsed == ('de', 'ca', 'en')
