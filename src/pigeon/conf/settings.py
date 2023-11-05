@@ -1,6 +1,3 @@
-import pigeon.middleware.conversion.mime.parsers
-import pigeon.middleware.conversion.mime.generators
-import pigeon.default.errors
 
 # VERBOSITY
 VERBOSITY = 2
@@ -14,13 +11,8 @@ ALLOWED_HOSTS = [None]
 # ALLOWED METHODS
 ALLOWED_METHODS = ['POST', 'GET', 'HEAD', 'POST', 'PUT', 'OPTIONS']
 
-# VIEWS
-VIEWS = {}
-# TYPED VIEWS (INCLUDE CONTENT TYPE)
-TYPED_VIEWS = {}
 # ERRORS (VIEWS BUT FOR ERRORS)
 ERRORS = {
-    000: pigeon.default.errors.fallback,
 }
 
 # ACCESS-CONTROL

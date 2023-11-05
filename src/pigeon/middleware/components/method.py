@@ -1,5 +1,5 @@
 import pigeon.middleware.components as comp
-from pigeon.conf import settings
+from pigeon import Pigeon
 from pigeon.http import HTTPRequest, HTTPResponse, error
 
 
@@ -16,5 +16,5 @@ class MethodComponent(comp.MiddlewareComponent):
     
     @classmethod
     def allowed_method(cls, request: HTTPRequest) -> bool:
-        return '*' in settings.ALLOWED_METHODS or request.method in settings.ALLOWED_METHODS
+        return '*' in Pigeon.settings.ALLOWED_METHODS or request.method in Pigeon.settings.ALLOWED_METHODS
     

@@ -1,7 +1,7 @@
 from pigeon.files import handle_static_request
 from typing import Callable
 from pigeon.http import HTTPRequest, HTTPResponse
-from pigeon.conf import settings
+from pigeon import Pigeon
 
 
 class StaticFilesComponent:
@@ -11,7 +11,7 @@ class StaticFilesComponent:
         If request is to a static url change func to return static file, otherwise leave as is.
         """
 
-        if settings.STATIC_URL_BASE and request.path.startswith(settings.STATIC_URL_BASE):
+        if Pigeon.settings.STATIC_URL_BASE and request.path.startswith(Pigeon.settings.STATIC_URL_BASE):
             # request for static file
             request.tags.is_static_request = True
             return request, handle_static_request

@@ -1,6 +1,6 @@
 import pigeon.middleware.components as comp
 from typing import Callable
-from pigeon.conf import settings
+from pigeon import Pigeon
 from pigeon.http import HTTPRequest, HTTPResponse, error
 import pigeon.middleware.conversion.converter as converter
 
@@ -20,7 +20,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         Will change func to be to a typed view if one esists for the requested path and add automatic type conversion to func.
         """
         # if no mimetype is available for a view, it does not exist:
-        if not settings.VIEWHANDLER.get_available_mimetypes(request.path):
+        if not Pigeon.view_handler.get_available_mimetypes(request.path):
             return request, func
         
         # view exists
@@ -45,8 +45,7 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         if no content type is found, they will only be returned if no other matching mimetype is found.
         """
         # get available mimetypes for view
-        view_handler = settings.VIEWHANDLER
-        available_mimetypes = tuple(mimetype.split('/') for mimetype in view_handler.get_available_mimetypes(request.path))
+        available_mimetypes = tuple(mimetype.split('/') for mimetype in Pigeon.view_handler.get_available_mimetypes(request.path))
         
         # get mimetype from request and then cross-check with available mimetypes
         for mimetype in request.accept:
@@ -56,11 +55,11 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
             for available_mimetype, available_subtype in available_mimetypes:
                 # mimetype match
                 if top_level_mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
-                    return view_handler.get_func(request.path, available_mimetype+'/'+available_subtype), mimetype
+                    return Pigeon.view_handler.get_func(request.path, available_mimetype+'/'+available_subtype), mimetype
 
         # return view for any mimetype if it exists
         if '*/*' in available_mimetypes:
-            return view_handler.get_func(request.path, '*/*'), '*/*'
+            return Pigeon.view_handler.get_func(request.path, '*/*'), '*/*'
 
         # no macthing mimetype is found
         return None, None

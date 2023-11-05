@@ -1,7 +1,7 @@
 from pigeon.files import handle_media_request
 from typing import Callable
 from pigeon.http import HTTPRequest, HTTPResponse
-from pigeon.conf import settings
+from pigeon import Pigeon
 
 
 class MediaFilesComponent:
@@ -10,7 +10,7 @@ class MediaFilesComponent:
         """
         If request is to a media url change func to return media file, otherwise leave as is.
         """
-        if settings.MEDIA_URL_BASE and request.path.startswith(settings.MEDIA_URL_BASE):
+        if Pigeon.settings.MEDIA_URL_BASE and request.path.startswith(Pigeon.settings.MEDIA_URL_BASE):
             # request for static file
             request.tags.is_media_request = True
             return request, handle_media_request

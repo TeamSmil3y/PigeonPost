@@ -1,11 +1,7 @@
 import socket
-from pigeon.conf import settings
 import pigeon.middleware as middleware
 import pigeon.utils.logger as logger
 from pigeon.http import HTTPRequest, HTTPResponse
-from pigeon.files.static import handle_static_request
-from pigeon.files.media import handle_media_request
-from pigeon.http.common import error
 
 log = logger.Log('HANDLER', 'cyan')
 

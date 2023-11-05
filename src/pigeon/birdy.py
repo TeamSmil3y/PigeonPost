@@ -29,8 +29,6 @@ class Pigeon:
         
         # configure runtime settings
         manager.setup()
-        manager.settings.VIEWHANDLER = cls.view_handler
-        manager.settings.ERRORHANDLER = cls.error_handler
 
         # run pigeon after everything has been configured (all decorators executed)
         atexit.register(Pigeon.run)
