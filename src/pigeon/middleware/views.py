@@ -143,7 +143,7 @@ class ErrorHandler:
         Get error func for code or fallback if no func known for specified code
         """
 
-        return self.errors.get(code) or self.errors[0]
+        return self.errors.get(code) or (lambda request=None: self.errors[0](request, code))
 
     def __call__(self, code: int, request: HTTPRequest = None) -> HTTPResponse | str:
         """
