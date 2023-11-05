@@ -47,7 +47,7 @@ class Pigeon:
             log.debug(f'FOUND VIEW: ')
             log.sublog(f'TARGET: {target}:\nMIMETYPE: {mimetype}\nFUNC: {func}')
             # add to views
-            cls.view_handler.register(target, func, mimetype)
+            Manager.view_handler.register(target, func, mimetype)
             return func
         return wrapper
     
@@ -56,6 +56,6 @@ class Pigeon:
     def error(cls, code) -> Callable:
         def wrapper(func) -> Callable:
             # add to error views
-            cls.error_handler.register(code, func)
+            Manager.error_handler.register(code, func)
             return func
         return wrapper
