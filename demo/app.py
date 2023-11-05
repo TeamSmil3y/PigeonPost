@@ -1,5 +1,5 @@
-from pigeon.shortcuts import HTTPResponse, JSONResponse, render
 from pigeon import Pigeon
+from pigeon.shortcuts import HTTPResponse, JSONResponse, render
 import settings
 
 app = Pigeon(settings)

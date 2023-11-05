@@ -1,5 +1,5 @@
 import pigeon.middleware.components as comp
-from pigeon.conf import settings
+from pigeon.conf import Manager
 from pigeon.http import HTTPRequest, HTTPResponse, error
 
 
@@ -11,17 +11,17 @@ class CORSComponent(comp.MiddlewareComponent):
         """
     
         # any origin allowed
-        if '*' in settings.CORS_ALLOWED_ORIGINS:
+        if '*' in Manager.cors_allowed_origins:
             return True
     
-        return request.headers('origin') in settings.CORS_ALLOWED_ORIGINS
+        return request.headers('origin') in Manager.cors_allowed_origins
     
     @classmethod
     def cors_method_allowed(cls, request: HTTPRequest) -> bool:
         """
         Returns true if the 
         """
-        return request.method in settings.CORS_ALLOWED_METHODS
+        return request.method in Manager.cors_allowed_methods
     
     @classmethod
     def cors_credentials_allowed(cls, request: HTTPRequest) -> bool:
@@ -36,7 +36,7 @@ class CORSComponent(comp.MiddlewareComponent):
         """
         Checks if the request headers are allowed as per CORS-policy
         """
-        return all(header in settings.CORS_ALLOWED_HEADERS for header in request.HEADERS.data)
+        return all(header in Manager.cors_allowed_headers for header in request.HEADERS.data)
     
     @classmethod
     def is_cors(cls, request: HTTPRequest) -> bool:
@@ -69,11 +69,11 @@ class CORSComponent(comp.MiddlewareComponent):
         Gets server access-control response headers for request
         """
         headers = {
-            'Access-Control-Allow-Credentials': str(settings.CORS_ALLOW_CREDS),
+            'Access-Control-Allow-Credentials': str(Manager.cors_allow_creds),
             'Access-Control-Allow-Origin': request.headers('origin'),
-            'Access-Control-Allow-Headers': ', '.join(settings.CORS_ALLOWED_HEADERS),
-            'Access-Control-Allow-Methods': ', '.join(settings.CORS_ALLOWED_METHODS),
-            'Access-Control-Max-Age': str(settings.CORS_MAX_AGE)
+            'Access-Control-Allow-Headers': ', '.join(Manager.cors_allowed_headers),
+            'Access-Control-Allow-Methods': ', '.join(Manager.cors_allowed_methods),
+            'Access-Control-Max-Age': str(Manager.cors_max_age)
         }
 
         return headers

@@ -1,6 +1,5 @@
 import socket
-from pigeon.conf import settings
-import pigeon.conf as conf
+from pigeon.conf import Manager
 import pigeon.utils.logger as logger
 import pigeon.core.secure as secure
 import pigeon.core.handler as handler
@@ -15,29 +14,29 @@ def start():
     log.info('STARTING...')
 
     # load static files into memory
-    if settings.STATIC_FILES_DIR:
+    if Manager.static_files_dir:
         log.info('LOADING STATIC FILES')
         static.load()
 
-    if settings.TEMPLATES_DIR:
+    if Manager.templates_dir:
         # create jinja2 template environment
         log.info('LOADING TEMPLATES')
         templater.load()
 
 
 def serve():
-    log.info(f'ADDRESS: {settings.ADDRESS if settings.ADDRESS else "ANY"}')
-    log.info(f'PORT: {settings.PORT}')
+    log.info(f'ADDRESS: {Manager.address if Manager.address else "ANY"}')
+    log.info(f'PORT: {Manager.port}')
 
     # open socket
     sock = socket.socket(socket.AF_INET)
     sock.setblocking(False)
-    sock.bind((settings.ADDRESS, settings.PORT))
+    sock.bind((Manager.address, Manager.port))
 
     # configure https if specified in settings
-    if settings.USE_HTTPS:
+    if Manager.use_https:
         log.verbose('USING HTTPS')
-        secure_sock = secure.make_secure(sock, settings.CERTIFICATE_PATH, settings.PRIVATE_KEY_PATH, settings.PRIVATE_KEY_PASSWD)
+        secure_sock = secure.make_secure(sock, Manager.certificate_path, Manager.private_key_path, Manager.private_key_passwd)
         # securing socket failed
         if not secure_sock:
             log.critical('HTTPS FAILED')

@@ -1,5 +1,4 @@
 import pigeon.middleware.components as comp
-from pigeon.conf import settings
 from pigeon.http import HTTPRequest, HTTPResponse
 
 
