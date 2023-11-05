@@ -1,4 +1,4 @@
-from pigeon.birdy import Pigeon
+from pigeon.core.app import Pigeon
 import pigeon.conf
 import pigeon.core
 import pigeon.files
