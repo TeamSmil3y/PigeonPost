@@ -18,7 +18,6 @@ class Manager(metaclass=ManagerMeta):
         """
         Configures any settings that need to be computed at runtime (e.g. typed views).
         """
-
         # import mime parsers
         for mimetype, parser in cls.mime_parsers.items():
             _module, _class = parser.rsplit('.', 1)
@@ -53,4 +52,5 @@ class Manager(metaclass=ManagerMeta):
         path_attributes = ['STATIC_FILES_DIR', 'MEDIA_FILES_DIR', 'TEMPLATES_DIR', 'CERTIFICATE_PATH', 'PRIVATE_KEY_PATH']
         for attribute in path_attributes:
             if value := getattr(settings, attribute):
-                setattr(settings, attribute, Path(value))
+                setattr(settings, attribute
+, Path(value))
