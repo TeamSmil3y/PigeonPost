@@ -78,6 +78,9 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
         <value>[;q=<quality_factor>], <value>[;q=<quality_factor>], ...
         """
         directives = [directive.strip().split(';') for directive in header.split(',')]
+        for directive in directives:
+            directive.append('q=1')
+            while not directive[1].startswith('q'): directive.pop(1)
         directives.sort(key=lambda directive: float(directive[1].split('=')[1]) if len(directive) > 1 else 1, reverse=True)
         return tuple(directive[0] for directive in directives)
     

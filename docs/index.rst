@@ -19,6 +19,8 @@ Getting Started
    :caption: Contents:
 
    pages/quickstart
+   pages/tutorial
+   pages/api
 
 
 
