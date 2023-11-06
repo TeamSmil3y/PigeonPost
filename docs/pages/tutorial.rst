@@ -227,7 +227,7 @@ When running the application we access the css stylesheet under *http://localhos
     :align: left
     :width: 100%
 
- .. _tutorial.templating:
+.. _tutorial.templating:
 
 Templating
 ----------
