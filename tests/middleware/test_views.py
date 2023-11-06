@@ -17,8 +17,8 @@ def set_up(restore):
     view_handler.register('/test/', lambda request: 'text/*', 'text/*', None)
     view_handler.register('/test/', lambda request: 'image/gzip', 'image/gzip', None)
 
-    view_handler.register('/nottest/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
-    view_handler.register('/test/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
+    view_handler.register('/nottest/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*', None)
+    view_handler.register('/test/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*', None)
 
 
 def test_dynamic_params_isolated():
