@@ -58,12 +58,12 @@ If we need to retrieve data provided in the request, we can utilize the get, dat
 
     @app.view('/api/test', 'text/html')
     def api_test(request):
-        if request.method == 'GET':
-	       return f'<h1>Your name must be {request.get("username")}</h1>'
-        elif request.method == 'POST':
-	       return f'<h1>Your name must be {request.post("username")}</h1>'
-        else:
-            return HTTPResponse(data='method not allowed', status=405)
+        match request.method:
+            case 'GET':
+	           return f'<h1>Your name must be {request.get("username")}</h1>'
+            case 'POST':
+	           return f'<h1>Your name must be {request.post("username")}</h1>'
+        return HTTPResponse(data='method not allowed', status=405)
 
 Dynamic Path Arguments
 **********************
@@ -73,11 +73,11 @@ This is best demonstrated through an example::
 
     @app.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
-        if request.method == 'GET':
-            print(f'The user is {dynamic_params.param1}')
-            return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
-        else:
-            return HTTPResponse(data='method not allowed', status=405)
+        match request.method:
+            case 'GET':
+                print(f'The user is {dynamic_params.param1}')
+                return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
+        return HTTPResponse(data='method not allowed', status=405)
 
 Error Responses
 ***************
@@ -132,12 +132,13 @@ We have the option to either override default settings by importing a module, ov
     app.settings.override(mysettings)
 
     # override settigns using dictionary
-    mysettings = {
+    mysettings_dict = {
         'VERBOSITY':  3,
         'PORT': 3000,
         'STATIC_URL_BASE': '/static/'
         'STATIC_FILES_DIR': BASE_DIR / 'static/'
     }
+    app.settings.override(mysettings_dict)
 
     # change settings manually
     app.settings.verbosity = 2
