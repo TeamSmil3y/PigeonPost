@@ -34,6 +34,8 @@ CERTIFICATE_PATH = None
 PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
 
+AUTHENTICATION = 'Basic'
+
 # MIME PARSERS
 MIME_PARSERS = {
     'application/json': 'pigeon.middleware.conversion.mime.parsers.JSONParser',

@@ -18,3 +18,7 @@ def welcome(request):
 @app.view('/')
 def counter(request):
     return render('counter.html', context={'request': request})
+
+@app.view('/auth/', auth='Basic')
+def authed(request):
+    return '<h1> You are authenticated! </h1>'

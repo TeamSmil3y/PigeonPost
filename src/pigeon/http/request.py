@@ -13,6 +13,8 @@ class HTTPRequest(HTTPMessage):
         self.GET = get or {}
         self.FILES = files or {}
         
+        self.credentials = None
+
         # set by middleware
         self.is_cors = None
         self.keep_alive = None

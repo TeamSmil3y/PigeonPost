@@ -1,4 +1,5 @@
 import pigeon.default.errors as default_error
+from pigeon.conf import Manager
 from pigeon.http import HTTPResponse, HTTPRequest
 from typing import Callable
 from collections import UserDict
@@ -11,10 +12,11 @@ class ParameterDict(UserDict):
 
 
 class View:
-    def __init__(self, target: str, func: Callable, mimetype: str):
+    def __init__(self, target: str, func: Callable, mimetype: str, auth: str):
         self.target = target
         self.func = func
         self.mimetype = mimetype
+        self.auth = auth
         
     def match(self, path: str) -> bool:
         """
@@ -79,11 +81,11 @@ class ViewHandler:
     def __init__(self):
         self.views: list[View] = []
 
-    def register(self, target, func, mimetype):
+    def register(self, target, func, mimetype, auth):
         """
         Add new view to ViewHandler instance.
         """
-        self.views.append(View(target, func, mimetype))
+        self.views.append(View(target, func, mimetype, auth))
 
     def _get_view(self, path: str, mimetype: str) -> View | None:
         """
@@ -96,6 +98,16 @@ class ViewHandler:
         # no view found
         return None
 
+    def get_auth(self, target, mimetype):
+        """
+        Returns the auth required for the view at <target>
+        """
+        view = self._get_view(target, mimetype)
+        # non-existing view cannot have auth
+        if not view:
+            return None
+        return view.auth
+
     def get_func(self, path: str, mimetype: str) -> Callable | None:
         """
         Returns a decorated version (includes dynamic_params) of the view for the requested path.
@@ -107,7 +119,7 @@ class ViewHandler:
         dynamic_params = view.get_dynamic(path)
 
         def wrapper(request):
-            return view(request, dynamic_params)
+            return Manager.auth_handler.wrap_view(view)(request, dynamic_params)
         return wrapper
 
     def get_available_mimetypes(self, path: str) -> list[str]:

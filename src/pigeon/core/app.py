@@ -3,6 +3,7 @@ from typing import Callable
 from pigeon.conf import Manager
 import pigeon.core.server as server
 import pigeon.middleware.views as views
+import pigeon.middleware.auth as auth
 import pigeon.utils.logger as logger
 
 log = logger.Log('PIGEON', '#30b3ff')
@@ -22,6 +23,8 @@ class Pigeon:
         # view handlers
         Manager.view_handler = views.ViewHandler()
         Manager.error_handler = views.ErrorHandler()
+        # auth handlers
+        Manager.auth_handler = auth.AuthHandler()
         
         # shortcut
         cls.settings = Manager
@@ -42,15 +45,15 @@ class Pigeon:
 
     # @decorator register view
     @classmethod
-    def view(cls, target: str, mimetype: str='*/*') -> Callable:
+    def view(cls, target: str, mimetype: str='*/*', auth=None) -> Callable:
         def wrapper(func) -> Callable:
             log.debug(f'FOUND VIEW: ')
-            log.sublog(f'TARGET: {target}:\nMIMETYPE: {mimetype}\nFUNC: {func}')
+            log.sublog(f'TARGET: {target}:\nMIMETYPE: {mimetype}\nFUNC: {func}\nAUTH: {auth}')
             # add to views
-            Manager.view_handler.register(target, func, mimetype)
+            Manager.view_handler.register(target, func, mimetype, auth)
             return func
         return wrapper
-    
+
     # @decorator register error view
     @classmethod
     def error(cls, code) -> Callable:
