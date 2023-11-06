@@ -3,9 +3,22 @@ Tutorial
 
 Views
 -----
-Pigeon supports both untyped views and typed views.
-Views that do not specify a mimetype default to being untyped.
-Untyped views should always return either HTTPResponse objects or strings.::
+Views are functions that correspod to a certain request pawth or route on the web application.
+The view \'\/welcome\' would could be requested by visiting the url *http://my-app:8080/welcome*
+
+Typing
+******
+Pigoen supports typing of views.
+This a allows us to add a return `mimetype <https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types>`_ which will be used for server-driven content negotiation.
+Essentially, this enables us to allow the client to specify the desired mimetype for the server response.
+
+    While typing is supported by pigeon, it is not required.
+    Views that do not specify a mimetype will default to \*/\* (any mimetype).
+
+Untyped Views
+*************
+Any view with the mimetype \*/\* is considered untyped.
+Untyped views are expected to return either HTTPResponse objects or strings::
 
     from pigeon import Pigeon
     app = Pigeon()
@@ -18,8 +31,10 @@ Untyped views should always return either HTTPResponse objects or strings.::
     def welcome(request):
         return HTTPResponse(data='Welcome!')
 
-We can also add *typed views* by passing the mimetype of our view as the second argument for `app.view`.
-Pigeon will automatically choose the most fitting typed view for the requested path depending on the `Accept` header::
+Typed Views
+***********
+To make a view typed, we can add the mimetype of our view as the second argument for `app.view`.
+Pigeon will automatically select the most fitting typed view for any incoming the request::
 
     from pigeon.shortcuts import HTTPResponse, JSONResponse
     import json
@@ -32,14 +47,14 @@ Pigeon will automatically choose the most fitting typed view for the requested p
     def api_test(request):
         return HTTPResponse(data='Hello World!')
 
-In contrast to normal views, typed views supports automatic conversion of return data to HTTPResponse objects.
-This means that a view with the mimetype `application/json` can return any JSON convertible data such as dicts, list, ...::
+Unlike regular views, typed views offer automatic conversion of return data into HTTPResponse objects.
+This means that a view with the mimetype application/json can effortlessly return any JSON-compatible data, including dictionaries, lists, and more::
 
     @app.view('/api/test', 'application/json')
     def api_test(request):
         return {'this data is':'autoconverted to an HTTPResponse object'}
 
-If we want to process data provided in the request, we can use the `get`, `data`, and `files` functions::
+If we need to retrieve data provided in the request, we can utilize the get, data, and files functions::
 
     @app.view('/api/test', 'text/html')
     def api_test(request):
@@ -50,8 +65,11 @@ If we want to process data provided in the request, we can use the `get`, `data`
         else:
             return HTTPResponse(data='method not allowed', status=405)
 
-Furthermore, pigeon supports *dynamic path arguments*, these allow for requests to include arguments inside the path.
-This is probably best shown in an example::
+Dynamic Path Arguments
+**********************
+Additionally, Pigeon supports dynamic path arguments, which enable requests to include arguments within the path.
+Dynamic path arguments are denoted in the path by being enclosed in double curly brackets and can be accessed via an additional dynamic_params argument.
+This is best demonstrated through an example::
 
     @app.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
@@ -61,8 +79,9 @@ This is probably best shown in an example::
         else:
             return HTTPResponse(data='method not allowed', status=405)
 
-Dynamic path arguments are indicated in the path by being enclosed in double curly brackets and can be accessed via an extra dynamic_params argument.
-| Manually crafting error responses can be tideous, as such, there is a builtin function that can be used to generate error responses with the provided status code::
+Error Responses
+***************
+Crafting error responses manually can be a time-consuming task. To simplify this process, Pigeon offers a built-in function that automatically generates error responses based on the provided status code::
 
     from pigeon.shortcuts import error
 
@@ -75,25 +94,30 @@ Dynamic path arguments are indicated in the path by being enclosed in double cur
             # method not allowed
             return error(405)
 
-Error responses will be generated using an error view that closely resembles a regular view. Depending on the status code provided to the function, a corresponding error view will be invoked.
-We can define our own custom error view using `app.error`::
+Overriding default Error Responses
+**********************************
+When calling the error function, Pigeon will try to locate a matching error view to generate the response.
+In case no error view matches the provided status code, a fallback will be invoked.
+
+Error views closely resemble regular untyped views.
+We have the ability to define our own custom error view using app.error::
 
     @app.error(500)
     def internal_server_error(request):
 	   return '<h1>Internal Server Error 500</h1>'
 
-If no specific error view exists for a status code, the fallback error view with the code 0 will be used.
-Like any other, the default fallback error view can also be overwritten::
+The error fallback is set to match the unused status code 0.
+Similar to any other error view, the default fallback error view can also be overridden::
 
     @app.error(0)
     def fallback_error(request, code):
         return f'<h1>No error view exists error {code}</h1>'
 
 
-Changing Defualt Settings
--------------------------
-If you wish to modify settings, you can achieve this through the Pigeon class.
-You have the option to either override default settings by importing a module, overwrite them using a dictionary, or adjust them individually one by one::
+Configuring Settings
+--------------------
+If we wish to modify settings, we can achieve this through the Pigeon class.
+We have the option to either override default settings by importing a module, overwrite them using a dictionary, or adjust them individually one by one::
 
     from pigeon import Pigeon
     from pathlib import Path
@@ -140,7 +164,7 @@ Media Files
 Media files refer to non-executable files such as images, vides, aufo files, etc., which are used within a web application.
 They are primarily intended for user-generated content and should not be employed for crucial files required for the application's frontend.
 
-By configuring the *MEDIA_URL_BASE* and *MEDIA_FILES_DIR* settings you automatically enable media files::
+By configuring the *MEDIA_URL_BASE* and *MEDIA_FILES_DIR* settings we automatically enable media files::
 
     from pigeon import Pigeon
     from pathlib import Path
@@ -202,3 +226,36 @@ When running the application we access the css stylesheet under *http://localhos
 .. image:: ../_static/pages/tutorial/static_showcase.png
     :align: left
     :width: 100%
+
+.. _tutorial.templating:
+
+Templating
+----------
+Templates serve as pre-defined structures that allow us to dynamically generate HTML content.
+They act as placeholders where dynamic data can be inserted before sending a response to a client's request.
+
+Pigeon uses the jinja2 templating engine.
+If you want to learn how to make your own templates, the documentation for writing jinja2 templates can be found `here <https://jinja.palletsprojects.com/en/3.1.x/templates/>`_.
+
+To enable templates, we must specify a template directory using the *TEMPLATES_DIR* setting, which will automatically activate them.
+It is important to ensure that all our templates are located within this designated directory, as otherwise, Pigeon will not be able to locate them::
+
+    from pigeon import Pigeon
+    from pathlib import Path
+
+    # directory of project
+    BASE_DIR = pathlib.Path(__file__).parent.resolve()
+
+    app = Pigeon()
+
+    # configure templates directory
+    app.settings.templates_dir = BASE_DIR / 'templates/'
+
+To make use of the templates we can utilize the *render* function::
+
+    from pigeon.shortcuts import render
+
+    @app.view('/thisisrendered/')
+    def my_rendered_view(request):
+        return render('path/to/template.html', context={'request':request})
+

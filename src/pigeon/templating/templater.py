@@ -15,7 +15,7 @@ def load():
     )
 
 
-def render(template, context, status=200):
+def render(template, context: dict, status: int=200) -> HTTPResponse:
     # get mimetype for file
     mimetype = mimetypes.guess_type(Manager.templates_dir / template)[0]
     global env

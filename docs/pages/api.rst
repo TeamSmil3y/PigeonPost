@@ -3,7 +3,7 @@ API
 
 HTTPRequest and HTTPResponse
 ----------------------------
-[...docs under development...]
+🚧 ..under construction... 🏗️
 
 .. _api.settings:
 
