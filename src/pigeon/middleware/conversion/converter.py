@@ -1,8 +1,27 @@
 import pigeon.conf
+from typing import Callable
 from typing import Any
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from pigeon.http import HTTPRequest, HTTPResponse
+
+
+def autogenerator(view: Callable) -> Callable:
+    """
+    Wraps a view so that any responses generated from the view will have automatic type conversion.
+    """
+
+    # use reference to view before it was changed to the wrapper to avoid endless recursion
+    func = view.func
+
+    def wrapper(request, *args, **kwargs):
+        # get response from view
+        response = func(request, *args, **kwargs)
+        # automatic type conversion
+        return generate(response, view.mimetype)
+    # only wrap view.func not the actual view
+    view.func = wrapper
+    return view
 
 
 def generate(data: Any, mimetype=None) -> HTTPResponse:

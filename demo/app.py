@@ -3,7 +3,7 @@ from pigeon.shortcuts import HTTPResponse, JSONResponse, render
 import settings
 
 app = Pigeon(settings)
-
+app.settings.port = 3000
 
 @app.view('/welcome', 'application/json')
 def welcome(request):
@@ -21,4 +21,4 @@ def counter(request):
 
 @app.view('/auth/', auth='Basic')
 def authed(request):
-    return '<h1> You are authenticated! </h1>'
+    return f'<h1> Username: {request.auth.username} </h1><br/><h1> Password: {request.auth.password} </h1>'

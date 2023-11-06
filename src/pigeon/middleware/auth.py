@@ -5,49 +5,65 @@ import base64
 
 log = logger.Log('Auth', '#ff4a65')
 
+class Credentials:
+    def __init__(self, username=None, password=None, type=None):
+        """
+        Class providing credentials; if auth is enabled for a view, the credentials object will be added under request.auth
+        """
+        self.username = username
+        self.password = password
+        # the type of authentication used (e.g. 'Basic')
+        self.type = type
+
+
 
 class AuthHandler:
-    def creds(self, request: HTTPRequest, auth_required: str | None) -> Any | None:
+    def wrap(self, view):
         """
-        Returns credentials for a reuqest
+        Wraps a view in a wrapper for the specific auth
         """
-        if not auth_required:
-            log.debug('NO AUTH REQUIRED - SKIPPING REQUEST')
-        
-        match auth_required.lower():
-            case 'basic':
-                authorization = request.headers('authorization')
-                if not authorization:
-                    log.warning('REQUEST IS LACKING BASIC AUTH')
-                    # unauthorized -> tells browser to send credentials
-                    response = error(401)
-                else:
-                    # get creds from auth header
-                    encoded_credentials = authorization.strip().split(' ')[1].strip()
-                    # creds are usually base64 encoded
-                    credentials = str(base64.b64decode(encoded_credentials), 'utf-8')
-                    log.debug(f'RECEIVED BASIC AUTH: {credentials}')
-                    return credentials
+        if not view.auth:
+            # if no authentication is required nothing needs to be wrapped
+            return view
 
-        log.critical(f'REQUIRED AUTH {auth_required} IS NOT SUPPORTED OR DOES NOT EXIST')
-        return response
-        
-    def evaluate(self, request: HTTPRequest, response: HTTPResponse, auth_required: str | None) -> HTTPResponse:
-        """
-        Evaluats a request and the corresponding response to check whether any required authentication is met.
-        """
-        # if no auth is required we can skip evaluating auth (duh!)
-        if not auth_required:
-            log.debug('NO AUTH REQUIRED - SKIPPING EVALUATION')
-            return response
-        
-        match auth_required.lower():
+        match view.auth.lower():
             case 'basic':
-                response.HEADERS['WWW-Authenticate'] = 'Basic realm="Auth required to access resource"'
-                return response
+                # wrap in basic auth
+                return self.wrap_basic(view)
             case other:
-                # 
-                log.critical(f'REQUIRED AUTH {other} IS NOT SUPPORTED OR DOES NOT EXIST')
+                # auth is not supported or does simply not exist
+                log.error(f'view {view.target} HAS UNKNOWN AUTH TYPE')
                 return error(500)
-        
-        return response
+
+    def wrap_basic(self, view):
+        """
+        Wraps the view function (view.func) for basic authentication
+        """
+
+        # use reference to view before it was changed to the wrapper to avoid endless recursion
+        func = view.func
+
+        def wrapper(request, *args, **kwargs):
+            # get authorization header
+            authorization = request.headers('authorization')
+            # check if request has credentials, otherwise return 401 (Unauthorized)
+            if not authorization or not authorization.startswith('Basic'):
+                response = error(401)
+            # gather credentials from request
+            else:
+                # get creds from auth header
+                encoded_credentials = authorization.strip().split(' ')[1].strip()
+                # creds are usually base64 encoded
+                credentials = str(base64.b64decode(encoded_credentials), 'utf-8')
+                username, password = credentials.split(':')
+                # add credentials to request
+                request.auth = Credentials(username=username, password=password, type='Basic')
+
+                # get response from view
+                response = func(request, *args, **kwargs)
+
+            response.HEADERS['WWW-Authenticate'] = 'Basic realm="Auth required to access resource"'
+            return response
+        # only wrap view.func not the actual view
+        view.func = wrapper
+        return view

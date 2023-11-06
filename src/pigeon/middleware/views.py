@@ -1,4 +1,5 @@
 import pigeon.default.errors as default_error
+from pigeon.middleware.conversion.converter import autogenerator
 from pigeon.conf import Manager
 from pigeon.http import HTTPResponse, HTTPRequest
 from typing import Callable
@@ -33,6 +34,7 @@ class View:
             return self.func(request, dynamic_params)
         else:
             return self.func(request)
+
 
     def get_dynamic(self, path: str) -> ParameterDict:
         """
@@ -118,8 +120,12 @@ class ViewHandler:
             return None
         dynamic_params = view.get_dynamic(path)
 
-        def wrapper(request):
-            return Manager.auth_handler.wrap_view(view)(request, dynamic_params)
+        def wrapper(request, dynamic_params=None):
+            # wrap in autogenerator for automatic type conversion
+            wrapped_view: View = autogenerator(view)
+            # warp in auth for auth features
+            wrapped_view: View = Manager.auth_handler.wrap(wrapped_view)
+            return wrapped_view(request, dynamic_params=None)
         return wrapper
 
     def get_available_mimetypes(self, path: str) -> list[str]:

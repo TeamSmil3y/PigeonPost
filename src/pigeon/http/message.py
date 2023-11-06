@@ -8,6 +8,14 @@ class HTTPHeaders(collections.UserDict):
 
         super().__init__(data)
 
+    @property
+    def content_type(self):
+        return self.headers('content-type')
+
+    @content_type.setter
+    def content_type(self, value):
+        self.HEADERS['content-type'] = value
+
     def __add__(self, other):
         if not isinstance(other, (HTTPHeaders, dict)):
             raise ValueError
