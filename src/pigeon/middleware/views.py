@@ -113,7 +113,7 @@ class ViewHandler:
     def get_func(self, path: str, mimetype: str) -> Callable | None:
         """
         Returns a decorated version (includes dynamic_params and auth) of the view for the requested path.
-        """GP
+        """
         view = self._get_view(path, mimetype)
         if not view:
             # no view found
