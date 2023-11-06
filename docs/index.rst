@@ -12,21 +12,11 @@ Pigeon is a versatile Python web application framework focused prioritizing a se
 Pigeon is committed to empowering developers with complete control and an array of customization possibilities, all while ensuring user-friendly, convenient, and accessible usage.
 
 
-Getting Started
----------------
+Contents
+--------
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    pages/quickstart
    pages/tutorial
    pages/api
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
