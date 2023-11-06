@@ -57,7 +57,7 @@ def process(message: HTTPMessage) -> HTTPResponse:
 
     # if processor returned an error log it
     if response.is_error:
-        log.warn(f'PROCESSOR RETURNED ERROR {response.status}')
+        log.warning(f'PROCESSOR RETURNED ERROR {response.status}')
 
     return response
 
