@@ -167,7 +167,6 @@ class ErrorHandler:
         call error code matching func (fallback if no func for the specified code exists)
         request parameter optional
         """
-
         if HTTPRequest:
             return self.get_func(code)(request=request)
 

@@ -1,5 +1,5 @@
 import collections
-
+from pigeon.utils.common import LowerParameterDict
 
 class HTTPHeaders(collections.UserDict):
     def __init__(self, headers=None):
@@ -40,10 +40,14 @@ class HTTPHeaders(collections.UserDict):
     
 
 class HTTPMessage:
-    def __init__(self, headers, data, protocol):
+    def __init__(self, headers, data, protocol, cookies: dict=None):
         self.HEADERS: HTTPHeaders = headers if isinstance(headers, HTTPHeaders) else HTTPHeaders(headers=headers)
-        self.DATA = data
-        self.protocol = protocol
+        self.DATA: Any = data
+        # protocol used (e.g. 1.0, 1.1, 2.0, ...)
+        self.protocol: str = protocol
+
+        # cookies of request
+        self.cookies: LowerParameterDict = LowerParameterDict(cookies or dict())
 
     @property
     def is_error(self):

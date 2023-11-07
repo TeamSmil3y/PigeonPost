@@ -11,8 +11,22 @@ class ParameterDict(UserDict):
     If accessed as described above, the dict will return the value or None if no matching item is found.
     """
     def __init__(self, data: dict=None):
-        super().__init__()
-        if data: self.data.update(data)
+        super().__init__(data)
     
     def __getattr__(self, key):
         return self.data.get(key)
+
+class LowerParameterDict(ParameterDict):
+    """
+    Similar to ParameterDict, but all keys will be changed to lowercase and any dashes '-' in keys will be changed to underscores '_'.
+    """
+    def __getattr__(self, data: dict=None):
+        data = {LowerParameterDict._lower_key(key): value for key, value in data.items()}
+        super().__init__(data)
+
+    @classmethod
+    def _lower_key(cls, key):
+        return key.replace('-', '_').lower()
+
+    def __getattr__(self, key):
+        return self.data.get(LowerParameterDict._lower_key(key))
