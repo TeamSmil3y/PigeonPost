@@ -14,9 +14,9 @@ def autogenerator(view: Callable) -> Callable:
     # use reference to view before it was changed to the wrapper to avoid endless recursion
     func = view.func
 
-    def wrapper(request, *args, **kwargs):
+    def wrapper(request, dynamic_params=None):
         # get response from view
-        response = func(request, *args, **kwargs)
+        response = func(request, dynamic_params)
         # automatic type conversion
         return generate(response, view.mimetype)
     # only wrap view.func not the actual view

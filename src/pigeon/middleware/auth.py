@@ -43,7 +43,7 @@ class AuthHandler:
         # use reference to view before it was changed to the wrapper to avoid endless recursion
         func = view.func
 
-        def wrapper(request, *args, **kwargs):
+        def wrapper(request, dynamic_params=None):
             # get authorization header
             authorization = request.headers('authorization')
             # check if request has credentials, otherwise return 401 (Unauthorized)
@@ -60,7 +60,7 @@ class AuthHandler:
                 request.auth = Credentials(username=username, password=password, type='Basic')
 
                 # get response from view
-                response = func(request, *args, **kwargs)
+                response = func(request, dynamic_params)
 
             response.HEADERS['WWW-Authenticate'] = 'Basic realm="Auth required to access resource"'
             return response

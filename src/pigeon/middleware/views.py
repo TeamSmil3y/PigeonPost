@@ -120,12 +120,12 @@ class ViewHandler:
             return None
         dynamic_params = view.get_dynamic(path)
 
-        def wrapper(request, dynamic_params=None):
+        def wrapper(request):
             # wrap in autogenerator for automatic type conversion
             wrapped_view: View = autogenerator(view)
             # warp in auth for auth features
             wrapped_view: View = Manager.auth_handler.wrap(wrapped_view)
-            return wrapped_view(request, dynamic_params=None)
+            return wrapped_view(request, dynamic_params)
         return wrapper
 
     def get_available_mimetypes(self, path: str) -> list[str]:
