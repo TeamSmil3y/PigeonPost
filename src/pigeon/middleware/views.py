@@ -1,4 +1,6 @@
 import pigeon.default.errors as default_error
+from pigeon.middleware.conversion.converter import autogenerator
+from pigeon.conf import Manager
 from pigeon.http import HTTPResponse, HTTPRequest
 from typing import Callable
 from collections import UserDict
@@ -11,10 +13,11 @@ class ParameterDict(UserDict):
 
 
 class View:
-    def __init__(self, target: str, func: Callable, mimetype: str):
+    def __init__(self, target: str, func: Callable, mimetype: str, auth: str):
         self.target = target
         self.func = func
         self.mimetype = mimetype
+        self.auth = auth
         
     def match(self, path: str) -> bool:
         """
@@ -31,6 +34,7 @@ class View:
             return self.func(request, dynamic_params)
         else:
             return self.func(request)
+
 
     def get_dynamic(self, path: str) -> ParameterDict:
         """
@@ -79,11 +83,11 @@ class ViewHandler:
     def __init__(self):
         self.views: list[View] = []
 
-    def register(self, target, func, mimetype):
+    def register(self, target, func, mimetype, auth):
         """
         Add new view to ViewHandler instance.
         """
-        self.views.append(View(target, func, mimetype))
+        self.views.append(View(target, func, mimetype, auth))
 
     def _get_view(self, path: str, mimetype: str) -> View | None:
         """
@@ -96,9 +100,19 @@ class ViewHandler:
         # no view found
         return None
 
+    def get_auth(self, target, mimetype):
+        """
+        Returns the auth required for the view at <target>
+        """
+        view = self._get_view(target, mimetype)
+        # non-existing view cannot have auth
+        if not view:
+            return None
+        return view.auth
+
     def get_func(self, path: str, mimetype: str) -> Callable | None:
         """
-        Returns a decorated version (includes dynamic_params) of the view for the requested path.
+        Returns a decorated version (includes dynamic_params and auth) of the view for the requested path.
         """
         view = self._get_view(path, mimetype)
         if not view:
@@ -107,7 +121,11 @@ class ViewHandler:
         dynamic_params = view.get_dynamic(path)
 
         def wrapper(request):
-            return view(request, dynamic_params)
+            # wrap in autogenerator for automatic type conversion
+            wrapped_view: View = autogenerator(view)
+            # warp in auth for auth features
+            wrapped_view: View = Manager.auth_handler.wrap(wrapped_view)
+            return wrapped_view(request, dynamic_params)
         return wrapper
 
     def get_available_mimetypes(self, path: str) -> list[str]:

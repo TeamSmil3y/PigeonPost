@@ -10,15 +10,15 @@ def set_up(restore):
     view_handler: views.ViewHandler = views.ViewHandler()
     Manager.view_handler = view_handler
 
-    view_handler.register('/test/', lambda request: 'application/json', 'application/json')
-    view_handler.register('/test/', lambda request: 'text/html', 'text/html')
-    view_handler.register('/test/', lambda request: '*/*', '*/*')
-    view_handler.register('/test/', lambda request: 'text/xml', 'text/xml')
-    view_handler.register('/test/', lambda request: 'text/*', 'text/*')
-    view_handler.register('/test/', lambda request: 'image/gzip', 'image/gzip')
+    view_handler.register('/test/', lambda request: 'application/json', 'application/json', None)
+    view_handler.register('/test/', lambda request: 'text/html', 'text/html', None)
+    view_handler.register('/test/', lambda request: '*/*', '*/*', None)
+    view_handler.register('/test/', lambda request: 'text/xml', 'text/xml', None)
+    view_handler.register('/test/', lambda request: 'text/*', 'text/*', None)
+    view_handler.register('/test/', lambda request: 'image/gzip', 'image/gzip', None)
 
-    view_handler.register('/nottest/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
-    view_handler.register('/test/{{myparam}}/dynamic/', lambda request, dynamic: dynamic.myparam, '*/*')
+    view_handler.register('/nottest/{{myparam}}/dynamic/', lambda request, dynamic_params: dynamic_params.myparam, '*/*', None)
+    view_handler.register('/test/{{myparam}}/dynamic/', lambda request, dynamic_params: dynamic_params.myparam, '*/*', None)
 
 
 def test_dynamic_params_isolated():
@@ -29,7 +29,7 @@ def test_dynamic_params_isolated():
 
     func = view_handler.get_func('/nottest/thisisatest/dynamic/', '*/*')
 
-    assert func(None) == 'thisisatest', 'Gathering dynamic param from request failed!'
+    assert func(None).DATA == 'thisisatest', 'Gathering dynamic param from request failed!'
 
 
 def test_dynamic_params():
@@ -39,7 +39,7 @@ def test_dynamic_params():
     view_handler: views.ViewHandler = Manager.view_handler
     func = view_handler.get_func('/test/thisisatest/dynamic/', '*/*')
 
-    assert func(None) == 'thisisatest', 'Gathering dynamic param from request failed!'
+    assert func(None).DATA == 'thisisatest', 'Gathering dynamic param from request failed!'
 
 
 def test_get_available_mimetypes():

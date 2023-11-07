@@ -113,6 +113,18 @@ Similar to any other error view, the default fallback error view can also be ove
     def fallback_error(request, code):
         return f'<h1>No error view exists error {code}</h1>'
 
+Authentication
+**************
+To implement authentication, you can easily specify the desired authentication type in the auth parameter of the app.view function.
+This allows you to define the specific authentication mechanism you wish to utilize for the view::
+
+    @app.view('/credential_test/', 'text/html', 'Basic')
+    def credential_test(request):
+        return f'<h1> Username: {request.auth.username} </h1><br/><h1> Password: {request.auth.password} </h1>'
+
+Pigeon currently supports the following authentication types:
+    * Basic
+
 
 Configuring Settings
 --------------------

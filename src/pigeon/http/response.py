@@ -14,7 +14,7 @@ class HTTPResponse(HTTPMessage):
         self.status = status
 
         if content_type:
-            self.HEADERS['Content-Type'] = content_type
+            self.content_type = content_type
 
         # set by middleware
         self.is_cors = None
