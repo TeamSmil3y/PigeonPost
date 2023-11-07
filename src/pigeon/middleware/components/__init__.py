@@ -9,6 +9,7 @@ import pigeon.middleware.components.cache_control as cache_control
 import pigeon.middleware.components.content_negotiation as content_negotiation
 import pigeon.middleware.components.mediafiles as mediafiles
 import pigeon.middleware.components.staticfiles as staticfiles
+import pigeon.middleware.components.cookies as cookies
 
 #
 # Components used by middleware preprocessors and postprocessors to process requests.
