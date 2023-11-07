@@ -16,9 +16,6 @@ class HTTPResponse(HTTPMessage):
         if content_type:
             self.content_type = content_type
 
-        # set by middleware
-        self.is_cors = None
-
     @property
     def is_error(self):
         return self.status >= 400
