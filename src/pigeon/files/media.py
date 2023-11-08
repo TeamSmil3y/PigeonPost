@@ -38,9 +38,9 @@ def handle_media_request(request: HTTPRequest):
         # make response with file
         with open(local_path, 'r') as f:
             response = HTTPResponse(data=data)
-            response.set_headers({'Content-Type': mimetype})
+            response.headers.content_type = mimetype
             if encoding:
-                response.set_headers({'Content-Encoding': encoding})
+                response.headers.content_encoding = encoding
         return response
     else:
         return error(404, request)

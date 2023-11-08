@@ -11,13 +11,13 @@ class CacheControlComponent(comp.MiddlewareComponent):
         # depending on content decide if and how long response should be cached
         if request.tags.is_media_request:
             # let browser cache response since media files are heavy on backend and might not change instantly
-            response.HEADERS['cache-control'] = 'public, max-age=600'
+            response.headers.cache_control = 'public, max-age=600'
         elif request.tags.is_static_request:
             # let browser cache for a longer time since static files aren't meant to be changed often
-            response.HEADERS['cache-control'] = 'public, max-age=1800'    
+            response.headers.cache_control = 'public, max-age=1800'
         else:
             # prevent browser from caching since request might be dynamic        
-            response.HEADERS['cache-control'] = 'private, no-store'
+            response.headers.cache_control = 'private, no-store'
             
         return response
 

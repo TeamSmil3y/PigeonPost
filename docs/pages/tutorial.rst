@@ -36,7 +36,7 @@ Typed Views
 To make a view typed, we can add the mimetype of our view as the second argument for `app.view`.
 Pigeon will automatically select the most fitting typed view for any incoming the request::
 
-    from pigeon.shortcuts import HTTPResponse, JSONResponse
+    from pigeon.shortcuts import HTTPResponse
     import json
 
     @app.view('/api/test', 'application/json')
@@ -54,15 +54,15 @@ This means that a view with the mimetype application/json can effortlessly retur
     def api_test(request):
         return {'this data is':'autoconverted to an HTTPResponse object'}
 
-If we need to retrieve data provided in the request, we can utilize the get, data, and files functions::
+If we need to retrieve data provided in the request, we can utilize the get, data, and files ParameterDicts::
 
     @app.view('/api/test', 'text/html')
     def api_test(request):
         match request.method:
             case 'GET':
-	           return f'<h1>Your name must be {request.get("username")}</h1>'
+	           return f'<h1>Your name must be {request.get.username}</h1>'
             case 'POST':
-	           return f'<h1>Your name must be {request.post("username")}</h1>'
+	           return f'<h1>Your name must be {request.post.username}</h1>'
         return HTTPResponse(data='method not allowed', status=405)
 
 Dynamic Path Arguments

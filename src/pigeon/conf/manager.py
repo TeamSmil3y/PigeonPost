@@ -28,6 +28,8 @@ class Manager(metaclass=ManagerMeta):
             _module, _class = generators.rsplit('.', 1)
             cls.mime_generators[mimetype] = getattr(importlib.import_module(_module), _class)
 
+        cls.cors_allowed_headers = [header.lower() for header in cls.cors_allowed_headers]
+
 
     @classmethod
     def override(cls, new_settings):

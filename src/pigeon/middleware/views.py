@@ -4,18 +4,14 @@ from pigeon.conf import Manager
 from pigeon.http import HTTPResponse, HTTPRequest
 from typing import Callable
 from collections import UserDict
+from pigeon.utils.common import ParameterDict
 import re
-
-
-class ParameterDict(UserDict):
-    def __getattr__(self, key):
-        return self.data.get(key)
 
 
 class View:
     def __init__(self, target: str, func: Callable, mimetype: str, auth: str):
         self.target = target
-        self.func = func
+        self.func = lambda request, dynamic_params=None: func(request, dynamic_params) if dynamic_params else func(request)
         self.mimetype = mimetype
         self.auth = auth
         

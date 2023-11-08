@@ -43,7 +43,7 @@ class ComponentProcessor(Processor):
 
     @classmethod
     def process(cls, request: HTTPRequest) -> HTTPResponse:
-        # gather response for request
+        # return 404 as fallback func
         func = lambda request: error(404)
 
         # run every middleware process component on request and func
@@ -51,7 +51,9 @@ class ComponentProcessor(Processor):
             cls.log.debug(f'PROCESSING WITH COMPONENT: {component.__name__}')
             request, func = component.process(request=request, func=func)
 
-        return func(request)
+        # gather response
+        response = func(request)
+        return response
 
     @classmethod
     def postprocess(cls,  response: HTTPResponse,  request: HTTPRequest) -> HTTPResponse:

@@ -1,9 +1,9 @@
 from pigeon import Pigeon
-from pigeon.shortcuts import HTTPResponse, JSONResponse, render
+from pigeon.shortcuts import HTTPResponse, render
 import settings
 
 app = Pigeon(settings)
-app.settings.port = 3000
+app.settings.port = 4000
 
 @app.view('/welcome', 'application/json')
 def welcome(request):

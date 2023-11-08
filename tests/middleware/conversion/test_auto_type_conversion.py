@@ -10,4 +10,4 @@ def test_automatic_type_conversion(restore):
     data = {'This is': 'a test', 'and it': 'hopfefully succeeds'}
     response = converter.generate(data, 'application/json')
 
-    assert response.DATA == '{"This is": "a test", "and it": "hopfefully succeeds"}'
+    assert response.data == '{"This is": "a test", "and it": "hopfefully succeeds"}'

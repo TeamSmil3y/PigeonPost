@@ -22,7 +22,7 @@ def load():
             # if nothing is returned file is too large
             if loaded_file:
                 loaded_files[local_path] = loaded_file
-    
+
 
 def load_file(local_path: Path):
     """
@@ -75,9 +75,9 @@ def handle_static_request(request: HTTPRequest):
         # make response with file
         with open(local_path, 'r') as f:
             response = HTTPResponse(data=data)
-            response.set_headers({'Content-Type': mimetype})
+            response.headers.content_type = mimetype
             if encoding:
-                response.set_headers({'Content-Encoding': encoding})
+                response.headers.content_encoding = encoding
         return response
     else:
         return error(404, request)

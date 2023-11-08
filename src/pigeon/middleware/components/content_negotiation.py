@@ -86,12 +86,12 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
     
     @classmethod
     def parse_accept_header(cls, request: HTTPRequest) -> tuple:
-        if header := request.headers('Accept'):
+        if header := request.headers.accept:
             return cls.parse_header(header)
         return tuple('*/*')
     
     @classmethod
     def parse_accept_encoding_header(cls, request: HTTPRequest) -> tuple:
-        if header := request.headers('Accept-Encoding'):
+        if header := request.headers.accept_encoding:
             return cls.parse_header(header)
         return tuple('*')

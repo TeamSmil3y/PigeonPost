@@ -45,7 +45,7 @@ class AuthHandler:
 
         def wrapper(request, dynamic_params=None):
             # get authorization header
-            authorization = request.headers('authorization')
+            authorization = request.headers.authorization
             # check if request has credentials, otherwise return 401 (Unauthorized)
             if not authorization or not authorization.startswith('Basic'):
                 response = error(401)
@@ -62,7 +62,7 @@ class AuthHandler:
                 # get response from view
                 response = func(request, dynamic_params)
 
-            response.HEADERS['WWW-Authenticate'] = 'Basic realm="Auth required to access resource"'
+            response.headers.WWW_Authenticate = 'Basic realm="Auth required to access resource"'
             return response
         # only wrap view.func not the actual view
         view.func = wrapper

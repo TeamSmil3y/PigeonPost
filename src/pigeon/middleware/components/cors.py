@@ -14,7 +14,7 @@ class CORSComponent(comp.MiddlewareComponent):
         if '*' in Manager.cors_allowed_origins:
             return True
     
-        return request.headers('origin') in Manager.cors_allowed_origins
+        return request.headers.origin in Manager.cors_allowed_origins
     
     @classmethod
     def cors_method_allowed(cls, request: HTTPRequest) -> bool:
@@ -36,11 +36,11 @@ class CORSComponent(comp.MiddlewareComponent):
         """
         Checks if the request headers are allowed as per CORS-policy
         """
-        return all(header in Manager.cors_allowed_headers for header in request.HEADERS.data)
+        return all(header.lower() in Manager.cors_allowed_headers for header in request.headers.keys())
     
     @classmethod
     def is_cors(cls, request: HTTPRequest) -> bool:
-        return request.headers('origin') is not None
+        return request.headers.origin is not None
     
     @classmethod
     def allowed(cls, request: HTTPRequest) -> bool:
@@ -70,7 +70,7 @@ class CORSComponent(comp.MiddlewareComponent):
         """
         headers = {
             'Access-Control-Allow-Credentials': str(Manager.cors_allow_creds),
-            'Access-Control-Allow-Origin': request.headers('origin'),
+            'Access-Control-Allow-Origin': request.headers.origin,
             'Access-Control-Allow-Headers': ', '.join(Manager.cors_allowed_headers),
             'Access-Control-Allow-Methods': ', '.join(Manager.cors_allowed_methods),
             'Access-Control-Max-Age': str(Manager.cors_max_age)

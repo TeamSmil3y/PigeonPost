@@ -48,7 +48,7 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
 
         # send response to client
         log.verbose(f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
-        client_sock.sendall(response.render())
+        client_sock.sendall(response.__bytes__('ascii'))
         log.verbose(f'RESPONSE SENT')
 
         # do not keep connection open on error
@@ -56,11 +56,11 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
             break
 
         # client asks to terminate connection
-        if not request.keep_alive:
+        if not request.tags.keep_alive:
             log.debug(f'CLOSING CONNECTION TO {client_address[0]}:{client_address[1]}')
             break
 
     # close socket
-    log.verbose(f'CLOSING CONNECTION FROM {client_address[0]}:{client_address[1]}')
+    log.verbose(f'CLOSING SOCKET')
     client_sock.shutdown(socket.SHUT_RDWR)
     client_sock.close()

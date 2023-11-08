@@ -29,7 +29,7 @@ def test_dynamic_params_isolated():
 
     func = view_handler.get_func('/nottest/thisisatest/dynamic/', '*/*')
 
-    assert func(None).DATA == 'thisisatest', 'Gathering dynamic param from request failed!'
+    assert func(None).data == 'thisisatest', 'Gathering dynamic param from request failed!'
 
 
 def test_dynamic_params():
@@ -39,7 +39,7 @@ def test_dynamic_params():
     view_handler: views.ViewHandler = Manager.view_handler
     func = view_handler.get_func('/test/thisisatest/dynamic/', '*/*')
 
-    assert func(None).DATA == 'thisisatest', 'Gathering dynamic param from request failed!'
+    assert func(None).data == 'thisisatest', 'Gathering dynamic param from request failed!'
 
 
 def test_get_available_mimetypes():

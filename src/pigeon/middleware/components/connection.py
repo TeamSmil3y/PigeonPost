@@ -6,7 +6,7 @@ class ConnectionComponent(comp.MiddlewareComponent):
     @classmethod
     def postprocess(cls,  response: HTTPResponse, request: HTTPRequest) -> HTTPResponse:
         # do not close connection if client requests to keep it alive 
-        response.set_headers(headers={'Connection': 'keep-alive' if request.keep_alive else 'close'})
+        response.set_headers(headers={'Connection': 'keep-alive' if request.tags.keep_alive else 'close'})
         return response
     
     @classmethod
@@ -20,4 +20,4 @@ class ConnectionComponent(comp.MiddlewareComponent):
         """
         Checks if the Host header in the request has a valid hostname. 
         """
-        return request.headers('connection') == 'keep-alive'
+        return request.headers.connection == 'keep-alive'

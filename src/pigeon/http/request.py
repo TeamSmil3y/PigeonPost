@@ -1,37 +1,24 @@
 from pigeon.http.message import HTTPMessage
+from pigeon.utils.common import ParameterDict
 
 
 class HTTPRequest(HTTPMessage):
-    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str='1.1'):
+    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str='1.1', content_type=None):
         """
         Class representing an HTTP request
         """
-        super().__init__(headers, data, protocol)
+        super().__init__(headers, data, protocol, content_type)
         self.method = method
         self.path = path
 
-        self.GET = get or {}
-        self.FILES = files or {}
-        
-        self.credentials = None
+        self.get = ParameterDict(get or None)
+        self.files = ParameterDict(get or None)
 
-        # set by middleware
-        self.is_cors = None
-        self.keep_alive = None
+        # credentials (or other auth related) send in request
+        self.auth = None
 
     @property
     def is_error(self):
         # A request cannot have a status code and thus neither be a client or server error (response)
         return False
 
-    def files(self, key):
-        """
-        Returns self.FILES[key] if exists else None
-        """
-        return self.FILES.get(key)
-        
-    def get(self, key):
-        """
-        Returns self.GET[key] if exists else None
-        """
-        return self.GET.get(key)
