@@ -3,7 +3,7 @@ from pigeon.shortcuts import HTTPResponse, render
 import settings
 
 app = Pigeon(settings)
-app.settings.port = 4000
+app.settings.port = 4001
 
 @app.view('/welcome', 'application/json')
 def welcome(request):
@@ -13,6 +13,11 @@ def welcome(request):
 @app.view('/welcome', 'text/plain')
 def welcome(request):
     return HTTPResponse(data='Welcome! Hello World!', content_type='text/plain')
+
+
+@app.view('/dynamic/{{user}}/display')
+def counter(request, dynamic):
+    return f'<h1>{dynamic.user}</h1>'
 
 
 @app.view('/')
