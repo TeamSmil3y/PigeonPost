@@ -45,3 +45,8 @@ MIME_PARSERS = {
 MIME_GENERATORS = {
     'application/json': 'pigeon.middleware.conversion.mime.generators.JSONGenerator',
 }
+
+
+DBTYPE = 'sqlite'
+DBAPI = 'pysqlite'
+DB_LOCATION = ''
