@@ -5,6 +5,7 @@ import pigeon.core.secure as secure
 import pigeon.core.handler as handler
 import pigeon.files.static as static
 import pigeon.templating.templater as templater
+from pigeon.database import Database
 import threading
 
 log = logger.Log('SERVER', '#bb88ff')
@@ -22,6 +23,11 @@ def start():
         # create jinja2 template environment
         log.info('LOADING TEMPLATES')
         templater.load()
+
+    if Manager.db_location:
+        log.info('CONNECTING TO DATABASE')
+        db = DatabaseManager()
+        db.connect()
 
 
 def serve():
