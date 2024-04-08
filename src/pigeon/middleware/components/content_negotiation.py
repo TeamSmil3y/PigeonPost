@@ -54,12 +54,8 @@ class ContentNegotiationComponent(comp.MiddlewareComponent):
 
             for available_mimetype, available_subtype in available_mimetypes:
                 # mimetype match
-                if top_level_mimetype == available_mimetype and subtype == '*' or subtype == available_subtype or available_subtype == '*':
+                if (top_level_mimetype == available_mimetype or top_level_mimetype == '*' and subtype == '*' or subtype == available_subtype or available_subtype == '*'):
                     return Manager.view_handler.get_func(request.path, available_mimetype+'/'+available_subtype), mimetype
-
-        # return view for any mimetype if it exists
-        if '*/*' in available_mimetypes:
-            return Manager.view_handler.get_func(request.path, '*/*'), '*/*'
 
         # no macthing mimetype is found
         return None, None

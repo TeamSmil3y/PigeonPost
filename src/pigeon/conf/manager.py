@@ -9,7 +9,7 @@ class ManagerMeta(type):
     def __getattr__(self, key: str) -> Any:
         # get attribute from settings
         key = key.upper()
-        return getattr(settings, key)
+        if(hasattr(settings, key)): return getattr(settings, key)
 
 
 class Manager(metaclass=ManagerMeta):

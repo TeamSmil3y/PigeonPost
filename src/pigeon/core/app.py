@@ -56,8 +56,8 @@ class Pigeon:
 
     # @decorator register error view
     @classmethod
-    def error(cls, code) -> Callable:
-        def wrapper(func) -> Callable:
+    def error(cls, code: int) -> Callable:
+        def wrapper(func: Callable) -> Callable:
             # add to error views
             Manager.error_handler.register(code, func)
             return func
