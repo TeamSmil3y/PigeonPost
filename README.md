@@ -23,9 +23,10 @@ def home(request):
 ```
 
 ## Features
-- serve static files
+- serve static and media files
 - easy request and response handling
 - use jinja2 templating engine
+- authentication
 
 ### Natively Supported Mimetypes:
 - application/json
