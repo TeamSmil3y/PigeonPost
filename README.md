@@ -17,7 +17,7 @@ form pigeon import Pigeon
 
 Pigeon()
 
-@view('/')
+@Pigeon.view('/')
 def home(request):
     return '<h1> Hello World! </h1>'
 ```
