@@ -17,9 +17,9 @@ Getting Started
 With pigeon installed, we can create a simple working web application like::
 
     from pigeon import Pigeon
-    app = Pigeon()
+    Pigeon()
 
-    @app.view('/')
+    @Pigeon.view('/')
     def home(request):
         return '<h1>Hello World!</h1>'
 

@@ -4,7 +4,7 @@ Tutorial
 Views
 -----
 Views are functions that correspod to a certain request pawth or route on the web application.
-The view \'\/welcome\' would could be requested by visiting the url *http://my-app:8080/welcome*
+The view \'\/welcome\' could be requested by visiting the url *http://my-app:8080/welcome*
 
 Typing
 ******
@@ -21,42 +21,42 @@ Any view with the mimetype \*/\* is considered untyped.
 Untyped views are expected to return either HTTPResponse objects or strings::
 
     from pigeon import Pigeon
-    app = Pigeon()
+    Pigeon()
 
-    @app.view('/')
+    @Pigeon.view('/')
     def home(request):
         return '<h1>Hello World!</h1>'
 
-    @app.view('/welcome')
+    @Pigeon.view('/welcome')
     def welcome(request):
         return HTTPResponse(data='Welcome!')
 
 Typed Views
 ***********
-To make a view typed, we can add the mimetype of our view as the second argument for `app.view`.
+To make a view typed, we can add the mimetype of our view as the second argument for `Pigeon.view`.
 Pigeon will automatically select the most fitting typed view for any incoming the request::
 
     from pigeon.shortcuts import HTTPResponse
     import json
 
-    @app.view('/api/test', 'application/json')
+    @Pigeon.view('/api/test', 'application/json')
     def api_test(request):
         return HTTPResponse(data=json.dumps({'Hello':'World!'}))
 
-    @app.view('/api/test', 'text/plain')
+    @Pigeon.view('/api/test', 'text/plain')
     def api_test(request):
         return HTTPResponse(data='Hello World!')
 
 Unlike regular views, typed views offer automatic conversion of return data into HTTPResponse objects.
 This means that a view with the mimetype application/json can effortlessly return any JSON-compatible data, including dictionaries, lists, and more::
 
-    @app.view('/api/test', 'application/json')
+    @Pigeon.view('/api/test', 'application/json')
     def api_test(request):
         return {'this data is':'autoconverted to an HTTPResponse object'}
 
 If we need to retrieve data provided in the request, we can utilize the get, data, and files ParameterDicts::
 
-    @app.view('/api/test', 'text/html')
+    @Pigeon.view('/api/test', 'text/html')
     def api_test(request):
         match request.method:
             case 'GET':
@@ -71,7 +71,7 @@ Additionally, Pigeon supports dynamic path arguments, which enable requests to i
 Dynamic path arguments are denoted in the path by being enclosed in double curly brackets and can be accessed via an additional dynamic_params argument.
 This is best demonstrated through an example::
 
-    @app.view('/api/user/{{param1}}/view')
+    @Pigeon.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
         match request.method:
             case 'GET':
@@ -85,7 +85,7 @@ Crafting error responses manually can be a time-consuming task. To simplify this
 
     from pigeon.shortcuts import error
 
-    @app.view('/api/user/{{param1}}/view')
+    @Pigeon.view('/api/user/{{param1}}/view')
     def api_view_user(request, dynamic_params):
         if request.method == 'GET':
             print(f'The user is {dynamic_params.param1}')
@@ -102,14 +102,14 @@ In case no error view matches the provided status code, a fallback will be invok
 Error views closely resemble regular untyped views.
 We have the ability to define our own custom error view using app.error::
 
-    @app.error(500)
+    @Pigeon.error(500)
     def internal_server_error(request):
 	   return '<h1>Internal Server Error 500</h1>'
 
 The error fallback is set to match the unused status code 0.
 Similar to any other error view, the default fallback error view can also be overridden::
 
-    @app.error(0)
+    @Pigeon.error(0)
     def fallback_error(request, code):
         return f'<h1>No error view exists error {code}</h1>'
 
@@ -118,12 +118,32 @@ Authentication
 To implement authentication, you can easily specify the desired authentication type in the auth parameter of the app.view function.
 This allows you to define the specific authentication mechanism you wish to utilize for the view::
 
-    @app.view('/credential_test/', 'text/html', 'Basic')
+    @Pigeon.view('/credential_test/', 'text/html', 'Basic')
     def credential_test(request):
         return f'<h1> Username: {request.auth.username} </h1><br/><h1> Password: {request.auth.password} </h1>'
 
 Pigeon currently supports the following authentication types:
     * Basic
+
+Working with multiple files
+---------------------------
+
+When working with multiple files, remember to initialize Pigeon first and import any other modules using Pigeon afterwards:
+
+    # first pigeon setup
+    from pigeon import Pigeon
+    import settings
+
+    # initialize Pigeon
+    Pigeon(settings)
+
+    # import of other modules
+    from pigeon.shortcuts import HTTPResponse, render
+    import other_views
+
+    @Pigeon.view('/')
+    def authed(request):
+        return f'<h1> Hello World </h1>'
 
 
 Configuring Settings
@@ -137,11 +157,11 @@ We have the option to either override default settings by importing a module, ov
     # directory of project
     BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
-    app = Pigeon()
+    Pigeon()
 
     # override settings from imported module
     import mysettings
-    app.settings.override(mysettings)
+    Pigeon.settings.override(mysettings)
 
     # override settigns using dictionary
     mysettings_dict = {
@@ -150,13 +170,13 @@ We have the option to either override default settings by importing a module, ov
         'STATIC_URL_BASE': '/static/'
         'STATIC_FILES_DIR': BASE_DIR / 'static/'
     }
-    app.settings.override(mysettings_dict)
+    Pigeon.settings.override(mysettings_dict)
 
     # change settings manually
-    app.settings.verbosity = 2
-    app.port = 2556
-    app.static_url_base = '/files/static/'
-    app.static_files_dir = BASE_DIR / 'resources/static/'
+    Pigeon.settings.verbosity = 2
+    Pigeon.port = 2556
+    Pigeon.static_url_base = '/files/static/'
+    Pigeon.static_files_dir = BASE_DIR / 'resources/static/'
 
 The imported settings module should resemble the following::
 
@@ -185,11 +205,11 @@ By configuring the *MEDIA_URL_BASE* and *MEDIA_FILES_DIR* settings we automatica
     # directory of project
     BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
-    app = Pigeon()
+    Pigeon()
 
     # enable staticfiles
-    app.settings.media_url_base = '/media/'
-    app.settings.media_files_dir = BASE_DIR / 'media/'
+    Pigeon.settings.media_url_base = '/media/'
+    Pigeon.settings.media_files_dir = BASE_DIR / 'media/'
 
 Let's consider the following project structure::
 
@@ -221,11 +241,11 @@ By configuring these settings, static files will be automatically enabled::
     # directory of project
     BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
-    app = Pigeon()
+    Pigeon()
 
     # enable staticfiles
-    app.settings.static_url_base = '/static/'
-    app.settings.static_files_dir = BASE_DIR / 'static/'
+    Pigeon.settings.static_url_base = '/static/'
+    Pigeon.settings.static_files_dir = BASE_DIR / 'static/'
 
 Let's consider the following project structure::
 
@@ -259,16 +279,16 @@ It is important to ensure that all our templates are located within this designa
     # directory of project
     BASE_DIR = pathlib.Path(__file__).parent.resolve()
 
-    app = Pigeon()
+    Pigeon()
 
     # configure templates directory
-    app.settings.templates_dir = BASE_DIR / 'templates/'
+    Pigeon.settings.templates_dir = BASE_DIR / 'templates/'
 
 To make use of the templates we can utilize the *render* function::
 
     from pigeon.shortcuts import render
 
-    @app.view('/thisisrendered/')
+    @Pigeon.view('/thisisrendered/')
     def my_rendered_view(request):
         return render('path/to/template.html', context={'request':request})
 
