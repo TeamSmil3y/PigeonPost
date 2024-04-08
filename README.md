@@ -15,9 +15,9 @@ With pigeon installed we can now start writing our own application:
 ```python3
 form pigeon import Pigeon
 
-app = Pigeon()
+Pigeon()
 
-@app.view('/')
+@view('/')
 def home(request):
     return '<h1> Hello World! </h1>'
 ```
