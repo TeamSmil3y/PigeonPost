@@ -37,7 +37,7 @@ class Log:
     def critical(self, *args, end='\n', subname=''):
         self.message_blocked = False
         with lock:
-            print('[bold red blink]CRITICAL [/]', end='')
+            print('[bold red]CRITICAL [/]', end='')
             self._print_msg(*args, end=end, subname=subname)
 
     def error(self, *args, end='\n', subname=''):

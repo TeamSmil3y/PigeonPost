@@ -2,6 +2,7 @@ import socket
 import pigeon.middleware as middleware
 import pigeon.utils.logger as logger
 from pigeon.http import HTTPRequest, HTTPResponse
+import traceback
 
 log = logger.Log('HANDLER', 'cyan')
 
@@ -37,19 +38,24 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
 
         log.debug(f'RAW PACKET:\n{data}')
 
-        # parse request into HTTPRequest
-        request = middleware.preprocess(data)
-        if isinstance(request, HTTPRequest):
-            log.info(f'REQUEST: {request.path}')
+        try:
 
-        # gather appropriate response for request
-        response = middleware.process(request)
-        response = middleware.postprocess(request, response)
+            # parse request into HTTPRequest
+            request = middleware.preprocess(data)
+            if isinstance(request, HTTPRequest):
+                log.info(f'REQUEST: {request.path}')
 
-        # send response to client
-        log.verbose(f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
-        client_sock.sendall(response.__bytes__('ascii'))
-        log.verbose(f'RESPONSE SENT')
+            # gather appropriate response for request
+            response = middleware.process(request)
+            response = middleware.postprocess(request, response)
+
+            # send response to client
+            log.verbose(f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
+            client_sock.sendall(response.__bytes__('ascii'))
+            log.verbose(f'RESPONSE SENT')
+
+        except Exception as e:
+            log.error(f'EXCEPTION OCCURED WHILE HANDLING REQUEST FROM {client_address[0]}:{client_address[1]}: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
 
         # do not keep connection open on error
         if response.is_error:

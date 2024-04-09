@@ -11,7 +11,7 @@ log = logger.Log('SERVER', '#bb88ff')
 
 
 def start():
-    log.info('STARTING...')
+    log.info('...STARTING')
 
     # load static files into memory
     if Manager.static_files_dir:

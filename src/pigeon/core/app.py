@@ -38,10 +38,15 @@ class Pigeon:
 
     @classmethod
     def run(cls) -> None:
-        log.info('STARTING SERVER')
-        # start server
-        server.start()
-        server.serve()
+        log.info('STARTING')
+        try:
+            # start server
+            server.start()
+            server.serve()
+        except PermissionError as e:
+            if e.errno == 13: log.critical("PERMISSION DENIED (PORTS 0-1024 REQUIRE ADMINISTRATIVE PRIVILEGES)")
+        except OSError as e:
+            if e.errno == 98: log.critical("ADDRESS ALREADY IN USE")
 
     # @decorator register view
     @classmethod
