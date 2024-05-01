@@ -9,3 +9,9 @@ def welcome(request):
 @Pigeon.view('/welcome', 'text/plain')
 def welcome(request):
     return HTTPResponse(data='Welcome! Hello World!', content_type='text/plain')
+
+
+@Pigeon.view('/goodbye', 'application/json')
+def welcome(request):
+    return {'cya': 'Bye World!'}
+
