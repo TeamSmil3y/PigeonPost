@@ -9,7 +9,7 @@
 project = 'pigeonpost'
 copyright = '2023, TeamSmiley'
 author = 'TeamSmiley'
-release = 'v.0.4.4'
+release = 'v0.4.5'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
