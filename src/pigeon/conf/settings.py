@@ -34,6 +34,10 @@ CERTIFICATE_PATH = None
 PRIVATE_KEY_PATH = None
 PRIVATE_KEY_PASSWD = None
 
+# EXCEPTION HANDLING & DEBUG MODE
+CRASH_ON_FAILURE = False
+DEBUG_MODE = True
+
 # MIME PARSERS
 MIME_PARSERS = {
     'application/json': 'pigeon.middleware.conversion.mime.parsers.JSONParser',

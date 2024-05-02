@@ -1,4 +1,6 @@
 import atexit
+import sys
+import traceback
 from typing import Callable
 from pigeon.conf import Manager
 import pigeon.core.server as server
@@ -10,9 +12,8 @@ log = logger.Log('PIGEON', '#30b3ff')
 
 
 class Pigeon:
-
     settings = None
-
+    autorun = True
     @classmethod
     def __init__(cls, settings=None):
         log.info('STARTING..')
@@ -25,19 +26,28 @@ class Pigeon:
         Manager.error_handler = views.ErrorHandler()
         # auth handlers
         Manager.auth_handler = auth.AuthHandler()
-        
+
         # shortcut
         cls.settings = Manager
 
         # configure runtime settings
         Manager._setup()
 
+        # exception handling
+        sys.excepthook = cls.handle_exception
+
         # run pigeon after everything has been configured (all decorators executed)
         atexit.register(Pigeon.run)
 
-
     @classmethod
-    def run(cls) -> None:
+    def run(cls, auto=False) -> None:
+        """
+        auto specifies whether the application has been started automatically due to the atexit call,
+        if so we will check back whether this
+        """
+        if not cls.autorun:
+            log.verbose("AUTORUN DISABLED - SKIPPING")
+            return
         log.info('STARTING')
         try:
             # start server
@@ -47,6 +57,23 @@ class Pigeon:
             if e.errno == 13: log.critical("PERMISSION DENIED (PORTS 0-1024 REQUIRE ADMINISTRATIVE PRIVILEGES)")
         except OSError as e:
             if e.errno == 98: log.critical("ADDRESS ALREADY IN USE")
+
+    @classmethod
+    def handle_exception(cls, exception_type, exception, *args, custom_log=log, description='AN EXCEPTION OCCURED') -> None:
+        """
+        This is a custom exception handler. It facilitates the following:
+        - if an exception occurs before the server has started, the server will not start
+        - exceptions during runtime will be logged and if the CRASH_ON_FAILURE setting is set to True the app will terminate
+        """
+        custom_log.error(description)
+        custom_log.sublog(''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))[:-1])
+
+        if cls.autorun:
+            log.error("AN EXCEPTION OCCURED BEFORE PIGEON STARTED, AUTORUN WILL BE DISABLED")
+            cls.autorun = False
+
+        if Manager.crash_on_failure:
+            exit(-1)
 
     # @decorator register view
     @classmethod
