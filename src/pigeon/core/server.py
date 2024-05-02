@@ -70,3 +70,4 @@ def serve():
         log.warning('APPLICATION WILL EXIT ONCE THREADS HAVE BEEN TERMINATED')
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()
+        sys.exit(0, force=True)
