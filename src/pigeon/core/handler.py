@@ -1,8 +1,8 @@
 import socket
+import sys
 import pigeon.middleware as middleware
 import pigeon.utils.logger as logger
 from pigeon.http import HTTPRequest, HTTPResponse
-import traceback
 
 log = logger.Log('HANDLER', 'cyan')
 
@@ -55,7 +55,7 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
             log.verbose(f'RESPONSE SENT')
 
         except Exception as e:
-            log.error(f'EXCEPTION OCCURED WHILE HANDLING REQUEST FROM {client_address[0]}:{client_address[1]}: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
+            sys.excepthook(None, e, None, custom_log=log, description=f'EXCEPTION OCCURED WHILE HANDLING REQUEST FROM {client_address[0]}:{client_address[1]}')
 
         # do not keep connection open on error
         if response.is_error:

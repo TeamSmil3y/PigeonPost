@@ -1,4 +1,5 @@
 import socket
+import sys
 from pigeon.conf import Manager
 import pigeon.utils.logger as logger
 import pigeon.core.secure as secure
@@ -40,7 +41,7 @@ def serve():
         # securing socket failed
         if not secure_sock:
             log.critical('HTTPS FAILED')
-            exit(-1)
+            sys.exit(-1, force=True)
 
         sock = secure_sock
 
@@ -65,7 +66,7 @@ def serve():
     # user exit - close socket
     except KeyboardInterrupt:
         print('\n')
-        log.info('EXITING')
+        log.info('EXITING (USER INTERRUPT)')
         log.warning('APPLICATION WILL EXIT ONCE THREADS HAVE BEEN TERMINATED')
         sock.shutdown(socket.SHUT_RDWR)
         sock.close()

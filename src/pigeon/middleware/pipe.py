@@ -1,10 +1,10 @@
+import sys
 import pigeon.utils.logger as logger
 from pigeon.http.message import HTTPMessage
 from pigeon.http import HTTPRequest, HTTPResponse, error
 import pigeon.conf.middleware as middleware
 import pigeon.middleware.conversion.converter as converter
 from pigeon.middleware.tags import MiddlewareTags
-import traceback
 
 log = logger.Log('MIDDLEWARE', 'green')
 
@@ -20,8 +20,7 @@ def preprocess(raw: bytes) -> HTTPResponse | HTTPRequest:
     try:
         request: HTTPRequest = converter.parse(raw)
     except Exception as e:
-        log.warning(f'COULD NOT PARSE REQUEST - SKIPPING')
-        log.debug(f'TRACEBACK: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
+        sys.excepthook(None, e, None, custom_log=log, description='COULD NOT PARSE REQUEST - SKIPPING')
         return error(400)
     
     if request.protocol not in middleware.HTTP_VERSIONS:
@@ -34,8 +33,7 @@ def preprocess(raw: bytes) -> HTTPResponse | HTTPRequest:
         request.tags = MiddlewareTags()
         return middleware.PROCESSORS[request.protocol].preprocess(request=request)
     except Exception as e:
-        log.warning(f'MIDDLEWARE FAILED WHEN PREPROCESSING REQUEST - SKIPPING')
-        log.debug(f'TRACEBACK: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
+        sys.excepthook(None, e, None, custom_log=log, description='MIDDLEWARE FAILED WHEN PREPROCESSING REQUEST - SKIPPING')
         return error(500)
 
 
@@ -53,7 +51,11 @@ def process(message: HTTPMessage) -> HTTPResponse:
         return message
 
     # process request
-    response = middleware.PROCESSORS[message.protocol].process(request=message)
+    try:
+        response = middleware.PROCESSORS[message.protocol].process(request=message)
+    except Exception as e:
+        sys.excepthook(None, e, None, custom_log=log, description='VIEW RAISED EXCEPTION')
+        response = error(500)
 
     # if processor returned an error log it
     if response.is_error:
@@ -80,6 +82,5 @@ def postprocess(message: HTTPMessage, response: HTTPResponse) -> HTTPResponse:
         # request failed postprocessing - return error to client
         return response
     except Exception as e:
-        log.warning(f'MIDDLEWARE FAILED WHEN POSTPROCESSING REQUEST - SKIPPING')
-        log.debug(f'TRACEBACK: \n{"".join(traceback.format_tb(e.__traceback__))}\t{e}\n')
+        sys.excepthook(None, e, None, custom_log=log, description='MIDDLEWARE FAILED WHEN POSTPROCESSING REQUEST - SKIPPING')
         return error(code=500, request=request)
