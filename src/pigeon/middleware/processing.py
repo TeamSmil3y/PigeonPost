@@ -2,8 +2,6 @@ from pigeon.http import HTTPRequest, HTTPResponse, error
 from typing import Callable
 import pigeon.middleware.components as comp
 import pigeon.utils.logger as logger
-import traceback
-
 
 class Processor:
     @classmethod

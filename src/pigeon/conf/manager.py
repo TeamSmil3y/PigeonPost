@@ -2,7 +2,6 @@ import importlib
 from pathlib import Path
 from typing import Any
 import pigeon.conf.settings as settings
-import pigeon.utils.logger as logger
 
 
 class ManagerMeta(type):
