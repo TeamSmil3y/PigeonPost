@@ -73,7 +73,7 @@ class Log:
                 print('[#ffaaff]DEBUG    [/]', end='')
                 self._print_msg(*args, end=end, subname=subname)
 
-    def sublog(self, *args, color='white', end='\n'):
+    def sublog(self, *args, color='white][/', end='\n'):
         """
         For log messages that give extra context and details on the previous logmessage.
         They will only be logged if the previous log message was logged as well.
@@ -83,5 +83,5 @@ class Log:
                 msg = ''
                 for arg in args: msg += arg
                 msg = msg.replace('\n', self.off_color+'\n│   [/]['+color+']')
-                print('├─  ', style=self.off_color[1:-1], end='')
-                print(msg, style=color)
+                print(f'{self.off_color}├─  [/]', end='')
+                print('['+color+']'+msg+('[/]' if color!='white][/' else ''))
