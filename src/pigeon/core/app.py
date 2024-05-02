@@ -1,5 +1,6 @@
 import atexit
 import sys
+import os
 import traceback
 from typing import Callable
 from pigeon.conf import Manager
@@ -35,6 +36,7 @@ class Pigeon:
 
         # exception handling
         sys.excepthook = cls.handle_exception
+        sys.exit = cls.handle_exit
 
         # run pigeon after everything has been configured (all decorators executed)
         atexit.register(Pigeon.run)
@@ -48,6 +50,8 @@ class Pigeon:
         if not cls.autorun:
             log.verbose("AUTORUN DISABLED - SKIPPING")
             return
+        cls.autorun = False
+
         log.info('STARTING')
         try:
             # start server
@@ -65,15 +69,23 @@ class Pigeon:
         - if an exception occurs before the server has started, the server will not start
         - exceptions during runtime will be logged and if the CRASH_ON_FAILURE setting is set to True the app will terminate
         """
+        sys.last_exc = exception
         custom_log.error(description)
         custom_log.sublog(''.join(traceback.format_exception(type(exception), exception, exception.__traceback__))[:-1])
 
         if cls.autorun:
-            log.error("AN EXCEPTION OCCURED BEFORE PIGEON STARTED, AUTORUN WILL BE DISABLED")
+            log.critical("AN EXCEPTION OCCURED BEFORE PIGEON STARTED, AUTORUN WILL BE DISABLED")
             cls.autorun = False
 
         if Manager.crash_on_failure:
-            exit(-1)
+            log.critical("CRASH ON FAILURE ACTIVE - TERMINATING")
+            sys.exit(-1)
+
+    @classmethod
+    def handle_exit(cls, status, force=False):
+        if force or Manager.crash_on_failure:
+            log.info("EXITING")
+            os._exit(status)
 
     # @decorator register view
     @classmethod
