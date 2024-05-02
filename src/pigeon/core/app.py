@@ -8,16 +8,21 @@ import pigeon.core.server as server
 import pigeon.middleware.views as views
 import pigeon.middleware.auth as auth
 import pigeon.utils.logger as logger
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
 
 log = logger.Log('PIGEON', '#30b3ff')
-
 
 class Pigeon:
     settings = None
     autorun = True
+
+    # watchdog
+    observers = []
     @classmethod
     def __init__(cls, settings=None):
         log.info('STARTING..')
+
         # overwrite standard settings if new settings provided
         if settings:
             Manager.override(settings)
@@ -37,7 +42,6 @@ class Pigeon:
         # exception handling
         sys.excepthook = cls.handle_exception
         sys.exit = cls.handle_exit
-
         # run pigeon after everything has been configured (all decorators executed)
         atexit.register(Pigeon.run)
 
@@ -47,9 +51,28 @@ class Pigeon:
         auto specifies whether the application has been started automatically due to the atexit call,
         if so we will check back whether this
         """
+        if Manager.debug_mode:
+            log.debug('WATCHING MODULES FOR CHANGES: (DEBUG MODE)')
+            for module in Manager.module_dirs:
+                log.sublog(module)
+            log.info('INITIALIZING WATCHDOG CONFIGURATION')
+            event_handler = FileSystemEventHandler()
+
+            def restart_event(event):
+                log.debug(f"FILE EVENT: {event}")
+                cls.restart()
+
+            event_handler.on_modified = restart_event
+            for module in Manager.module_dirs:
+                watchdog_observer = Observer()
+                watchdog_observer.schedule(event_handler, path=module, recursive=False)
+                watchdog_observer.start()
+                cls.observers.append(watchdog_observer)
+
         if not cls.autorun:
             log.verbose("AUTORUN DISABLED - SKIPPING")
             return
+
         cls.autorun = False
 
         log.info('STARTING')
@@ -61,6 +84,14 @@ class Pigeon:
             if e.errno == 13: log.critical("PERMISSION DENIED (PORTS 0-1024 REQUIRE ADMINISTRATIVE PRIVILEGES)")
         except OSError as e:
             if e.errno == 98: log.critical("ADDRESS ALREADY IN USE")
+
+    @classmethod
+    def restart(cls):
+        """
+        Restarts the entire application
+        """
+        log.info("RESTARTING THE APPLICATION")
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
     @classmethod
     def handle_exception(cls, exception_type, exception, *args, custom_log: logger.Log = log, description: str='AN EXCEPTION OCCURED') -> None:

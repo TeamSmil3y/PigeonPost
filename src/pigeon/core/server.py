@@ -30,7 +30,9 @@ def serve():
     log.info(f'PORT: {Manager.port}')
 
     # open socket
-    sock = socket.socket(socket.AF_INET)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if Manager.reuse_socket:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.setblocking(False)
     sock.bind((Manager.address, Manager.port))
 
