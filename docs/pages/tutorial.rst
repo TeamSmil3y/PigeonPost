@@ -77,7 +77,7 @@ This is best demonstrated through an example::
             case 'GET':
                 print(f'The user is {dynamic_params.param1}')
                 return f'<h1>You requested to view {dynamic_params.param1}!</h1>'
-        return HTTPResponse(data='method not allowed', status=405)
+        return HTTPResponse(data='method not allowed', status=405, content_type='text/plain')
 
 Error Responses
 ***************
@@ -190,7 +190,7 @@ The imported settings module should resemble the following::
 The recommended approach for overriding default values is to modify the settings as demonstrated above.
 Altering settings at runtime is not recommended as it might result in unpredictable and undefined behavior.
 Remember to set *DEBUG_MODE* and *CRASH_ON_FAILURE* before deploying to production, as they provide additional security for your application.
-A list of all available settings can be found :ref:`here <api.settings>`.
+A list of all available settings can be found :ref:`here <additional.settings>`.
 
 .. _tutorial.mediafiles:
 

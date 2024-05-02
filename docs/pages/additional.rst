@@ -1,5 +1,5 @@
-API
-===
+Additional Reference
+====================
 
 Running Pigeon
 --------------
@@ -50,12 +50,6 @@ either the *CRASH_ON_FAILURE* setting is set to *True* or the *Force* parameter 
 
     # force exit
     sys.exit(0, force=True)
-
-.. _HTTPRequest and HTTPResponse:
-
-HTTPRequest and HTTPResponse
-----------------------------
-🚧 ..under construction... 🏗️
 
 .. _Pigeon.utils.logger.Log:
 
@@ -115,7 +109,7 @@ according to the specified verbosity setting::
     my_log.warning("Hey this is a warning!")
     my_log.sublog("You should be concerned!")
 
-.. _api.settings:
+.. _additional.settings:
 
 Settings
 --------
