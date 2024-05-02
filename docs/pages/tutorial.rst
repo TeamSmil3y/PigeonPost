@@ -97,7 +97,8 @@ Crafting error responses manually can be a time-consuming task. To simplify this
 Overriding default Error Responses
 **********************************
 When calling the error function, Pigeon will try to locate a matching error view to generate the response.
-In case no error view matches the provided status code, a fallback will be invoked.
+In case no error view matches the provided status code, a fallback will be invoked. When in debug mode the default
+fallback error view will return additional information such as a traceback of the exception.
 
 Error views closely resemble regular untyped views.
 We have the ability to define our own custom error view using app.error::
@@ -111,7 +112,7 @@ Similar to any other error view, the default fallback error view can also be ove
 
     @Pigeon.error(0)
     def fallback_error(request, code):
-        return f'<h1>No error view exists error {code}</h1>'
+        return f'<h1>No error view exists. error: {code}</h1>'
 
 Authentication
 **************
@@ -128,7 +129,7 @@ Pigeon currently supports the following authentication types:
 Working with multiple files
 ---------------------------
 
-When working with multiple files, remember to initialize Pigeon first and import any other modules using Pigeon afterwards:
+When working with multiple files, remember to initialize Pigeon first and import any other modules using Pigeon afterwards::
 
     # first pigeon setup
     from pigeon import Pigeon
@@ -187,7 +188,8 @@ The imported settings module should resemble the following::
     ALLOWED_HOSTS = ['teamsmiley.org']
 
 The recommended approach for overriding default values is to modify the settings as demonstrated above.
-Altering settings at runtime is not recommended as it might result in unpredictable and untested behavior.
+Altering settings at runtime is not recommended as it might result in unpredictable and undefined behavior.
+Remember to set *DEBUG_MODE* and *CRASH_ON_FAILURE* before deploying to production, as they provide additional security for your application.
 A list of all available settings can be found :ref:`here <api.settings>`.
 
 .. _tutorial.mediafiles:
@@ -291,4 +293,5 @@ To make use of the templates we can utilize the *render* function::
     @Pigeon.view('/thisisrendered/')
     def my_rendered_view(request):
         return render('path/to/template.html', context={'request':request})
+
 
