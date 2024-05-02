@@ -63,7 +63,7 @@ class Pigeon:
             if e.errno == 98: log.critical("ADDRESS ALREADY IN USE")
 
     @classmethod
-    def handle_exception(cls, exception_type, exception, *args, custom_log=log, description='AN EXCEPTION OCCURED') -> None:
+    def handle_exception(cls, exception_type, exception, *args, custom_log: logger.Log = log, description: str='AN EXCEPTION OCCURED') -> None:
         """
         This is a custom exception handler. It facilitates the following:
         - if an exception occurs before the server has started, the server will not start
@@ -82,7 +82,7 @@ class Pigeon:
             sys.exit(-1)
 
     @classmethod
-    def handle_exit(cls, status, force=False):
+    def handle_exit(cls, status, force: bool = False) -> None:
         if force or Manager.crash_on_failure:
             log.info("EXITING")
             os._exit(status)
