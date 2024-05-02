@@ -40,7 +40,7 @@ string_template = """
         {{traceback}}
     </code>
 </pre>
-<h3 class="reminder">You are seeing this message because you are in <span class="debug-mode">DEBUG MODE</span></h3>
+<h3 class="reminder">You are seeing this message because your application is running in <span class="debug-mode">DEBUG MODE</span></h3>
 """
 debug_template = Environment(loader=BaseLoader()).from_string(string_template)
 
