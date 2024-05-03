@@ -30,7 +30,6 @@ def preprocess(raw: bytes) -> HTTPResponse | HTTPRequest:
     
     # try processing the request
     try:
-        request.tags = MiddlewareTags()
         return middleware.PROCESSORS[request.protocol].preprocess(request=request)
     except Exception as e:
         sys.excepthook(None, e, None, custom_log=log, description='MIDDLEWARE FAILED WHEN PREPROCESSING REQUEST - SKIPPING')

@@ -84,7 +84,7 @@ class HTTPMessage:
         self.cookies: LowerParameterDict = LowerParameterDict(cookies or dict())
 
         # kwargs for additional processing e.g. for middleware components
-        self.additional = kwargs
+        self.tags: ParameterDict = ParameterDict(kwargs)
 
     @property
     def is_error(self):
