@@ -14,7 +14,7 @@ release = 'v0.4.6'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['autoapi.extension']
+extensions = ['autoapi.extension', 'sphinxawesome_theme.highlighting']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -45,8 +45,12 @@ autodoc_typehints = "signature"
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'furo'
+html_theme = 'sphinxawesome_theme'
 html_static_path = ['_static']
-html_css_files = ['_static/css/style.css']
+html_css_files = ['css/style.css']
 html_favicon = '_static/pigeon_round.png'
-html_logo = '_static/pigeon_round.png'
+_html_logo = '_static/pigeon_round.png'
+html_theme_options = {
+    "logo_light": _html_logo,
+    "logo_dark": _html_logo
+}

@@ -12,3 +12,90 @@ pre {
 section {
    margin-bottom: 2rem !important;
 }
+
+/*
+DARK MODE
+*/
+/* syntax highlighting in codeblocks */
+.dark code .k {
+    color: #ff2462;
+}
+.dark code .nf {
+    color: #9E92C6;
+}
+.dark code .p {
+    color: white;
+}
+.dark code .si {
+    color: white;
+}
+.dark code .nd {
+    color: #FFAC54;
+}
+.dark code .nn {
+    color: #FFAC54;
+}
+.dark code .kn {
+}
+.dark code .n {
+    color: white;
+}
+.dark code .o {
+
+}
+.dark code .c1, .dark code .c2, .dark code .c3 {
+    color: #5F617D;
+}
+.dark code .s1, .dark code .s2, .dark code .s3, .dark code .s4 {
+    color: #50a0a0;
+}
+/* syntax highlighting in api reference */
+
+.dark .class .sig-prename .pre, .dark .class .sig-name .pre {
+    color: #ff2462 !important;
+}
+.dark .function .sig-prename .pre, .dark .function .sig-name .pre {
+    color: #ff2462 !important;
+}
+.dark .data .sig-prename .pre, .dark .data .sig-name .pre {
+    color: #9E92C6 !important;
+}
+
+/*
+LIGHT MODE
+*/
+/* syntax highlighting in codeblocks */
+code .k {
+    color: #FF0048;
+}
+code .nf {
+    color: #532FC9;
+}
+code .p {
+    color: black;
+}
+code .si {
+    color: black;
+}
+code .nd {
+    color: #FF8400;
+}
+code .nn {
+    color: #FF8400;
+}
+code .kn {
+}
+code .n {
+    color: black;
+}
+code .o {
+
+}
+code .c1, code .c2, code .c3 {
+    color: #5F617D;
+}
+code .s1, code .s2, code .s3, code .s4 {
+    color: #00976F;
+}
+
+/* syntax highlighting in api reference */

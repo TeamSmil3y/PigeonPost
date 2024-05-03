@@ -8,9 +8,10 @@ import types
 class ManagerMeta(type):
     """
     Used to overwrite __getattr__ of the Manager class, leading to the ability to overwrite attributes of the
-    pigeon.conf.settings module:
+    pigeon.conf.settings module::
 
-        Manager.<setting-name> = <value>
+        # accessing attributes not part of the Manager class will return getattr(pigeon.conf.settings, attr), therefore:
+        Manager.my_setting = my_value
 
     This works since __getattr__ is only called as a fallback if __getattribute__ cannot find the attribute in question,
     thus not breaking access to attributes of the Manager class, but returning attributes of the settings class if the
@@ -26,9 +27,14 @@ class Manager(metaclass=ManagerMeta):
     """
     Used to manage settings and load specified middleware which is only loaded at runtime.
 
-    To override settings either the override Manager.method or the Manager.__get_attr__ method is used:
-    Manager.override(settings: types.ModuleType)
-    Manager.<attribute-name> = <value>
+    To override settings either the override Manager.method or the Manager.__get_attr__ method is used::
+
+        # override settings using a module or similar behaving object
+        my_settings: types.ModuleType = ...
+        Manager.override(my_settings)
+
+        # override settings one at a time by accessing the attributes (__getattr__)
+        Manager.my_setting = my_value
     """
     @classmethod
     def _setup(cls):
