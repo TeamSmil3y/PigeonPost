@@ -27,7 +27,7 @@ class Manager(metaclass=ManagerMeta):
     """
     Used to manage settings and load specified middleware which is only loaded at runtime.
 
-    To override settings either the override Manager.method or the Manager.__get_attr__ method is used::
+    To override settings either the method Manager.override or the Manager.__get_attr__ method is used::
 
         # override settings using a module or similar behaving object
         my_settings: types.ModuleType = ...
