@@ -31,7 +31,7 @@ def serve():
 
     # open socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    if Manager.reuse_socket:
+    if Manager.debug_mode:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.setblocking(False)
     sock.bind((Manager.address, Manager.port))
