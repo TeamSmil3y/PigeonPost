@@ -18,7 +18,7 @@ Essentially, this enables us to allow the client to specify the desired mimetype
 Untyped Views
 *************
 Any view with the mimetype \*/\* is considered untyped.
-Untyped views are expected to return either HTTPResponse objects or strings::
+Untyped views are expected to return either *HTTPResponse* objects or strings::
 
     from pigeon import Pigeon
     Pigeon()
@@ -47,14 +47,14 @@ Pigeon will automatically select the most fitting typed view for any incoming th
     def api_test(request):
         return HTTPResponse(data='Hello World!')
 
-Unlike regular views, typed views offer automatic conversion of return data into HTTPResponse objects.
+Unlike regular views, typed views offer automatic conversion of return data into *HTTPResponse* objects.
 This means that a view with the mimetype application/json can effortlessly return any JSON-compatible data, including dictionaries, lists, and more::
 
     @Pigeon.view('/api/test', 'application/json')
     def api_test(request):
         return {'this data is':'autoconverted to an HTTPResponse object'}
 
-If we need to retrieve data provided in the request, we can utilize the get, data, and files ParameterDicts::
+If we need to retrieve data provided in the request, we can utilize the get, data, and files *ParameterDicts*::
 
     @Pigeon.view('/api/test', 'text/html')
     def api_test(request):
@@ -125,6 +125,28 @@ This allows you to define the specific authentication mechanism you wish to util
 
 Pigeon currently supports the following authentication types:
     * Basic
+
+Cookies
+*******
+To extract cookies from an *HTTPRequest* object you can simply use the cookies *ParameterDict*::
+
+    @Pigeon.view('/cookies', 'application/json')
+    def cookies(request):
+        return {"Your SESSION_ID Cookie: ": request.cookies.session_id}
+
+To set a cookie on an *HTTPResponse* object you can either pass a dictionary to the *cookie* argument or set them using the
+cookies *ParameterDict*. Setting cookies via the header *ParameterDict* is **not recommended**::
+
+    from pigeon.shortcuts import HTTPResponse
+
+    @Pigeon.view('/set-cookies', 'application/json')
+    def set_cookies(request):
+        # set through HTTPResponse cookies constructor argument
+        response = HTTPResponse('setting cookies', content_type='application/json', cookies={'SESSION_ID':'ABCDEFG'})
+        # set through cookies parameter dict
+        response.cookies.other_session_id = 'HIJKLMN'
+
+        return response
 
 Working with multiple files
 ---------------------------
