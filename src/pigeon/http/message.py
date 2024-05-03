@@ -71,7 +71,7 @@ class HTTPMessage:
     """
     An HTTP message (obv either response or request)
     """
-    def __init__(self, headers: dict[str, str], data: str, protocol: str, content_type=None):
+    def __init__(self, headers: dict[str, str], data: str, protocol: str, content_type=None, cookies=None, **kwargs):
         # headers of HTTP message
         self.headers: HTTPHeaders = HTTPHeaders(headers or None)
         if content_type:
@@ -80,6 +80,11 @@ class HTTPMessage:
         self.data: Any = data
         # protocol used (e.g. 1.1, 1.0, 2.0, ...)
         self.protocol: str = protocol
+        # cookies of request
+        self.cookies: LowerParameterDict = LowerParameterDict(cookies or dict())
+
+        # kwargs for additional processing e.g. for middleware components
+        self.additional = kwargs
 
     @property
     def is_error(self):

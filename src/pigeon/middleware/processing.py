@@ -76,6 +76,7 @@ class Owl(ComponentProcessor):
         comp.method.MethodComponent,
         comp.connection.ConnectionComponent,
         comp.cache_control.CacheControlComponent,
+        comp.cookies.CookieComponent,
         comp.content_negotiation.ContentNegotiationComponent,
     ]
     processing_components = [
@@ -88,6 +89,7 @@ class Owl(ComponentProcessor):
         comp.cors.CORSComponent,
         comp.connection.ConnectionComponent,
         comp.cache_control.CacheControlComponent,
+        comp.cookies.CookieComponent,
         comp.content_negotiation.ContentNegotiationComponent,
     ]
 

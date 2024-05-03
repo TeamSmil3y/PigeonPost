@@ -3,13 +3,12 @@ from pigeon.http.message import HTTPMessage
 import pigeon.http.common as common
 import json
 
-
 class HTTPResponse(HTTPMessage):
-    def __init__(self, headers: dict = None, data: str = None, status: int = 200, cookies=None, protocol: str = '1.1', content_type=None):
+    def __init__(self, headers: dict = None, data: str = None, status: int = 200, cookies=None, protocol: str = '1.1', content_type=None, **kwargs):
         """
         Class representing an HTTP response
         """
-        super().__init__(headers, data, protocol, content_type)
+        super().__init__(headers, data, protocol, content_type, cookies, **kwargs)
 
         # HTTP Response status
         self.status = status

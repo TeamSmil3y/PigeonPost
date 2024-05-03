@@ -3,11 +3,11 @@ from pigeon.utils.common import ParameterDict
 
 
 class HTTPRequest(HTTPMessage):
-    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str='1.1', content_type=None):
+    def __init__(self, method: str, path: str, headers: dict = None, get: dict = None, data=None, files=None, protocol: str='1.1', content_type=None, **kwargs):
         """
         Class representing an HTTP request
         """
-        super().__init__(headers, data, protocol, content_type)
+        super().__init__(headers, data, protocol, content_type, kwargs)
         self.method = method
         self.path = path
 
