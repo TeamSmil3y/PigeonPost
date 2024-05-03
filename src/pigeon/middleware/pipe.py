@@ -4,7 +4,6 @@ from pigeon.http.message import HTTPMessage
 from pigeon.http import HTTPRequest, HTTPResponse, error
 import pigeon.conf.middleware as middleware
 import pigeon.middleware.conversion.converter as converter
-from pigeon.middleware.tags import MiddlewareTags
 
 log = logger.Log('MIDDLEWARE', 'green')
 
