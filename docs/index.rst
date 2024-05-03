@@ -20,3 +20,4 @@ Contents
    pages/quickstart
    pages/tutorial
    pages/additional
+   autoapi/index
