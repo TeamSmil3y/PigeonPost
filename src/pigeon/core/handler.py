@@ -51,7 +51,7 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
 
             # send response to client
             log.verbose(f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
-            client_sock.sendall(response.__bytes__('ascii'))
+            client_sock.sendall(response.__bytes__('utf-8'))
             log.verbose(f'RESPONSE SENT')
 
         except Exception as e:
