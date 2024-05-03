@@ -14,6 +14,10 @@ from watchdog.events import FileSystemEventHandler
 log = logger.Log('PIGEON', '#30b3ff')
 
 class Pigeon:
+    """
+    The Pigeon class is the main interface used for the user to interact with Pigeon.
+    """
+
     settings = None
     autorun = True
 

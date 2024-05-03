@@ -2,9 +2,20 @@ import importlib
 from pathlib import Path
 from typing import Any
 import pigeon.conf.settings as settings
+import types
 
 
 class ManagerMeta(type):
+    """
+    Used to overwrite __getattr__ of the Manager class, leading to the ability to overwrite attributes of the
+    pigeon.conf.settings module:
+
+        Manager.<setting-name> = <value>
+
+    This works since __getattr__ is only called as a fallback if __getattribute__ cannot find the attribute in question,
+    thus not breaking access to attributes of the Manager class, but returning attributes of the settings class if the
+    specified attribute is not found in the Manager class.
+    """
     def __getattr__(self, key: str) -> Any:
         # get attribute from settings
         key = key.upper()
@@ -12,6 +23,13 @@ class ManagerMeta(type):
 
 
 class Manager(metaclass=ManagerMeta):
+    """
+    Used to manage settings and load specified middleware which is only loaded at runtime.
+
+    To override settings either the override Manager.method or the Manager.__get_attr__ method is used:
+    Manager.override(settings: types.ModuleType)
+    Manager.<attribute-name> = <value>
+    """
     @classmethod
     def _setup(cls):
         """
@@ -31,7 +49,7 @@ class Manager(metaclass=ManagerMeta):
 
 
     @classmethod
-    def override(cls, new_settings):
+    def override(cls, new_settings: types.ModuleType | Any):
         """
         Overrides current settings with new settings provided.
         """
