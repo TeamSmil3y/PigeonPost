@@ -53,7 +53,7 @@ def parse(request: bytes) -> HTTPRequest:
     """
 
     # decode request
-    request = str(request, 'ascii')
+    request = str(request, Manager.default_encoding)
 
     # split into request line and message
     request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]
