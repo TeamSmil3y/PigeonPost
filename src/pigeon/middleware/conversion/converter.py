@@ -5,6 +5,7 @@ from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from pigeon.http import HTTPRequest, HTTPResponse
 from pigeon.utils.common import ParameterDict
+from pigeon.conf import Manager
 
 
 def autogenerator(view: Callable) -> Callable:
