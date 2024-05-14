@@ -3,11 +3,12 @@ import sys
 import pigeon.middleware as middleware
 import pigeon.utils.logger as logger
 from pigeon.http import HTTPRequest, HTTPResponse
+from pigeon.conf import Manager
 
 log = logger.Log('HANDLER', 'cyan')
 
 
-def receive_data(client_sock: socket.socket, size: int = 4096) -> bytes:
+def receive_data(client_sock: socket.socket, size: int = Manager.default_buffer_size) -> bytes:
     while True:
         try:
             return client_sock.recv(size)
