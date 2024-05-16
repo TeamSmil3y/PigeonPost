@@ -38,6 +38,12 @@ PRIVATE_KEY_PASSWD = None
 CRASH_ON_FAILURE = False
 DEBUG_MODE = True
 
+# DATABASE
+USE_DATABASE = False
+DB_TYPE = 'sqlite'
+DB_API = 'pysqlite'
+DB_LOCATION = '/:memory:'
+
 # MIME PARSERS
 MIME_PARSERS = {
     'application/json': 'pigeon.middleware.conversion.mime.parsers.JSONParser',

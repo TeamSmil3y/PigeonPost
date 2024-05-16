@@ -1,8 +1,11 @@
 from pigeon import Pigeon
-from pigeon.shortcuts import HTTPResponse
+from pigeon.shortcuts import HTTPResponse, Log
+from models import Animal
 import random
 import string
 import json
+
+log = Log('OTHER', 'yellow')
 
 
 @Pigeon.view('/welcome', 'application/json')
@@ -37,3 +40,7 @@ def welcome(request):
 def will_fail(request):
     # this view will fail and cause error 500 (internal server error)
     return None
+
+@Pigeon.view('/animals', 'application/json')
+def animals(request):
+    return Animal.all()

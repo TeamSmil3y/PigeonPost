@@ -85,3 +85,19 @@ class Log:
                 msg = msg.replace('\n', self.off_color+'\n│   [/]['+color+']')
                 print(f'{self.off_color}├─  [/]', end='')
                 print('['+color+']'+msg+('[/]' if color!='white][/' else ''))
+
+    def action(self, *args, end='\n', subname=''):
+        self.message_blocked = False
+        if not self.message_blocked:
+            with lock:
+                print('[bold #ff5555]ACTION   [/]', end='')
+                self._print_msg(*args, end=end, subname=subname)
+
+    def ask_user(self, *args, end='', subname=''):
+        """
+        Waits for input of user [y/n] returns True or False dependent on input
+        """
+        self.action(*args, end=end, subname=subname)
+        while (user_input:=input()) not in ('y', 'n'):
+                self.error('INVALID INPUT, PLEASE TYPE \'y\' or \'n\': ', end='')
+        return user_input == 'y'

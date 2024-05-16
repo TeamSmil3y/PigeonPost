@@ -6,6 +6,7 @@ import pigeon.core.secure as secure
 import pigeon.core.handler as handler
 import pigeon.files.static as static
 import pigeon.templating.templater as templater
+import pigeon.database as db
 import threading
 
 log = logger.Log('SERVER', '#bb88ff')
@@ -19,11 +20,15 @@ def start():
         log.info('LOADING STATIC FILES')
         static.load()
 
+    # create jinja2 template environment
     if Manager.templates_dir:
-        # create jinja2 template environment
         log.info('LOADING TEMPLATES')
         templater.load()
 
+    # connect to database
+    if Manager.use_database:
+        log.info("CONNECTING TO DATABASE")
+        db.DBManager()
 
 def serve():
     log.info(f'ADDRESS: {Manager.address if Manager.address else "ANY"}')
