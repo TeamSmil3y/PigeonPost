@@ -232,8 +232,8 @@ class ModelObject:
                 for row in rows]
 
     def __repr__(self):
-        return f'{self.__model.__tablename__}({", ".join(f"{key}={value}" for
-                                                         key, value in self.__get_database_attributes().items())})'
+        attributes = ", ".join(f"{key}={value}" for key, value in self.__get_database_attributes().items())
+        return f'{self.__model.__tablename__}({attributes})'
 
 
 class Query:
