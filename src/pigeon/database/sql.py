@@ -111,7 +111,7 @@ class DBManager:
     @classmethod
     def __str__(cls, metadata=None) -> str:
         if not metadata: metadata = cls.metadata
-        return '\n'.join(f'{str(table.name)}({' | '.join((str(column.name) for column in table.c))})' for table in metadata.tables.values())
+        return '\n'.join(f'{str(table.name)}({" | ".join((str(column.name) for column in table.c))})' for table in metadata.tables.values())
 
 
 class MigrationManager:
