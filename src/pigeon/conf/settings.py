@@ -55,3 +55,7 @@ MIME_PARSERS = {
 MIME_GENERATORS = {
     'application/json': 'pigeon.middleware.conversion.mime.generators.JSONGenerator',
 }
+
+# CORE HANDLER SETTINGS
+DEFAULT_BUFFER_SIZE = 32768
+DEFAULT_ENCODING = 'utf-8'

@@ -4,6 +4,8 @@ from typing import Any
 from urllib.parse import parse_qs, unquote_plus
 from email import message_from_string
 from pigeon.http import HTTPRequest, HTTPResponse
+from pigeon.utils.common import ParameterDict
+from pigeon.conf import Manager
 
 
 def autogenerator(view: Callable) -> Callable:
@@ -52,7 +54,7 @@ def parse(request: bytes) -> HTTPRequest:
     """
 
     # decode request
-    request = str(request, 'ascii')
+    request = str(request, Manager.default_encoding)
 
     # split into request line and message
     request_line, message_raw = (request.split('\r\n', 1)+[''])[:2]
@@ -82,10 +84,19 @@ def parse(request: bytes) -> HTTPRequest:
         parsed = pigeon.conf.settings.MIME_PARSERS[mime_type].parse(data, message)
         if isinstance(parsed, (list, tuple)):
             # parser returned data and files
-            data = parsed[0]
-            files = parsed[1]
+            if isinstance(parsed[0], dict):
+                data = ParameterDict(parsed[0])
+            else:
+                data = parsed[0]
+            if isinstance(parsed[1], dict):
+                files = ParameterDict(parsed[1])
+            else:
+                files = parsed[1]
         else:
             # parser returned only data
-            data = parsed
+            if isinstance(parsed, dict):
+                data = ParameterDict(parsed)
+            else:
+                data = parsed
 
     return HTTPRequest(method=method, path=path, headers=headers, get=get, data=data, files=files, protocol=protocol)
