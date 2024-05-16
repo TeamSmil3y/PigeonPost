@@ -16,6 +16,10 @@ log = logger.Log('PIGEON', '#30b3ff')
 class Pigeon:
     """
     The Pigeon class is the main interface used for the user to interact with Pigeon.
+    It houses important decorators for registering views, etc. such as Pigeon.view and Pigeon.error.
+
+    Furthermore it facilitates exception-handling, exit-handling, debug_mode application
+    reinitialization through watchdog,
     """
 
     settings = None
@@ -25,6 +29,13 @@ class Pigeon:
     observers = []
     @classmethod
     def __init__(cls, settings=None):
+        """
+        On initialization, pigeon performs a few important actions, mainly:
+        - sets up the pigeon.conf.manager.Manager class.
+        - default sys.excepthook and sys.exit handlers are set to pigeons custom exception handler and exit handler.
+        - registers Pigeon.run to execute at the normal exit of a program, i.e. after all other code has executed,
+        using the atexit hook
+        """
         log.info('STARTING..')
 
         # overwrite standard settings if new settings provided
@@ -52,7 +63,7 @@ class Pigeon:
     @classmethod
     def run(cls, auto=False) -> None:
         """
-        auto specifies whether the application has been started automatically due to the atexit call,
+        :param auto: specifies whether the application has been started automatically due to the atexit call,
         if so we will check back whether this
         """
         if Manager.debug_mode:
@@ -63,7 +74,6 @@ class Pigeon:
             event_handler = FileSystemEventHandler()
 
             def restart_event(event):
-                log.debug(f"FILE EVENT: {event}")
                 cls.restart()
 
             event_handler.on_modified = restart_event
@@ -100,9 +110,16 @@ class Pigeon:
     @classmethod
     def handle_exception(cls, exception_type, exception, *args, custom_log: logger.Log = log, description: str='AN EXCEPTION OCCURED') -> None:
         """
+        :param exception_type: Type of exception (unused)
+        :param exception: The exception that should be handled
+        :param custom_log: Pigeon log that error message corresponding to the exception will be logged in
+        :param description: The status message that will be logged to explain or give details about the error
+
         This is a custom exception handler. It facilitates the following:
-        - if an exception occurs before the server has started, the server will not start
-        - exceptions during runtime will be logged and if the CRASH_ON_FAILURE setting is set to True the app will terminate
+
+        * if an exception occurs before the server has started, the server will not start
+        * exceptions during runtime will be logged and if the CRASH_ON_FAILURE setting is set to True the app will terminate
+
         """
         sys.last_exc = exception
         custom_log.error(description)

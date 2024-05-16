@@ -2,6 +2,7 @@ import os
 import sys
 
 # gather all previously imported modules for watchdog (debug mode)
+# doing this before importing all other modules reduces files that will be monitored by watchdog
 modules = sys.modules.values()
 import pigeon.conf
 
@@ -14,6 +15,7 @@ for module in modules:
 
 from pigeon.core.app import Pigeon
 import pigeon.core
+import pigeon.database
 import pigeon.files
 import pigeon.http
 import pigeon.templating

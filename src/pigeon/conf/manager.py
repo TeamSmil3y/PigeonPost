@@ -58,6 +58,8 @@ class Manager(metaclass=ManagerMeta):
     def override(cls, new_settings: types.ModuleType | Any):
         """
         Overrides current settings with new settings provided.
+
+        :param new_settings: New settings to override old ones with
         """
         # get all non-standard attributes as dict:
         # attributes = {<attribute_name>:<attribute_value>}
