@@ -34,3 +34,8 @@ USE_HTTPS = False
 CERTIFICATE_PATH = ''
 PRIVATE_KEY_PATH = ''
 PRIVATE_KEY_PASSWD = ''
+
+USE_DATABASE = True
+DB_TYPE = 'postgresql'
+DB_API = 'psycopg2'
+DB_LOCATION = 'postgres:postgres@127.0.0.1:5432/pigeon'

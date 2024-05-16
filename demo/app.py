@@ -7,7 +7,7 @@ Pigeon.settings.port = 4001
 
 # import of other modules
 from pigeon.shortcuts import HTTPResponse, render
-import errors, other
+import errors, other, models
 
 @Pigeon.view('/')
 def counter(request):

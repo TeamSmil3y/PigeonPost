@@ -22,4 +22,4 @@ class HTTPResponse(HTTPMessage):
         return f'HTTP/{self.protocol} {common.status(self.status)}\r\n{super().__str__()}'
 
     def __bytes__(self, encoding='ascii'):
-        return bytes(f'HTTP/{self.protocol} {common.status(self.status)}\r\n', encoding)+super().__bytes__(encoding)
+        return super().__bytes__(encoding)

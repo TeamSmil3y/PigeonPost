@@ -3,11 +3,12 @@ import sys
 import pigeon.middleware as middleware
 import pigeon.utils.logger as logger
 from pigeon.http import HTTPRequest, HTTPResponse
+from pigeon.conf import Manager
 
 log = logger.Log('HANDLER', 'cyan')
 
 
-def receive_data(client_sock: socket.socket, size: int = 4096) -> bytes:
+def receive_data(client_sock: socket.socket, size: int = Manager.default_buffer_size) -> bytes:
     while True:
         try:
             return client_sock.recv(size)
@@ -48,10 +49,12 @@ def handle_connection(client_sock: socket.socket, client_address: tuple) -> None
             # gather appropriate response for request
             response = middleware.process(request)
             response = middleware.postprocess(request, response)
+            data = response.__bytes__(Manager.default_encoding)
 
             # send response to client
             log.verbose(f'SENDING RESPONSE TO {client_address[0]}:{client_address[1]}')
-            client_sock.sendall(response.__bytes__('utf-8'))
+            log.verbose(f'RAW RESPONSE:\n{response.__str__()}')
+            client_sock.sendall(data)
             log.verbose(f'RESPONSE SENT')
 
         except Exception as e:
