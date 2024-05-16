@@ -149,7 +149,7 @@ class Model:
 
     @classmethod
     def __repr__(cls) -> str:
-        return f'{cls.__tablename__}({', '.join(field.name for field in cls.__fields)})'
+        return f'{cls.__tablename__}({", ".join(field.name for field in cls.__fields)})'
 
 
 class ModelObject:
