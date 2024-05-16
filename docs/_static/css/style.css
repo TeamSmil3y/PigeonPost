@@ -60,7 +60,9 @@ DARK MODE
 .dark .data .sig-prename .pre, .dark .data .sig-name .pre {
     color: #9E92C6 !important;
 }
-
+.dark .method .field-list .field-odd:has( + .field-odd), .dark .method .field-list .field-even:has( + .field-even) {
+    color: #9E92C6 !important;
+}
 /*
 LIGHT MODE
 */
