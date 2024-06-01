@@ -13,7 +13,7 @@ $ python3 -m pip install pigeonpost
 
 With pigeon installed we can now start writing our own application:
 ```python3
-form pigeon import Pigeon
+from pigeon import Pigeon
 
 Pigeon()
 
